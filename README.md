@@ -1,35 +1,79 @@
-# Tower Defense Game
+# 🏰 Tower Defense Game
 
-> Competitive, strategic, and captivating tower defense with top-down view, procedural maps, player lives, and a global leaderboard.
+> A competitive and strategic tower defense game with top-down vision, procedural map generation, player lives, and a global leaderboard.
 
-## 🎯 Vision
-- **Top-down** map
-- **ProcGen**: positions d’entrées/sorties et obstacles
-- **Vies du joueur**: mécaniques claires et punitives mais justes
-- **Score compétitif**: username + leaderboard persistant
-- Respect des exigences du superviseur **Yohan**
+---
 
-## 🧩 Core Loop
-Construire → Défendre → Gagner des points → Dépenser → Survire aux vagues → High score.
+## 🎯 Project Vision
+The goal of this project is to design a **captivating and replayable tower defense game** where players must defend against waves of enemies, manage resources, and aim for the highest possible score.
 
-## 📦 Tech
-- Moteur: (à préciser: Unity/Godot/Web)
-- Langage: C++
-- Build: GitHub Actions
-- Plateformes: Desktop (Windows/macOS/Linux)
+Key elements:
+- **Top-down map view**
+- **Procedural generation** of maps: random spawn points, exits, and obstacles
+- **Player lives** system: clear rules that punish mistakes but remain fair
+- **Competitive scoring**: username input + persistent leaderboard
+- **Compliance with supervisor Yohan’s requirements**
 
-## 🗺️ Milestones
-- **M0 – Setup**: dépôt, CI, templates
-- **M1 – Core**: pathfinding, vagues, tours de base, vies
-- **M2 – ProcGen & UI**: génération cartes, HUD, leaderboard local
-- **M3 – Online & Polish**: backend leaderboard, perf, SFX/VFX, release
+---
 
-## 🧪 Qualité
-- Convention de commits: Conventional Commits
-- PR: 1 reviewer min, lint + tests passent
-- Branching: `feat/*`, `fix/*`, `chore/*`
+## 🧩 Core Gameplay Loop
+1. Build towers strategically  
+2. Defend against incoming waves  
+3. Earn resources and score  
+4. Reinforce defenses and survive  
+5. Compare results on the leaderboard  
 
-## 🏁 Démarrer
-- Prérequis: …
-- `git clone …`
-- `…` (commande run)
+---
+
+## 🗺️ Features & Milestones
+
+### ✅ Milestone 0 – Setup
+- GitHub repository, CI/CD, code guidelines
+
+### 🎮 Milestone 1 – Core Gameplay
+- Pathfinding (A*) for enemies
+- Wave system
+- Basic towers and shooting mechanics
+- Player lives system
+
+### 🏗️ Milestone 2 – Procedural Generation & UI
+- Procedural map generation
+- In-game HUD (lives, gold, wave counter, timers)
+- Local leaderboard
+
+### 🌐 Milestone 3 – Online & Polish
+- Online leaderboard
+- Performance optimization
+- Audio (SFX/VFX)
+- Final release build
+
+---
+
+## 🛠️ Tech Stack
+- **Game engine:** (to be defined → Unity / Godot / Web)
+- **Languages:** C++
+- **Build & CI/CD:** GitHub Actions
+- **Target platforms:** Windows, macOS, Linux
+
+---
+
+## 🧪 Quality Guidelines
+- **Branching strategy:**  
+  - `main`: stable  
+  - `feat/*`, `fix/*`, `chore/*`  
+- **Commits:** Conventional Commits  
+- **Pull requests:** minimum 1 reviewer, all CI tests must pass  
+- **Playtesting:** mandatory before merging into `main`  
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Install [Git](https://git-scm.com/)  
+- Install the required engine/toolchain (Unity, Godot, Node.js, etc.)  
+
+### Clone the repository
+```bash
+git clone https://github.com/<your-org>/tower-defense.git
+cd tower-defense
