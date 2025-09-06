@@ -14,7 +14,7 @@ Construire → Défendre → Gagner des points → Dépenser → Survire aux vag
 
 ## 📦 Tech
 - Moteur: (à préciser: Unity/Godot/Web)
-- Langage: (C#/GDScript/TS…)
+- Langage: C++
 - Build: GitHub Actions
 - Plateformes: Desktop (Windows/macOS/Linux)
 
