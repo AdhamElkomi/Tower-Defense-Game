@@ -77,3 +77,27 @@ Key elements:
 ```bash
 git clone https://github.com/<your-org>/Tower-Defense-Game.git
 cd Tower-Defense-Game
+```
+
+### Run (example for Node.js project)
+```bash
+npm install
+npm run start
+```
+
+---
+
+## 👥 Contributors
+- **Adham Ahmed Salah Ali**
+- **William Kennedy Nde Fotso**
+
+---
+
+## 📜 License
+This project is licensed under the **MIT License** – feel free to use, modify, and distribute with attribution.
+
+---
+
+## 🏆 Acknowledgements
+- Supervised by **Yohan Fougerolle** (Polytech Dijon)  
+- Inspired by classic tower defense games, adapted for a competitive and strategic experience.
