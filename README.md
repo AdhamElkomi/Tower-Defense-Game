@@ -75,5 +75,5 @@ Key elements:
 
 ### Clone the repository
 ```bash
-git clone https://github.com/<your-org>/tower-defense.git
-cd tower-defense
+git clone https://github.com/<your-org>/Tower-Defense-Game.git
+cd Tower-Defense-Game
