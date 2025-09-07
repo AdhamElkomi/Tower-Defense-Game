@@ -1,0 +1,49 @@
+# === Build directories ===
+/build/
+/out/
+/bin/
+/lib/
+/CMakeFiles/
+/cmake-build-*/
+
+# === CMake generated files ===
+CMakeCache.txt
+Makefile
+*.cmake
+
+# === Compiled objects and binaries ===
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# === Logs and temporary files ===
+*.log
+*.tmp
+*.swp
+*.swo
+
+# === IDE specific ===
+.vscode/
+.idea/
+*.user
+*.workspace
+*.code-workspace
+
+# === OS specific ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Test/coverage artifacts ===
+*.gcno
+*.gcda
+*.gcov
+coverage/
