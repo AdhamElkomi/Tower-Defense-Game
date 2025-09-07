@@ -1,0 +1,22 @@
+Start testing: Sep 07 21:59 CEST
+----------------------------------------------------------
+1/1 Testing: unit
+1/1 Test: unit
+Command: "/home/adhamking4/Tower-Defense-Game/build/tests"
+Directory: /home/adhamking4/Tower-Defense-Game/build
+"unit" start time: Sep 07 21:59 CEST
+Output:
+----------------------------------------------------------
+Randomness seeded to: 2394571810
+===============================================================================
+All tests passed (1 assertion in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"unit" end time: Sep 07 21:59 CEST
+"unit" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 07 21:59 CEST

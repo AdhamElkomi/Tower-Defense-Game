@@ -1,0 +1,7 @@
+{
+    "Easy":   { "hpMultiplier": 0.8, "speedMultiplier": 0.9, "rewardMultiplier": 1.2, "livesStart": 25 },
+    "Normal": { "hpMultiplier": 1.0, "speedMultiplier": 1.0, "rewardMultiplier": 1.0, "livesStart": 20 },
+    "Hard":   { "hpMultiplier": 1.3, "speedMultiplier": 1.1, "rewardMultiplier": 0.9, "livesStart": 15 },
+    "Custom": { "hpMultiplier": 1.0, "speedMultiplier": 1.0, "rewardMultiplier": 1.0, "livesStart": 20 }
+  }
+  

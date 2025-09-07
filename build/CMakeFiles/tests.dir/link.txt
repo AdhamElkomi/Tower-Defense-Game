@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/tests.dir/tests/test_sanity.cpp.o -o tests  /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/manual-link/libCatch2Maind.a /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libCatch2d.a 

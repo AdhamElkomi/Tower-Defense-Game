@@ -1,0 +1,5 @@
+{
+    "forbidTotalBlock": true,
+    "startMaterials": { "A": 100, "B": 50, "C": 30 }
+  }
+  
