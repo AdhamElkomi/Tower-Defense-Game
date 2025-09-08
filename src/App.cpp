@@ -12,14 +12,30 @@ App::App(int w, int h, const std::string& title)
 App::~App() = default;
 
 void App::run() {
-    sf::Clock clock;
     while (window_.isOpen()) {
-        processEvents();
-        float dt = clock.restart().asSeconds();
-        update(dt);
-        render();
+        // UPDATE
+        if (state_ == State::Menu) {
+            if (auto choice = menu_->tick()) {
+                if (choice->exit) window_.close();
+                else if (choice->openDifficulty) { /* show overlay */ }
+                else if (choice->start) { state_ = State::Playing; }
+            }
+        } else {
+            // update game...
+        }
+
+        // RENDER
+        window_.clear(sf::Color(10,12,18));
+        if (state_ == State::Menu) {
+            menu_->render(); // pas de display() ici
+        } else {
+            // draw game...
+        }
+        window_.display();
     }
 }
+
+
 
 void App::processEvents() {
     // SFML 3: pollEvent() -> std::optional<sf::Event>
@@ -32,7 +48,23 @@ void App::processEvents() {
 }
 
 void App::update(float) {
-    // Pour l’instant: tout se passe dans Menu::tick() côté rendu
+    if (state_ == State::Menu) {
+        auto result = menu_->tick();
+        if (result.has_value()) {
+            if (result->exit) {
+                window_.close();
+            } else if (result->openDifficulty) {
+                // TODO: open a simple overlay or cycle difficulty, then reflect on Menu
+                // e.g., menu_->setDifficultySubtitle("Hard");
+            } else if (result->start) {
+                // TODO: transition to game state (generate map, etc.)
+                state_ = State::Playing;
+            }
+        }
+    } else if (state_ == State::Playing) {
+        // TODO: your game loop (render world, handle input, etc.)
+        // Keep Style::Default so window can be minimized/maximized by the OS.
+    }
 }
 
 void App::render() {
