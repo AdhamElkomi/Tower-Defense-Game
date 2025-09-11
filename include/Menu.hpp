@@ -1,85 +1,141 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
-#include <memory>
+#include <cstdint>
 
-// Bouton (sprite arrondi optionnel + fallback rectangle)
-struct MenuButton {
-    sf::RectangleShape box;                  // fallback si pas de texture bouton
-    std::unique_ptr<sf::Sprite> sprite;      // si texBtn_ chargé (coins arrondis)
-    std::unique_ptr<sf::Text>   label;
-    std::unique_ptr<sf::Sprite> icon;
-    bool hovered{false};
-    bool focused{false};
-    std::string id;                          // "start", "difficulty", "exit"
-    bool hasIcon()   const { return icon   != nullptr; }
-    bool hasSprite() const { return sprite != nullptr; }
-};
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 struct MenuChoice {
-    bool start{false};
-    bool exit{false};
-    bool openDifficulty{false};
+    bool start          = false;
+    bool openDifficulty = false;
+    bool exit           = false;
 };
 
+struct Slider {
+    sf::Vector2f pos{0.f, 0.f};
+    sf::Vector2f size{280.f, 10.f};
+    float value01 = 0.8f;   // 0..1
+    bool  dragging = false;
+};
 
+struct MenuButton {
+    std::string id;
+
+    sf::Vector2f pos{0.f, 0.f};   // position logique (coin haut-gauche)
+    sf::Vector2f size{360.f, 56.f};
+
+    // animation / interaction
+    float scale       = 1.f;
+    float targetScale = 1.f;
+    float hover       = 0.f; // 0..1
+    bool  hovered     = false;
+    bool  focused     = false;
+
+    // couleurs base / hover
+    sf::Color fillA{}, fillB{}, border{};
+    sf::Color hoverFillA{}, hoverFillB{}, hoverBorder{};
+
+    std::unique_ptr<sf::Text>   label;
+    std::unique_ptr<sf::Sprite> icon;
+
+    bool hasIcon() const { return icon != nullptr; }
+};
 
 class Menu {
 public:
     explicit Menu(sf::RenderWindow& win);
-    std::optional<MenuChoice> tick();            // events + update + render (sans clear/display)
-    void render();                                // alias de draw() pour App::run()
+
+    // Tick = events + update + draw (ne fait PAS display/clear)
+    std::optional<MenuChoice> tick();
+    void render(); // alias draw()
+
+    // Accès aux sliders pour l’audio global
+    float musicVolume01() const { return musicVol01_; }
+    float sfxVolume01()   const { return sfxVol01_;   }
+
+    // Optionnel : sous-titre de la difficulté
     void setDifficultySubtitle(const std::string& text);
 
 private:
+    // --- Référence fenêtre
     sf::RenderWindow& win_;
 
-    // Assets
+    // --- Ressources
     sf::Font   font_;
     sf::Texture icoStart_, icoGear_, icoExit_;
-    sf::Texture texBg_;             // image de fond (cover)
-    sf::Texture texPanel_;          // image cadre (optionnel, alpha arrondi)
-    sf::Texture texBtn_;            // image bouton arrondi (optionnel)
-    sf::Texture texCardBg_;
-   
+    sf::Texture texBg_, texCardBg_, texBtn_;
 
-
-
-    // Sprites
     std::unique_ptr<sf::Sprite> bg_;
-    std::unique_ptr<sf::Sprite> cardSprite_; // si texPanel_ chargé
-     std::unique_ptr<sf::Sprite> cardBg_;
-   // Titre
-    std::unique_ptr<sf::Text> title_;
+    std::unique_ptr<sf::Sprite> cardBg_;
+    std::unique_ptr<sf::Sprite> gearIcon_;
 
-    // Cadre dessiné via shader fragment (arrondi + gradient + glow animé)
+    // --- Shaders
     sf::Shader panelShader_;
-    bool shaderOk_{false};
-    sf::Vector2f cardSize_{520.f, 360.f};
-    sf::Vector2f cardPos_{};
-    float cornerRadius_{18.f};
-
-    // Animation
+    sf::Shader buttonShader_;
+    bool shaderOk_    = false;
+    bool btnShaderOk_ = false;
+    float animTime_   = 0.f;
     sf::Clock animClock_;
-    float animTime_{0.f};
 
-    // Ombre douce sous le cadre
+    // --- Mise en page principale (card)
+    sf::Vector2f cardPos_{0.f, 0.f};
+    sf::Vector2f cardSize_{720.f, 360.f};
+    float        cornerRadius_ = 18.f;
+
+    // Ombre sous le card
     sf::RectangleShape dropShadow_;
 
-    // Boutons
-    std::vector<MenuButton> buttons_;
-    int focusIndex_{0};
+    // Titre
+    std::unique_ptr<sf::Text> title_;
+    std::unique_ptr<sf::Text> titleShadow_;
+    float titlePulseT_ = 0.f;
 
-    // Helpers
+    // --- Boutons
+    std::vector<MenuButton> buttons_;
+    float btnRadius_ = 14.f;
+    int   focusIndex_ = 0;
+
+    // --- Bouton "Settings" (cercle en bas à droite)
+    sf::CircleShape gearButton_;
+    bool optionsOpen_ = false;
+    bool gearHover_   = false;
+
+    // --- Panneau Options
+    sf::Vector2f optPos_{0.f, 0.f};
+    sf::Vector2f optSize_{420.f, 180.f};
+    sf::RectangleShape optShadow_;
+    std::unique_ptr<sf::Text> optTitle_;
+    std::unique_ptr<sf::Text> lblMusic_, lblSfx_;
+    std::unique_ptr<sf::Text> pctMusic_, pctSfx_;
+    Slider sliderMusic_, sliderSfx_;
+    float  musicVol01_ = 0.8f;
+    float  sfxVol01_   = 0.8f;
+
+    // --- Construction
     void loadAssets();
     void buildLayout();
+    void buildSettings();
     void positionElements();
-    void updateHoverFocus(const sf::Vector2f& mouse);
-    void draw(); // NE FAIT PAS clear()/display()
+    void positionSettings();
 
-    // Utils
+    // --- Interaction
+    void updateHoverFocus(const sf::Vector2f& mouse);
+
+    // --- Dessin
+    void draw();
+    void drawSettings();
+
+    // --- Utils
+    static float clamp01(float v) {
+        if (v < 0.f) return 0.f;
+        if (v > 1.f) return 1.f;
+        return v;
+    }
     bool loadFont(const std::string& path);
     bool loadTexture(sf::Texture& t, const std::string& path);
+
+    bool hitCircle(const sf::Vector2f& p, const sf::Vector2f& c, float r) const;
 };

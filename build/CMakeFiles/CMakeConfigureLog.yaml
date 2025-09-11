@@ -39,8 +39,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -53,26 +53,26 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bea9b/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_bea9b.dir/build.make CMakeFiles/cmTC_bea9b.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo'
-        Building CXX object CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o
-        /usr/bin/c++   -v -o CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_aa45e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_aa45e.dir/build.make CMakeFiles/cmTC_aa45e.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H'
+        Building CXX object CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
         OFFLOAD_TARGET_DEFAULT=1
         Target: x86_64-linux-gnu
-        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.2.0-23ubuntu4' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
-        gcc version 13.2.0 (Ubuntu 13.2.0-23ubuntu4) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/'
-         /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_bea9b.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccgKdI0F.s
-        GNU C++17 (Ubuntu 13.2.0-23ubuntu4) version 13.2.0 (x86_64-linux-gnu)
-        	compiled by GNU C version 13.2.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_aa45e.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccPIhtgx.s
+        GNU C++17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/13"
@@ -90,32 +90,32 @@ events:
          /usr/include/x86_64-linux-gnu
          /usr/include
         End of search list.
-        Compiler executable checksum: 4e0f319cd9945d8f5a9eeeeec1481ba5
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/'
-         as -v --64 -o CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccgKdI0F.s
+        Compiler executable checksum: c81c05345ce537099dafd5580045814a
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/'
+         as -v --64 -o CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccPIhtgx.s
         GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42
         COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.'
-        Linking CXX executable cmTC_bea9b
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bea9b.dir/link.txt --verbose=1
-        /usr/bin/c++  -v CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_bea9b 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_aa45e
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aa45e.dir/link.txt --verbose=1
+        /usr/bin/c++  -v CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_aa45e 
         Using built-in specs.
         COLLECT_GCC=/usr/bin/c++
         COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper
         OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
         OFFLOAD_TARGET_DEFAULT=1
         Target: x86_64-linux-gnu
-        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.2.0-23ubuntu4' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+        Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
-        gcc version 13.2.0 (Ubuntu 13.2.0-23ubuntu4) 
+        gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) 
         COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_bea9b' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_bea9b.'
-         /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz7AnNh.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_bea9b /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_bea9b' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_bea9b.'
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_aa45e' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_aa45e.'
+         /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccnElxFV.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_aa45e /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_aa45e' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_aa45e.'
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H'
         
       exitCode: 0
   -
@@ -155,26 +155,26 @@ events:
     message: |
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
-        ignore line: [Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo']
+        ignore line: [Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H']
         ignore line: []
-        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bea9b/fast]
-        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_bea9b.dir/build.make CMakeFiles/cmTC_bea9b.dir/build]
-        ignore line: [gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Fgllzo']
-        ignore line: [Building CXX object CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o]
-        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_aa45e/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_aa45e.dir/build.make CMakeFiles/cmTC_aa45e.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-O78a4H']
+        ignore line: [Building CXX object CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
         ignore line: [OFFLOAD_TARGET_DEFAULT=1]
         ignore line: [Target: x86_64-linux-gnu]
-        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.2.0-23ubuntu4' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
-        ignore line: [gcc version 13.2.0 (Ubuntu 13.2.0-23ubuntu4) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/']
-        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_bea9b.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccgKdI0F.s]
-        ignore line: [GNU C++17 (Ubuntu 13.2.0-23ubuntu4) version 13.2.0 (x86_64-linux-gnu)]
-        ignore line: [	compiled by GNU C version 13.2.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.26-GMP]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/']
+        ignore line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/cc1plus -quiet -v -imultiarch x86_64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_aa45e.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccPIhtgx.s]
+        ignore line: [GNU C++17 (Ubuntu 13.3.0-6ubuntu2~24.04) version 13.3.0 (x86_64-linux-gnu)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version isl-0.26-GMP]
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [ignoring duplicate directory "/usr/include/x86_64-linux-gnu/c++/13"]
@@ -192,35 +192,35 @@ events:
         ignore line: [ /usr/include/x86_64-linux-gnu]
         ignore line: [ /usr/include]
         ignore line: [End of search list.]
-        ignore line: [Compiler executable checksum: 4e0f319cd9945d8f5a9eeeeec1481ba5]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/']
-        ignore line: [ as -v --64 -o CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccgKdI0F.s]
+        ignore line: [Compiler executable checksum: c81c05345ce537099dafd5580045814a]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccPIhtgx.s]
         ignore line: [GNU assembler version 2.42 (x86_64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42]
         ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [Linking CXX executable cmTC_bea9b]
-        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bea9b.dir/link.txt --verbose=1]
-        ignore line: [/usr/bin/c++  -v CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_bea9b ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_aa45e]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aa45e.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/c++  -v CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_aa45e ]
         ignore line: [Using built-in specs.]
         ignore line: [COLLECT_GCC=/usr/bin/c++]
         ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper]
         ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa]
         ignore line: [OFFLOAD_TARGET_DEFAULT=1]
         ignore line: [Target: x86_64-linux-gnu]
-        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.2.0-23ubuntu4' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-uJ7kn6/gcc-13-13.2.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+        ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32 m64 mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-nvptx/usr amdgcn-amdhsa=/build/gcc-13-fG75Ri/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
-        ignore line: [gcc version 13.2.0 (Ubuntu 13.2.0-23ubuntu4) ]
+        ignore line: [gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04) ]
         ignore line: [COMPILER_PATH=/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_bea9b' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_bea9b.']
-        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz7AnNh.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_bea9b /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_aa45e' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_aa45e.']
+        link line: [ /usr/libexec/gcc/x86_64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccnElxFV.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_aa45e /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/13 -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/13/../../.. CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/13/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crtn.o]
           arg [/usr/libexec/gcc/x86_64-linux-gnu/13/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/usr/libexec/gcc/x86_64-linux-gnu/13/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/13/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/tmp/ccz7AnNh.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccnElxFV.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -238,7 +238,7 @@ events:
           arg [-znow] ==> ignore
           arg [-zrelro] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_bea9b] ==> ignore
+          arg [cmTC_aa45e] ==> ignore
           arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/Scrt1.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o]
           arg [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o]
@@ -250,7 +250,7 @@ events:
           arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
           arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
           arg [-L/usr/lib/gcc/x86_64-linux-gnu/13/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/13/../../..]
-          arg [CMakeFiles/cmTC_bea9b.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [CMakeFiles/cmTC_aa45e.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc_s] ==> lib [gcc_s]
@@ -277,10 +277,6 @@ events:
         implicit fwks: []
       
       
-...
-
----
-events:
   -
     kind: "try_compile-v1"
     backtrace:
@@ -294,12 +290,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLGraphicsDependencies.cmake:12 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
     checks:
       - "Looking for BZ2_bzCompressInit"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -313,17 +309,17 @@ events:
       variable: "BZIP2_NEED_PREFIX"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_a32ed/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_a32ed.dir/build.make CMakeFiles/cmTC_a32ed.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn'
-        Building CXX object CMakeFiles/cmTC_a32ed.dir/CheckSymbolExists.cxx.o
-        /usr/bin/c++  -I/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include -std=gnu++20 -o CMakeFiles/cmTC_a32ed.dir/CheckSymbolExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn/CheckSymbolExists.cxx
-        Linking CXX executable cmTC_a32ed
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a32ed.dir/link.txt --verbose=1
-        /usr/bin/c++ CMakeFiles/cmTC_a32ed.dir/CheckSymbolExists.cxx.o -o cmTC_a32ed  /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libbz2.a 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-wb6Ttn'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_387f3/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_387f3.dir/build.make CMakeFiles/cmTC_387f3.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e'
+        Building CXX object CMakeFiles/cmTC_387f3.dir/CheckSymbolExists.cxx.o
+        /usr/bin/c++  -I/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include -std=gnu++20 -o CMakeFiles/cmTC_387f3.dir/CheckSymbolExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e/CheckSymbolExists.cxx
+        Linking CXX executable cmTC_387f3
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_387f3.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_387f3.dir/CheckSymbolExists.cxx.o -o cmTC_387f3  /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libbz2.a 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-DaXj4e'
         
       exitCode: 0
   -
@@ -336,10 +332,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLWindowDependencies.cmake:31 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Looking for XOpenDisplay in /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -353,17 +351,17 @@ events:
       variable: "X11_LIB_X11_SOLO"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_016ef/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_016ef.dir/build.make CMakeFiles/cmTC_016ef.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt'
-        Building CXX object CMakeFiles/cmTC_016ef.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -std=gnu++20 -o CMakeFiles/cmTC_016ef.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_016ef
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_016ef.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_016ef.dir/CheckFunctionExists.cxx.o -o cmTC_016ef  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-n5TNCt'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8939f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8939f.dir/build.make CMakeFiles/cmTC_8939f.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5'
+        Building CXX object CMakeFiles/cmTC_8939f.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -std=gnu++20 -o CMakeFiles/cmTC_8939f.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_8939f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8939f.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_8939f.dir/CheckFunctionExists.cxx.o -o cmTC_8939f  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-Swuah5'
         
       exitCode: 0
   -
@@ -376,10 +374,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLWindowDependencies.cmake:31 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Looking for gethostbyname"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -393,17 +393,17 @@ events:
       variable: "CMAKE_HAVE_GETHOSTBYNAME"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b1008/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_b1008.dir/build.make CMakeFiles/cmTC_b1008.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws'
-        Building CXX object CMakeFiles/cmTC_b1008.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=gethostbyname -std=gnu++20 -o CMakeFiles/cmTC_b1008.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_b1008
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1008.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_b1008.dir/CheckFunctionExists.cxx.o -o cmTC_b1008 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-1R53Ws'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f6e94/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_f6e94.dir/build.make CMakeFiles/cmTC_f6e94.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB'
+        Building CXX object CMakeFiles/cmTC_f6e94.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=gethostbyname -std=gnu++20 -o CMakeFiles/cmTC_f6e94.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_f6e94
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f6e94.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_f6e94.dir/CheckFunctionExists.cxx.o -o cmTC_f6e94 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-qxNTbB'
         
       exitCode: 0
   -
@@ -416,10 +416,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLWindowDependencies.cmake:31 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Looking for connect"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -433,17 +435,17 @@ events:
       variable: "CMAKE_HAVE_CONNECT"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_16caf/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_16caf.dir/build.make CMakeFiles/cmTC_16caf.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu'
-        Building CXX object CMakeFiles/cmTC_16caf.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=connect -std=gnu++20 -o CMakeFiles/cmTC_16caf.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_16caf
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_16caf.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_16caf.dir/CheckFunctionExists.cxx.o -o cmTC_16caf 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-PUKbBu'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_aba02/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_aba02.dir/build.make CMakeFiles/cmTC_aba02.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143'
+        Building CXX object CMakeFiles/cmTC_aba02.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=connect -std=gnu++20 -o CMakeFiles/cmTC_aba02.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_aba02
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aba02.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_aba02.dir/CheckFunctionExists.cxx.o -o cmTC_aba02 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-j6p143'
         
       exitCode: 0
   -
@@ -456,10 +458,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLWindowDependencies.cmake:31 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Looking for remove"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -473,17 +477,17 @@ events:
       variable: "CMAKE_HAVE_REMOVE"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_68c67/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_68c67.dir/build.make CMakeFiles/cmTC_68c67.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl'
-        Building CXX object CMakeFiles/cmTC_68c67.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=remove -std=gnu++20 -o CMakeFiles/cmTC_68c67.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_68c67
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_68c67.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_68c67.dir/CheckFunctionExists.cxx.o -o cmTC_68c67 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bPouhl'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_4862a/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_4862a.dir/build.make CMakeFiles/cmTC_4862a.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK'
+        Building CXX object CMakeFiles/cmTC_4862a.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=remove -std=gnu++20 -o CMakeFiles/cmTC_4862a.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_4862a
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4862a.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_4862a.dir/CheckFunctionExists.cxx.o -o cmTC_4862a 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-HnurfK'
         
       exitCode: 0
   -
@@ -496,10 +500,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLWindowDependencies.cmake:31 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Looking for shmat"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -513,17 +519,17 @@ events:
       variable: "CMAKE_HAVE_SHMAT"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_17772/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_17772.dir/build.make CMakeFiles/cmTC_17772.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz'
-        Building CXX object CMakeFiles/cmTC_17772.dir/CheckFunctionExists.cxx.o
-        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=shmat -std=gnu++20 -o CMakeFiles/cmTC_17772.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz/CheckFunctionExists.cxx
-        Linking CXX executable cmTC_17772
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_17772.dir/link.txt --verbose=1
-        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_17772.dir/CheckFunctionExists.cxx.o -o cmTC_17772 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-eWaMwz'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_a92c7/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_a92c7.dir/build.make CMakeFiles/cmTC_a92c7.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v'
+        Building CXX object CMakeFiles/cmTC_a92c7.dir/CheckFunctionExists.cxx.o
+        /usr/bin/c++   -DCHECK_FUNCTION_EXISTS=shmat -std=gnu++20 -o CMakeFiles/cmTC_a92c7.dir/CheckFunctionExists.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v/CheckFunctionExists.cxx
+        Linking CXX executable cmTC_a92c7
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a92c7.dir/link.txt --verbose=1
+        /usr/bin/c++  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_a92c7.dir/CheckFunctionExists.cxx.o -o cmTC_a92c7 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-BIIK7v'
         
       exitCode: 0
   -
@@ -538,10 +544,12 @@ events:
       - "vcpkg/installed/x64-linux/share/sfml/SFMLSystemDependencies.cmake:8 (find_dependency)"
       - "vcpkg/installed/x64-linux/share/sfml/SFMLConfig.cmake:149 (include)"
       - "vcpkg/scripts/buildsystems/vcpkg.cmake:896 (_find_package)"
-      - "CMakeLists.txt:23 (find_package)"
+      - "CMakeLists.txt:26 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH"
-      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH"
+      source: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c"
+      binary: "/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -555,17 +563,17 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH'
+        Change Dir: '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f0f1f/fast
-        /usr/bin/gmake  -f CMakeFiles/cmTC_f0f1f.dir/build.make CMakeFiles/cmTC_f0f1f.dir/build
-        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH'
-        Building CXX object CMakeFiles/cmTC_f0f1f.dir/src.cxx.o
-        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++20 -o CMakeFiles/cmTC_f0f1f.dir/src.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH/src.cxx
-        Linking CXX executable cmTC_f0f1f
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f0f1f.dir/link.txt --verbose=1
-        /usr/bin/c++ CMakeFiles/cmTC_f0f1f.dir/src.cxx.o -o cmTC_f0f1f 
-        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-g6X3CH'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_62c0b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_62c0b.dir/build.make CMakeFiles/cmTC_62c0b.dir/build
+        gmake[1]: Entering directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c'
+        Building CXX object CMakeFiles/cmTC_62c0b.dir/src.cxx.o
+        /usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -std=gnu++20 -o CMakeFiles/cmTC_62c0b.dir/src.cxx.o -c /home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c/src.cxx
+        Linking CXX executable cmTC_62c0b
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_62c0b.dir/link.txt --verbose=1
+        /usr/bin/c++ CMakeFiles/cmTC_62c0b.dir/src.cxx.o -o cmTC_62c0b 
+        gmake[1]: Leaving directory '/home/adhamking4/Tower-Defense-Game/build/CMakeFiles/CMakeScratch/TryCompile-bcWS3c'
         
       exitCode: 0
 ...

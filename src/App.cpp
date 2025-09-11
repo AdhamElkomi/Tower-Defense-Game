@@ -1,74 +1,109 @@
 #include "App.hpp"
 #include "Menu.hpp"
 
-// SFML 3: VideoMode prend un Vector2u
-App::App(int w, int h, const std::string& title)
-: window_(sf::VideoMode({static_cast<unsigned>(w), static_cast<unsigned>(h)}), title) {
-    window_.setFramerateLimit(60);
+#include <iostream>
+#include <cmath> // (facultatif)
+
+App::App(int /*w*/, int /*h*/, const std::string& title)
+:  window_(sf::VideoMode::getDesktopMode(), title, sf::State::Fullscreen) {
+    // VSync pour éviter le tearing
+    window_.setVerticalSyncEnabled(true);
+
+    // --- Audio (chemins relatifs depuis build/ grâce au symlink CMake)
+    const char* menuPath = "assets/sounds/menu_theme.ogg";
+    const char* gamePath = "assets/sounds/game_theme.ogg";
+
+    if (!musicMenu_.openFromFile(menuPath)) {
+        std::cerr << "[Audio] Failed to open " << menuPath << "\n";
+    }
+    if (!musicGame_.openFromFile(gamePath)) {
+        std::cerr << "[Audio] Failed to open " << gamePath << "\n";
+    }
+
+    musicMenu_.setLooping(true);
+    musicGame_.setLooping(true);
+
+    // Menu UI
     menu_ = std::make_unique<Menu>(window_);
+
+    // Musique du menu au démarrage
+    startMenuMusic();
 }
 
-// Définition du destructeur ici (Menu est un type complet)
 App::~App() = default;
 
+// --- Musiques
+void App::startMenuMusic() {
+    musicGame_.stop();
+    // setVolume attend 0..100 (float)
+    musicMenu_.setVolume(menu_->musicVolume01() * 100.f);
+    musicMenu_.play();
+}
+
+void App::startGameMusic() {
+    musicMenu_.stop();
+    musicGame_.setVolume(menu_->musicVolume01() * 100.f);
+    musicGame_.play();
+}
+
 void App::run() {
+    sf::Clock clk;
     while (window_.isOpen()) {
-        // UPDATE
-        if (state_ == State::Menu) {
-            if (auto choice = menu_->tick()) {
-                if (choice->exit) window_.close();
-                else if (choice->openDifficulty) { /* show overlay */ }
-                else if (choice->start) { state_ = State::Playing; }
+        clk.restart();
+
+        // (Le Menu gère ses propres événements dans Menu::tick())
+        // On garde tout de même la fermeture "hard" si jamais
+        while (auto ev = window_.pollEvent()) {
+            if (ev->is<sf::Event::Closed>()) {
+                window_.close();
             }
-        } else {
-            // update game...
+            // Tu peux aussi capter Escape si tu veux forcer un retour menu/fermeture:
+            // if (const auto* k = ev->getIf<sf::Event::KeyPressed>()) {
+            //     if (k->scancode == sf::Keyboard::Scan::Escape) window_.close();
+            // }
         }
 
-        // RENDER
-        window_.clear(sf::Color(10,12,18));
         if (state_ == State::Menu) {
-            menu_->render(); // pas de display() ici
-        } else {
-            // draw game...
+            auto choice = menu_->tick();
+
+            // Suivre le slider "music" en temps réel
+            musicMenu_.setVolume(menu_->musicVolume01() * 100.f);
+
+            if (choice) {
+                if (choice->exit) {
+                    window_.close();
+                } else if (choice->openDifficulty) {
+                    // TODO: afficher l’overlay difficulté si besoin
+                } else if (choice->start) {
+                    state_ = State::Playing;
+                    startGameMusic();
+                }
+            }
+        } else if (state_ == State::Playing) {
+            // TODO: boucle de jeu, rendu, etc.
+            // Maintenir le volume sync avec le slider
+            musicGame_.setVolume(menu_->musicVolume01() * 100.f);
         }
+
+        // Le Menu dessine déjà; ici on ne fait que présenter la frame
         window_.display();
     }
 }
 
-
-
 void App::processEvents() {
-    // SFML 3: pollEvent() -> std::optional<sf::Event>
+    // L'essentiel est géré dans run(); cette fonction est là si tu veux séparer.
     while (auto ev = window_.pollEvent()) {
-        // Fermer la fenêtre si événement Closed
         if (ev->is<sf::Event::Closed>())
             window_.close();
-        // (Laisse Menu gérer le reste dans son tick())
     }
 }
 
-void App::update(float) {
-    if (state_ == State::Menu) {
-        auto result = menu_->tick();
-        if (result.has_value()) {
-            if (result->exit) {
-                window_.close();
-            } else if (result->openDifficulty) {
-                // TODO: open a simple overlay or cycle difficulty, then reflect on Menu
-                // e.g., menu_->setDifficultySubtitle("Hard");
-            } else if (result->start) {
-                // TODO: transition to game state (generate map, etc.)
-                state_ = State::Playing;
-            }
-        }
-    } else if (state_ == State::Playing) {
-        // TODO: your game loop (render world, handle input, etc.)
-        // Keep Style::Default so window can be minimized/maximized by the OS.
-    }
+void App::update(float /*dt*/) {
+    // Si tu veux une boucle "classique", tu peux appeler menu_->tick() ici
+    // et déplacer la logique correspondante de run() vers update().
 }
 
 void App::render() {
-    window_.clear(sf::Color(25,25,35));
-    // Le draw est géré côté Menu::tick() pour l’instant
-    window_.display();
+    // Si tu décides de centraliser le rendu ici, clear/draw/display.
+    // Actuellement, Menu::tick() fait le draw et run() fait display().
 }

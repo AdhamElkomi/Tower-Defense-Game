@@ -43,7 +43,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Debug
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -204,7 +204,8 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
-CMAKE_TOOLCHAIN_FILE:STRING=/home/adhamking4/Tower-Defense-Game/vcpkg/scripts/buildsystems/vcpkg.cmake
+//No help, variable specified on the command line.
+CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=../vcpkg/scripts/buildsystems/vcpkg.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -219,7 +220,7 @@ Catch2_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/sh
 FLAC_INCLUDE_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include
 
 //Path to a library.
-FLAC_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libFLAC.a
+FLAC_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libFLAC.a
 
 //The directory containing a CMake configuration file for Freetype.
 Freetype_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/share/freetype
@@ -228,7 +229,7 @@ Freetype_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/
 OGG_INCLUDE_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include
 
 //Path to a library.
-OGG_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libogg.a
+OGG_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libogg.a
 
 //Path to a file.
 OPENGL_EGL_INCLUDE_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include
@@ -331,16 +332,16 @@ VCPKG_TRACE_FIND_PACKAGE:BOOL=OFF
 VCPKG_VERBOSE:BOOL=OFF
 
 //Path to a library.
-VORBISENC_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libvorbisenc.a
+VORBISENC_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbisenc.a
 
 //Path to a library.
-VORBISFILE_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libvorbisfile.a
+VORBISFILE_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbisfile.a
 
 //Path to a file.
 VORBIS_INCLUDE_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include
 
 //Path to a library.
-VORBIS_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libvorbis.a
+VORBIS_LIBRARY:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbis.a
 
 //Path to a file.
 X11_ICE_INCLUDE_PATH:PATH=X11_ICE_INCLUDE_PATH-NOTFOUND
@@ -761,6 +762,9 @@ ZLIB_LIBRARY_DEBUG:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/
 //Path to a library.
 ZLIB_LIBRARY_RELEASE:FILEPATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libz.a
 
+//Path to a program.
+Z_VCPKG_CL:FILEPATH=Z_VCPKG_CL-NOTFOUND
+
 //The directory which contains the installed libraries for each
 // triplet
 _VCPKG_INSTALLED_DIR:PATH=/home/adhamking4/Tower-Defense-Game/vcpkg/installed
@@ -928,11 +932,23 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding BZip2
-FIND_PACKAGE_MESSAGE_DETAILS_BZip2:INTERNAL=[/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libbz2.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][v1.0.8()]
+FIND_PACKAGE_MESSAGE_DETAILS_BZip2:INTERNAL=[optimized;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libbz2.a;debug;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libbz2d.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][v1.0.8()]
+//Details about finding FLAC
+FIND_PACKAGE_MESSAGE_DETAILS_FLAC:INTERNAL=[/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libFLAC.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][v()]
+//Details about finding OpenGL
+FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/usr/lib/x86_64-linux-gnu/libOpenGL.so][/usr/lib/x86_64-linux-gnu/libGLX.so][/usr/include][cfound components: OpenGL ][v()]
 //Details about finding PNG
-FIND_PACKAGE_MESSAGE_DETAILS_PNG:INTERNAL=[/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libpng16.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][v1.6.50()]
+FIND_PACKAGE_MESSAGE_DETAILS_PNG:INTERNAL=[optimized;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libpng16.a;debug;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libpng16d.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][v1.6.50()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//Details about finding UDev
+FIND_PACKAGE_MESSAGE_DETAILS_UDev:INTERNAL=[/usr/include][/usr/lib/x86_64-linux-gnu/libudev.so][v()]
+//Details about finding Vorbis
+FIND_PACKAGE_MESSAGE_DETAILS_Vorbis:INTERNAL=[/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libogg.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbis.a][v()]
+//Details about finding X11
+FIND_PACKAGE_MESSAGE_DETAILS_X11:INTERNAL=[/usr/include][/usr/lib/x86_64-linux-gnu/libX11.so][cfound components: Xrandr Xcursor ][v()]
 //Details about finding ZLIB
-FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libz.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][c ][v1.3.1()]
+FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libz.a][/home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include][c ][v1.3.1()]
 //ADVANCED property for variable: FLAC_INCLUDE_DIR
 FLAC_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: FLAC_LIBRARY

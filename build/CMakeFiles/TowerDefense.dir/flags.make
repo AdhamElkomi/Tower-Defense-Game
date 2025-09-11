@@ -6,5 +6,5 @@ CXX_DEFINES = -DSFML_STATIC
 
 CXX_INCLUDES = -I/home/adhamking4/Tower-Defense-Game/include -isystem /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/include
 
-CXX_FLAGS = -std=gnu++20
+CXX_FLAGS = -g -std=gnu++20 -Wall -Wextra -Wpedantic
 
