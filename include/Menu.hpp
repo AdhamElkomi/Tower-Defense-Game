@@ -1,141 +1,63 @@
 #pragma once
-#include <memory>
+#include <SFML/Graphics.hpp>
 #include <optional>
 #include <string>
-#include <vector>
-#include <cstdint>
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include "Button.hpp"
+#include "CircleButton.hpp"
+#include "Slider.hpp"
+#include "AudioManager.hpp"
 
-struct MenuChoice {
-    bool start          = false;
-    bool openDifficulty = false;
-    bool exit           = false;
+struct Theme {
+    sf::Color text     {255,255,255};
+    sf::Color btnHover {255,255,255,28};
 };
 
-struct Slider {
-    sf::Vector2f pos{0.f, 0.f};
-    sf::Vector2f size{280.f, 10.f};
-    float value01 = 0.8f;   // 0..1
-    bool  dragging = false;
-};
-
-struct MenuButton {
-    std::string id;
-
-    sf::Vector2f pos{0.f, 0.f};   // position logique (coin haut-gauche)
-    sf::Vector2f size{360.f, 56.f};
-
-    // animation / interaction
-    float scale       = 1.f;
-    float targetScale = 1.f;
-    float hover       = 0.f; // 0..1
-    bool  hovered     = false;
-    bool  focused     = false;
-
-    // couleurs base / hover
-    sf::Color fillA{}, fillB{}, border{};
-    sf::Color hoverFillA{}, hoverFillB{}, hoverBorder{};
-
-    std::unique_ptr<sf::Text>   label;
-    std::unique_ptr<sf::Sprite> icon;
-
-    bool hasIcon() const { return icon != nullptr; }
-};
-
-class Menu {
+class MenuScene {
 public:
-    explicit Menu(sf::RenderWindow& win);
-
-    // Tick = events + update + draw (ne fait PAS display/clear)
-    std::optional<MenuChoice> tick();
-    void render(); // alias draw()
-
-    // Accès aux sliders pour l’audio global
-    float musicVolume01() const { return musicVol01_; }
-    float sfxVolume01()   const { return sfxVol01_;   }
-
-    // Optionnel : sous-titre de la difficulté
-    void setDifficultySubtitle(const std::string& text);
+    explicit MenuScene(sf::RenderWindow& win);
+      MenuScene(sf::RenderWindow& win, std::function<void()> onStartGame);
+    void handleInput(bool mousePressedLeft, bool mouseReleasedLeft, bool mouseMoved);
+    void draw(); 
+    void update(float dt);
+     bool started() const { return started_; }
+      void setOnStart(std::function<void()> cb) { onStartGame_ = std::move(cb); }
+     
 
 private:
-    // --- Référence fenêtre
     sf::RenderWindow& win_;
 
-    // --- Ressources
-    sf::Font   font_;
-    sf::Texture icoStart_, icoGear_, icoExit_;
-    sf::Texture texBg_, texCardBg_, texBtn_;
+    // Assets chargés
+    sf::Font    font_;
+    sf::Texture bgTex_;
+    sf::Texture panelTex_;
+    sf::Texture gearTex_;
 
-    std::unique_ptr<sf::Sprite> bg_;
-    std::unique_ptr<sf::Sprite> cardBg_;
-    std::unique_ptr<sf::Sprite> gearIcon_;
+    // Éléments dépendants des assets (optionnels car non default-constructible)
+    std::optional<sf::Sprite> bgSprite_;
+    std::optional<sf::Sprite> panelSprite_;
+    std::optional<sf::Text>   title_;
+    std::optional<sf::Text>   musicLabel_;
+    std::optional<sf::Text>   sfxLabel_;
+    sf::RectangleShape settingsPanelBG_;
+    sf::FloatRect settingsBounds_{};
+    std::function<void()> onStartGame_;
 
-    // --- Shaders
-    sf::Shader panelShader_;
-    sf::Shader buttonShader_;
-    bool shaderOk_    = false;
-    bool btnShaderOk_ = false;
-    float animTime_   = 0.f;
-    sf::Clock animClock_;
+    // UI
+    std::optional<Button> btnStart_;
+    std::optional<Button> btnDifficulty_;
+    std::optional<Button> btnExit_;
+    CircleButton settingsBtn_{40.f, nullptr};
 
-    // --- Mise en page principale (card)
-    sf::Vector2f cardPos_{0.f, 0.f};
-    sf::Vector2f cardSize_{720.f, 360.f};
-    float        cornerRadius_ = 18.f;
+    Slider musicSlider_{0.f, 1.f, 0.7f, 260.f}; // valeurs exemple
+    Slider sfxSlider_  {0.f, 1.f, 0.8f, 260.f};
 
-    // Ombre sous le card
-    sf::RectangleShape dropShadow_;
+    // État
+    AudioManager audio_;
+    Theme theme_;
 
-    // Titre
-    std::unique_ptr<sf::Text> title_;
-    std::unique_ptr<sf::Text> titleShadow_;
-    float titlePulseT_ = 0.f;
-
-    // --- Boutons
-    std::vector<MenuButton> buttons_;
-    float btnRadius_ = 14.f;
-    int   focusIndex_ = 0;
-
-    // --- Bouton "Settings" (cercle en bas à droite)
-    sf::CircleShape gearButton_;
-    bool optionsOpen_ = false;
-    bool gearHover_   = false;
-
-    // --- Panneau Options
-    sf::Vector2f optPos_{0.f, 0.f};
-    sf::Vector2f optSize_{420.f, 180.f};
-    sf::RectangleShape optShadow_;
-    std::unique_ptr<sf::Text> optTitle_;
-    std::unique_ptr<sf::Text> lblMusic_, lblSfx_;
-    std::unique_ptr<sf::Text> pctMusic_, pctSfx_;
-    Slider sliderMusic_, sliderSfx_;
-    float  musicVol01_ = 0.8f;
-    float  sfxVol01_   = 0.8f;
-
-    // --- Construction
-    void loadAssets();
-    void buildLayout();
-    void buildSettings();
-    void positionElements();
-    void positionSettings();
-
-    // --- Interaction
-    void updateHoverFocus(const sf::Vector2f& mouse);
-
-    // --- Dessin
-    void draw();
-    void drawSettings();
-
-    // --- Utils
-    static float clamp01(float v) {
-        if (v < 0.f) return 0.f;
-        if (v > 1.f) return 1.f;
-        return v;
-    }
-    bool loadFont(const std::string& path);
-    bool loadTexture(sf::Texture& t, const std::string& path);
-
-    bool hitCircle(const sf::Vector2f& p, const sf::Vector2f& c, float r) const;
+    bool started_{false};
+    bool settingsOpen_{false};
+    int  idxDiff_{0};
+    std::string difficulty_{"Normal"};
 };

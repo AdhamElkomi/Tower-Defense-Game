@@ -177,6 +177,126 @@ src/App.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/App.cpp.s
 .PHONY : src/App.cpp.s
 
+src/AudioManager.o: src/AudioManager.cpp.o
+.PHONY : src/AudioManager.o
+
+# target to build an object file
+src/AudioManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.o
+.PHONY : src/AudioManager.cpp.o
+
+src/AudioManager.i: src/AudioManager.cpp.i
+.PHONY : src/AudioManager.i
+
+# target to preprocess a source file
+src/AudioManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.i
+.PHONY : src/AudioManager.cpp.i
+
+src/AudioManager.s: src/AudioManager.cpp.s
+.PHONY : src/AudioManager.s
+
+# target to generate assembly for a file
+src/AudioManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.s
+.PHONY : src/AudioManager.cpp.s
+
+src/Button.o: src/Button.cpp.o
+.PHONY : src/Button.o
+
+# target to build an object file
+src/Button.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Button.cpp.o
+.PHONY : src/Button.cpp.o
+
+src/Button.i: src/Button.cpp.i
+.PHONY : src/Button.i
+
+# target to preprocess a source file
+src/Button.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Button.cpp.i
+.PHONY : src/Button.cpp.i
+
+src/Button.s: src/Button.cpp.s
+.PHONY : src/Button.s
+
+# target to generate assembly for a file
+src/Button.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Button.cpp.s
+.PHONY : src/Button.cpp.s
+
+src/CircleButton.o: src/CircleButton.cpp.o
+.PHONY : src/CircleButton.o
+
+# target to build an object file
+src/CircleButton.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CircleButton.cpp.o
+.PHONY : src/CircleButton.cpp.o
+
+src/CircleButton.i: src/CircleButton.cpp.i
+.PHONY : src/CircleButton.i
+
+# target to preprocess a source file
+src/CircleButton.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CircleButton.cpp.i
+.PHONY : src/CircleButton.cpp.i
+
+src/CircleButton.s: src/CircleButton.cpp.s
+.PHONY : src/CircleButton.s
+
+# target to generate assembly for a file
+src/CircleButton.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CircleButton.cpp.s
+.PHONY : src/CircleButton.cpp.s
+
+src/GameScene.o: src/GameScene.cpp.o
+.PHONY : src/GameScene.o
+
+# target to build an object file
+src/GameScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o
+.PHONY : src/GameScene.cpp.o
+
+src/GameScene.i: src/GameScene.cpp.i
+.PHONY : src/GameScene.i
+
+# target to preprocess a source file
+src/GameScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/GameScene.cpp.i
+.PHONY : src/GameScene.cpp.i
+
+src/GameScene.s: src/GameScene.cpp.s
+.PHONY : src/GameScene.s
+
+# target to generate assembly for a file
+src/GameScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/GameScene.cpp.s
+.PHONY : src/GameScene.cpp.s
+
+src/MapGeneator.o: src/MapGeneator.cpp.o
+.PHONY : src/MapGeneator.o
+
+# target to build an object file
+src/MapGeneator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o
+.PHONY : src/MapGeneator.cpp.o
+
+src/MapGeneator.i: src/MapGeneator.cpp.i
+.PHONY : src/MapGeneator.i
+
+# target to preprocess a source file
+src/MapGeneator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.i
+.PHONY : src/MapGeneator.cpp.i
+
+src/MapGeneator.s: src/MapGeneator.cpp.s
+.PHONY : src/MapGeneator.s
+
+# target to generate assembly for a file
+src/MapGeneator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.s
+.PHONY : src/MapGeneator.cpp.s
+
 src/Menu.o: src/Menu.cpp.o
 .PHONY : src/Menu.o
 
@@ -200,6 +320,78 @@ src/Menu.s: src/Menu.cpp.s
 src/Menu.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Menu.cpp.s
 .PHONY : src/Menu.cpp.s
+
+src/Slider.o: src/Slider.cpp.o
+.PHONY : src/Slider.o
+
+# target to build an object file
+src/Slider.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Slider.cpp.o
+.PHONY : src/Slider.cpp.o
+
+src/Slider.i: src/Slider.cpp.i
+.PHONY : src/Slider.i
+
+# target to preprocess a source file
+src/Slider.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Slider.cpp.i
+.PHONY : src/Slider.cpp.i
+
+src/Slider.s: src/Slider.cpp.s
+.PHONY : src/Slider.s
+
+# target to generate assembly for a file
+src/Slider.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Slider.cpp.s
+.PHONY : src/Slider.cpp.s
+
+src/TileMap.o: src/TileMap.cpp.o
+.PHONY : src/TileMap.o
+
+# target to build an object file
+src/TileMap.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o
+.PHONY : src/TileMap.cpp.o
+
+src/TileMap.i: src/TileMap.cpp.i
+.PHONY : src/TileMap.i
+
+# target to preprocess a source file
+src/TileMap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TileMap.cpp.i
+.PHONY : src/TileMap.cpp.i
+
+src/TileMap.s: src/TileMap.cpp.s
+.PHONY : src/TileMap.s
+
+# target to generate assembly for a file
+src/TileMap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TileMap.cpp.s
+.PHONY : src/TileMap.cpp.s
+
+src/TreeSystem.o: src/TreeSystem.cpp.o
+.PHONY : src/TreeSystem.o
+
+# target to build an object file
+src/TreeSystem.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o
+.PHONY : src/TreeSystem.cpp.o
+
+src/TreeSystem.i: src/TreeSystem.cpp.i
+.PHONY : src/TreeSystem.i
+
+# target to preprocess a source file
+src/TreeSystem.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.i
+.PHONY : src/TreeSystem.cpp.i
+
+src/TreeSystem.s: src/TreeSystem.cpp.s
+.PHONY : src/TreeSystem.s
+
+# target to generate assembly for a file
+src/TreeSystem.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.s
+.PHONY : src/TreeSystem.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -263,9 +455,33 @@ help:
 	@echo "... src/App.o"
 	@echo "... src/App.i"
 	@echo "... src/App.s"
+	@echo "... src/AudioManager.o"
+	@echo "... src/AudioManager.i"
+	@echo "... src/AudioManager.s"
+	@echo "... src/Button.o"
+	@echo "... src/Button.i"
+	@echo "... src/Button.s"
+	@echo "... src/CircleButton.o"
+	@echo "... src/CircleButton.i"
+	@echo "... src/CircleButton.s"
+	@echo "... src/GameScene.o"
+	@echo "... src/GameScene.i"
+	@echo "... src/GameScene.s"
+	@echo "... src/MapGeneator.o"
+	@echo "... src/MapGeneator.i"
+	@echo "... src/MapGeneator.s"
 	@echo "... src/Menu.o"
 	@echo "... src/Menu.i"
 	@echo "... src/Menu.s"
+	@echo "... src/Slider.o"
+	@echo "... src/Slider.i"
+	@echo "... src/Slider.s"
+	@echo "... src/TileMap.o"
+	@echo "... src/TileMap.i"
+	@echo "... src/TileMap.s"
+	@echo "... src/TreeSystem.o"
+	@echo "... src/TreeSystem.i"
+	@echo "... src/TreeSystem.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

@@ -1,109 +1,75 @@
 #include "App.hpp"
-#include "Menu.hpp"
-
-#include <iostream>
-#include <cmath> // (facultatif)
-
-App::App(int /*w*/, int /*h*/, const std::string& title)
-:  window_(sf::VideoMode::getDesktopMode(), title, sf::State::Fullscreen) {
-    // VSync pour éviter le tearing
-    window_.setVerticalSyncEnabled(true);
-
-    // --- Audio (chemins relatifs depuis build/ grâce au symlink CMake)
-    const char* menuPath = "assets/sounds/menu_theme.ogg";
-    const char* gamePath = "assets/sounds/game_theme.ogg";
-
-    if (!musicMenu_.openFromFile(menuPath)) {
-        std::cerr << "[Audio] Failed to open " << menuPath << "\n";
-    }
-    if (!musicGame_.openFromFile(gamePath)) {
-        std::cerr << "[Audio] Failed to open " << gamePath << "\n";
-    }
-
-    musicMenu_.setLooping(true);
-    musicGame_.setLooping(true);
-
-    // Menu UI
-    menu_ = std::make_unique<Menu>(window_);
-
-    // Musique du menu au démarrage
-    startMenuMusic();
-}
-
+#include "Menu.hpp"  
+#include "GameScene.hpp"  // ⬅️ OBLIGATOIRE pour make_unique<GameScene>
+#include <variant>  // ✅ important: type complet ici
+#include <type_traits>
 App::~App() = default;
 
-// --- Musiques
-void App::startMenuMusic() {
-    musicGame_.stop();
-    // setVolume attend 0..100 (float)
-    musicMenu_.setVolume(menu_->musicVolume01() * 100.f);
-    musicMenu_.play();
+App::App() {
+      sf::VideoMode mode({1920u, 1080u});
+    window_.create(mode, "Tower Defense");
+
+    menu_ = std::make_unique<MenuScene>(window_);
 }
 
-void App::startGameMusic() {
-    musicMenu_.stop();
-    musicGame_.setVolume(menu_->musicVolume01() * 100.f);
-    musicGame_.play();
+// ✅ le type MenuScene est connu ici
+
+
+void App::goToGame(){
+    game_ = std::make_unique<GameScene>(window_);
+    state_ = State::Game;
 }
+
 
 void App::run() {
     sf::Clock clk;
-    while (window_.isOpen()) {
-        clk.restart();
 
-        // (Le Menu gère ses propres événements dans Menu::tick())
-        // On garde tout de même la fermeture "hard" si jamais
+    while (window_.isOpen()) {
+        mouseMoved_ = false;
+        mouseLeftReleased_ = false;
+
         while (auto ev = window_.pollEvent()) {
-            if (ev->is<sf::Event::Closed>()) {
+            // --- CLOSED
+            if (const auto* e = ev->getIf<sf::Event::Closed>()) {
+                (void)e;
                 window_.close();
             }
-            // Tu peux aussi capter Escape si tu veux forcer un retour menu/fermeture:
-            // if (const auto* k = ev->getIf<sf::Event::KeyPressed>()) {
-            //     if (k->scancode == sf::Keyboard::Scan::Escape) window_.close();
-            // }
-        }
-
-        if (state_ == State::Menu) {
-            auto choice = menu_->tick();
-
-            // Suivre le slider "music" en temps réel
-            musicMenu_.setVolume(menu_->musicVolume01() * 100.f);
-
-            if (choice) {
-                if (choice->exit) {
-                    window_.close();
-                } else if (choice->openDifficulty) {
-                    // TODO: afficher l’overlay difficulté si besoin
-                } else if (choice->start) {
-                    state_ = State::Playing;
-                    startGameMusic();
+            // --- MOUSE MOVED
+            else if (const auto* e = ev->getIf<sf::Event::MouseMoved>()) {
+                (void)e;
+                mouseMoved_ = true;
+            }
+            // --- MOUSE BUTTON PRESSED
+            else if (const auto* e = ev->getIf<sf::Event::MouseButtonPressed>()) {
+                if (e->button == sf::Mouse::Button::Left) mouseLeft_ = true;
+            }
+            // --- MOUSE BUTTON RELEASED
+            else if (const auto* e = ev->getIf<sf::Event::MouseButtonReleased>()) {
+                if (e->button == sf::Mouse::Button::Left) {
+                    mouseLeft_ = false;
+                    mouseLeftReleased_ = true;
                 }
             }
-        } else if (state_ == State::Playing) {
-            // TODO: boucle de jeu, rendu, etc.
-            // Maintenir le volume sync avec le slider
-            musicGame_.setVolume(menu_->musicVolume01() * 100.f);
         }
 
-        // Le Menu dessine déjà; ici on ne fait que présenter la frame
+        const float dt = clk.restart().asSeconds();
+        window_.clear(sf::Color(20,22,27));
+
+        if (state_ == State::Menu) {
+            menu_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
+            menu_->update(dt);
+            menu_->draw();
+
+            // Si ton bouton Start met started_ à true :
+            if (menu_->started()) {
+                goToGame();
+            }
+        } else { // State::Game
+            game_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
+            game_->update(dt);
+            game_->draw();
+        }
+
         window_.display();
     }
-}
-
-void App::processEvents() {
-    // L'essentiel est géré dans run(); cette fonction est là si tu veux séparer.
-    while (auto ev = window_.pollEvent()) {
-        if (ev->is<sf::Event::Closed>())
-            window_.close();
-    }
-}
-
-void App::update(float /*dt*/) {
-    // Si tu veux une boucle "classique", tu peux appeler menu_->tick() ici
-    // et déplacer la logique correspondante de run() vers update().
-}
-
-void App::render() {
-    // Si tu décides de centraliser le rendu ici, clear/draw/display.
-    // Actuellement, Menu::tick() fait le draw et run() fait display().
 }

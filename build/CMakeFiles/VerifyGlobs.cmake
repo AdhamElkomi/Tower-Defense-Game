@@ -6,7 +6,15 @@ cmake_policy(SET CMP0009 NEW)
 file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/adhamking4/Tower-Defense-Game/src/*.cpp")
 set(OLD_GLOB
   "/home/adhamking4/Tower-Defense-Game/src/App.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/AudioManager.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/Button.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/CircleButton.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/GameScene.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/MapGeneator.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/Menu.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/Slider.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/TileMap.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/TreeSystem.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/main.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
