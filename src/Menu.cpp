@@ -27,7 +27,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     // Construire éléments dépendants des assets
     bgSprite_.emplace(bgTex_);
     panelSprite_.emplace(panelTex_);
-    title_.emplace(font_, "TOWER DEFENSE", 30);
+    title_.emplace(font_, "TOWER DEFENSE", 100);
 
     // Redimensionner le panel à une taille cible (par ex. 600x400)
     sf::Vector2f targetSize{700.f, 650.f};
@@ -58,7 +58,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     const auto tb = title_->getLocalBounds();
     title_->setPosition(sf::Vector2f(
         (float)win_.getSize().x * 0.5f - tb.size.x * 0.5f - tb.position.x,
-        30.f - tb.position.y
+        120.f - tb.position.y
     ));
 
     // Boutons
