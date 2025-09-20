@@ -4,6 +4,8 @@
 #include "TileMap.hpp"
 #include "TreeSystem.hpp"
 #include <random>
+#include <memory>
+
 
 class GameScene {
 public:
@@ -24,4 +26,11 @@ private:
 
     TreeSystem trees_;
     std::mt19937 rng_{ std::random_device{}() };
+
+    // ↓↓↓ Déclarations pour le bâtiment ressource ↓↓↓
+    // Bâtiment ressource
+    sf::Texture resourceTex_;
+    std::unique_ptr<sf::Sprite> resourceSprite_; // pas de ctor par défaut en SFML3
+    std::unique_ptr<sf::Sprite> resourceShadow_; // ombre douce
+
 };
