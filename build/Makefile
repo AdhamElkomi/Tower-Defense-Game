@@ -249,6 +249,54 @@ src/CircleButton.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CircleButton.cpp.s
 .PHONY : src/CircleButton.cpp.s
 
+src/Creature.o: src/Creature.cpp.o
+.PHONY : src/Creature.o
+
+# target to build an object file
+src/Creature.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Creature.cpp.o
+.PHONY : src/Creature.cpp.o
+
+src/Creature.i: src/Creature.cpp.i
+.PHONY : src/Creature.i
+
+# target to preprocess a source file
+src/Creature.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Creature.cpp.i
+.PHONY : src/Creature.cpp.i
+
+src/Creature.s: src/Creature.cpp.s
+.PHONY : src/Creature.s
+
+# target to generate assembly for a file
+src/Creature.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Creature.cpp.s
+.PHONY : src/Creature.cpp.s
+
+src/CreatureSystem.o: src/CreatureSystem.cpp.o
+.PHONY : src/CreatureSystem.o
+
+# target to build an object file
+src/CreatureSystem.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.o
+.PHONY : src/CreatureSystem.cpp.o
+
+src/CreatureSystem.i: src/CreatureSystem.cpp.i
+.PHONY : src/CreatureSystem.i
+
+# target to preprocess a source file
+src/CreatureSystem.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.i
+.PHONY : src/CreatureSystem.cpp.i
+
+src/CreatureSystem.s: src/CreatureSystem.cpp.s
+.PHONY : src/CreatureSystem.s
+
+# target to generate assembly for a file
+src/CreatureSystem.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.s
+.PHONY : src/CreatureSystem.cpp.s
+
 src/GameScene.o: src/GameScene.cpp.o
 .PHONY : src/GameScene.o
 
@@ -464,6 +512,12 @@ help:
 	@echo "... src/CircleButton.o"
 	@echo "... src/CircleButton.i"
 	@echo "... src/CircleButton.s"
+	@echo "... src/Creature.o"
+	@echo "... src/Creature.i"
+	@echo "... src/Creature.s"
+	@echo "... src/CreatureSystem.o"
+	@echo "... src/CreatureSystem.i"
+	@echo "... src/CreatureSystem.s"
 	@echo "... src/GameScene.o"
 	@echo "... src/GameScene.i"
 	@echo "... src/GameScene.s"

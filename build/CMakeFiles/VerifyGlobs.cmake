@@ -9,6 +9,8 @@ set(OLD_GLOB
   "/home/adhamking4/Tower-Defense-Game/src/AudioManager.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/Button.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/CircleButton.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/Creature.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/CreatureSystem.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/GameScene.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/MapGeneator.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/Menu.cpp"

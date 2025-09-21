@@ -1,0 +1,39 @@
+// CreatureSystem.hpp
+#pragma once
+#include "Creature.hpp"
+#include <memory>
+#include <unordered_map>
+
+class CreatureSystem {
+public:
+    explicit CreatureSystem(float tileSize);
+
+    // defs
+    void loadTextures(); // charge les 3 spritesheets
+
+    // path global (entrée -> gate -> sortie) en px
+    void setPath(const WaypointPath& p);
+
+    // spawns
+    void spawn(CreatureType t, float atTime);        // une créature plus tard
+    void spawnWave(int nGrunt, int nRogue, int nGolem, float startTime, float period);
+
+    // cycle
+    void update(float dt, float timeNow);
+    void draw(sf::RenderTarget& rt) const;
+
+private:
+    float tileSize_;
+    WaypointPath path_;
+
+    std::unordered_map<CreatureType, CreatureDef> defs_;
+    std::unordered_map<CreatureType, std::unique_ptr<sf::Texture>> textures_;
+
+    struct Scheduled {
+        CreatureType type;
+        float t;
+    };
+    std::vector<Scheduled> timeline_;
+
+    std::vector<std::unique_ptr<Creature>> alive_;
+};
