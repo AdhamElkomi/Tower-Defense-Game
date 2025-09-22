@@ -4,6 +4,7 @@
 #include <vector>
 #include <optional>
 #include <string>
+#include <SFML/Audio.hpp>   
 
 enum class CreatureType { Grunt, Rogue, Golem };
 
@@ -35,7 +36,7 @@ struct WaypointPath {
 
 class Creature {
 public:
-    Creature(const CreatureDef& def, const sf::Texture& tex, const WaypointPath& path);
+    Creature(const CreatureDef& def, const sf::Texture& tex, const WaypointPath& path, const sf::SoundBuffer* loopBuffer = nullptr);
 
     bool  isDead() const { return hp_ <= 0; }
     void  hit(int dmg); // applique armure
@@ -47,6 +48,8 @@ public:
 
     // position écran (centre du sprite)
     sf::Vector2f pos() const { return pos_; }
+
+    void stopAudio() { if (loop_) loop_->stop(); }  
 
 private:
     const CreatureDef def_;
@@ -66,5 +69,8 @@ private:
 
     // PV
     int   hp_;
+
+    // audio loop (créé seulement si un buffer est fourni)
+    std::unique_ptr<sf::Sound> loop_;      
 };
 

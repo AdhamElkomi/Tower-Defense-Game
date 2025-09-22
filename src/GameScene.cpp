@@ -160,6 +160,8 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     // 6) Créatures : textures, chemin et 1 vague
     {
         creeps_.loadTextures();
+        creeps_.loadSounds();
+
 
         // construit une polyline basée sur les cases Path de la carte
         WaypointPath p = buildMainPathPolyline(map_, tileSize_);

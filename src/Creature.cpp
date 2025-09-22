@@ -1,6 +1,8 @@
 // Creature.cpp
 #include "Creature.hpp"
 #include <cmath>
+// Creature.cpp
+#include <SFML/Audio.hpp>
 
 static int directionIndexFromVel(const sf::Vector2f& v){
     if (std::abs(v.x) > std::abs(v.y)) {
@@ -31,7 +33,10 @@ void Creature::setScale(float s){
 
 // --------------------------------- Creature --------------------------------
 
-Creature::Creature(const CreatureDef& def, const sf::Texture& tex, const WaypointPath& path)
+Creature::Creature(const CreatureDef& def,
+                   const sf::Texture& tex,
+                   const WaypointPath& path,
+                   const sf::SoundBuffer* loopBuffer)
 : def_(def), tex_(&tex), sprite_(tex), path_(path), hp_(def.hpMax)
 {
     // Échelle : utilise def.scale (tu peux l’ajuster dans CreatureSystem)
@@ -49,6 +54,17 @@ Creature::Creature(const CreatureDef& def, const sf::Texture& tex, const Waypoin
     // Premier frame/direction
     sprite_.setTextureRect(frameRect(def_, dirIndex_, frame_));
     sprite_.setPosition(pos_);
+
+
+     // 🔊 son continu tant que la créature est vivante
+    if (loopBuffer){
+        loop_ = std::make_unique<sf::Sound>(*loopBuffer); // SFML3: ctor avec buffer
+         loop_->setLooping(true); 
+        loop_->setVolume(400.f);      // ajuste par type si tu veux
+        loop_->play();
+    }
+
+
 
     
 }

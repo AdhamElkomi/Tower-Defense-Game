@@ -1,5 +1,6 @@
 #include "CreatureSystem.hpp"
 #include <algorithm>
+#include <SFML/Audio.hpp> 
 
 CreatureSystem::CreatureSystem(float tileSize) : tileSize_(tileSize) {}
 
@@ -86,6 +87,49 @@ void CreatureSystem::loadTextures(){
 
 
 
+void CreatureSystem::playSound(CreatureType t, float pitchRand) {
+    auto it = soundBufs_.find(t);
+    if (it == soundBufs_.end() || !it->second) return;
+
+    // purge des sons terminés
+    activeSounds_.erase(
+        std::remove_if(activeSounds_.begin(), activeSounds_.end(),
+            [](const sf::Sound& s){ return s.getStatus() == sf::SoundSource::Status::Stopped; }),
+        activeSounds_.end()
+    );
+
+    // créer une nouvelle instance et jouer
+    activeSounds_.emplace_back(*it->second);
+    sf::Sound& s = activeSounds_.back();
+
+    if (pitchRand != 0.f) {
+        float base = 1.f;
+        float var  = (static_cast<float>(std::rand())/RAND_MAX * 2.f - 1.f) * pitchRand;
+        s.setPitch(std::max(0.5f, base + var));
+    }
+    s.setVolume(100.f);
+    s.play();
+}
+
+
+void CreatureSystem::loadSounds(){
+    auto load = [&](CreatureType t, const std::string& path){
+        auto buf = std::make_unique<sf::SoundBuffer>();
+        if (buf->loadFromFile(path)) {
+            soundBufs_[t] = std::move(buf);
+        }
+    };
+
+    load(CreatureType::Grunt, "../assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Rogue, "../assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Golem, "../assets/sfx/rogue_spawn.ogg");
+}
+
+
+
+
+
+
 void CreatureSystem::setPath(const WaypointPath& p){ path_ = p; }
 
 void CreatureSystem::spawn(CreatureType t, float atTime){
@@ -106,25 +150,48 @@ void CreatureSystem::update(float dt, float timeNow){
         const auto& def = defs_.at(sc.type);
         const auto& tex = *textures_.at(sc.type);
 
-        auto c = std::make_unique<Creature>(def, tex, path_);
-
+        
         // -- scale propre : on vise 80% de la tuile
         const float fit = 0.80f;                 // marge pour éviter tout recouvrement
         const float pxTarget = tileSize_ * fit;  // taille cible en pixels à l’écran
         const float base = (def.frameSize.x > 0) ? (pxTarget / float(def.frameSize.x)) : 1.f;
 
+        // CreatureSystem.cpp – au spawn
+        const sf::SoundBuffer* loopBuf = nullptr;
+        if (auto it = soundBufs_.find(sc.type); it != soundBufs_.end() && it->second)
+            loopBuf = it->second.get();
+        auto c = std::make_unique<Creature>(def, tex, path_,loopBuf);
+
+        //alive_.push_back(std::make_unique<Creature>(def, tex, path_, loopBuf));
+
         // def.scale reste un multiplicateur artistique (grunt petit, golem massif, etc.)
         c->setScale(base * def.scale);
 
         alive_.push_back(std::move(c));
+
+        playSound(sc.type, 105.f); // ← son de spawn
     }
 
     for (auto it = alive_.begin(); it != alive_.end(); ){
         (*it)->update(dt);
-        if ((*it)->isDead()) it = alive_.erase(it);
-        else ++it;
+        if ((*it)->isDead()){
+            (*it)->stopAudio();          // ⬅️ coupe le loop
+            it = alive_.erase(it);
+        }else{
+            ++it;
+        }
     }
+
+
+
+
+     activeSounds_.erase(
+        std::remove_if(activeSounds_.begin(), activeSounds_.end(),
+                       [](const sf::Sound& s){ return s.getStatus() == sf::SoundSource::Status::Stopped; }),
+        activeSounds_.end()
+    );
 }
+
 
 
 void CreatureSystem::draw(sf::RenderTarget& rt) const{

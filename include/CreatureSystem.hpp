@@ -3,6 +3,9 @@
 #include "Creature.hpp"
 #include <memory>
 #include <unordered_map>
+#include <SFML/Audio.hpp>   // ⬅️ IMPORTANT
+#include <memory>
+#include <unordered_map>
 
 class CreatureSystem {
 public:
@@ -10,6 +13,10 @@ public:
 
     // defs
     void loadTextures(); // charge les 3 spritesheets
+
+     void loadSounds(); 
+     
+
 
     // path global (entrée -> gate -> sortie) en px
     void setPath(const WaypointPath& p);
@@ -22,12 +29,21 @@ public:
     void update(float dt, float timeNow);
     void draw(sf::RenderTarget& rt) const;
 
+
+
 private:
     float tileSize_;
     WaypointPath path_;
 
     std::unordered_map<CreatureType, CreatureDef> defs_;
     std::unordered_map<CreatureType, std::unique_ptr<sf::Texture>> textures_;
+
+    // ---------- NEW: audio ----------
+    std::unordered_map<CreatureType, std::unique_ptr<sf::SoundBuffer>> soundBufs_;
+    mutable std::vector<sf::Sound> activeSounds_;    // instances en cours
+    void playSound(CreatureType t, float vol = 100.f);
+
+
 
     struct Scheduled {
         CreatureType type;
