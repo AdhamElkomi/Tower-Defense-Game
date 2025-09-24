@@ -201,6 +201,30 @@ src/AudioManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.s
 .PHONY : src/AudioManager.cpp.s
 
+src/BuildMenu.o: src/BuildMenu.cpp.o
+.PHONY : src/BuildMenu.o
+
+# target to build an object file
+src/BuildMenu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/BuildMenu.cpp.o
+.PHONY : src/BuildMenu.cpp.o
+
+src/BuildMenu.i: src/BuildMenu.cpp.i
+.PHONY : src/BuildMenu.i
+
+# target to preprocess a source file
+src/BuildMenu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/BuildMenu.cpp.i
+.PHONY : src/BuildMenu.cpp.i
+
+src/BuildMenu.s: src/BuildMenu.cpp.s
+.PHONY : src/BuildMenu.s
+
+# target to generate assembly for a file
+src/BuildMenu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/BuildMenu.cpp.s
+.PHONY : src/BuildMenu.cpp.s
+
 src/Button.o: src/Button.cpp.o
 .PHONY : src/Button.o
 
@@ -506,6 +530,9 @@ help:
 	@echo "... src/AudioManager.o"
 	@echo "... src/AudioManager.i"
 	@echo "... src/AudioManager.s"
+	@echo "... src/BuildMenu.o"
+	@echo "... src/BuildMenu.i"
+	@echo "... src/BuildMenu.s"
 	@echo "... src/Button.o"
 	@echo "... src/Button.i"
 	@echo "... src/Button.s"

@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/TowerDefense.dir/src/App.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/AudioManager.cpp.o.d"
+  "CMakeFiles/TowerDefense.dir/src/BuildMenu.cpp.o"
+  "CMakeFiles/TowerDefense.dir/src/BuildMenu.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/Button.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/Button.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/CircleButton.cpp.o"

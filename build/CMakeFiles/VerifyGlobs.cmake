@@ -7,6 +7,7 @@ file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/adhamking4/Tower-Defens
 set(OLD_GLOB
   "/home/adhamking4/Tower-Defense-Game/src/App.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/AudioManager.cpp"
+  "/home/adhamking4/Tower-Defense-Game/src/BuildMenu.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/Button.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/CircleButton.cpp"
   "/home/adhamking4/Tower-Defense-Game/src/Creature.cpp"
