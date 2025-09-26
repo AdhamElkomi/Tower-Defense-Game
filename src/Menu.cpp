@@ -19,7 +19,7 @@ void MenuScene::update(float /*dt*/) {
 
 MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     // Chargement assets (tu peux vérifier les bool si tu veux logger)
-    font_.openFromFile("../assets/fonts/Roboto-Regular.ttf");
+    font_.openFromFile("../assets/fonts/PressStart2P-Regular.ttf");
     bgTex_.loadFromFile("../assets/images/background.png");
     panelTex_.loadFromFile("../assets/images/first-bg.png");
     gearTex_.loadFromFile("../assets/images/gear.png");

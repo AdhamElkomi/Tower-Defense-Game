@@ -19,7 +19,7 @@ public:
     void update(float dt);
     void draw();
 
-    std::unique_ptr<BuildMenu> menu_;
+   // std::unique_ptr<BuildMenu> menu_;
 
 private:
     // utils
@@ -55,6 +55,9 @@ private:
     sf::Texture menuButtonTex_, menuBgTex_;
     std::unique_ptr<sf::Sprite> menuButton_;   // ← était sf::Sprite
     std::unique_ptr<sf::Sprite> menuBg_;       // ← était sf::Sprite
+    // GameScene.hpp
+    std::unique_ptr<BuildMenu> menu_;
+
 
     sf::Font    uiFont_;
     std::unique_ptr<sf::Text> uiTitle_;        // ← était sf::Text

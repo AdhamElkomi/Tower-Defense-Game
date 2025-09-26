@@ -145,7 +145,7 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     }
 
 // ====== UI – bouton menu ======
-        (void)menuButtonTex_.loadFromFile("../assets/ui/menu_button.png");
+       /*  (void)menuButtonTex_.loadFromFile("../assets/ui/menu_button.png");
         menuButton_ = std::make_unique<sf::Sprite>(menuButtonTex_);
         menuButton_->setScale(sf::Vector2f(0.4f, 0.4f));
         menuButton_->setPosition(sf::Vector2f(20.f, 5.f));
@@ -159,7 +159,7 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
         if (uiFont_.openFromFile("../assets/fonts/Roboto-Regular_2.ttf")) {  // SFML3
             uiTitle_ = std::make_unique<sf::Text>(uiFont_, "Armory & Supplies", 28);
             uiTitle_->setFillColor(sf::Color::White);
-        }
+        }*/
 
 
     // slots matériaux (carrés radius 10%)
@@ -172,30 +172,27 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     }
 
     // boutons unités (ronds) + luminance selon affordability
-    for (int i=0;i<3;++i){
+   /*  for (int i=0;i<3;++i){
         unitBtns_[i] = sf::CircleShape(40.f);
         unitBtns_[i].setFillColor(sf::Color(255,255,255, unitAffordable_[i] ? 255 : 120)); // “luminosité”
         unitBtns_[i].setOutlineThickness(3.f);
         unitBtns_[i].setOutlineColor(sf::Color(30,30,30,220));
-    }
+    }*/
+    // GameScene.cpp (fin du constructeur)
+    menu_ = std::make_unique<BuildMenu>(win_, tileSize_, map_);
 
     // position initiale (fermé)
     updateMenuLayout();
 }
 
 // ---- input ----
-void GameScene::handleInput(bool mouseLeft, bool mouseLeftReleased, bool /*mouseMoved*/){
-    sf::Vector2i mp = sf::Mouse::getPosition(win_);
-    sf::Vector2f world = win_.mapPixelToCoords(mp);
-
-    // toggle bouton menu
-    // handleInput: test du bouton
-        if (mouseLeftReleased && menuButton_ && menuButton_->getGlobalBounds().contains(world)){
-            menuOpen_ = !menuOpen_;
-        }
-
-    // si menu visible presque totalement, on pourrait traiter drag/drop ici (à ajouter plus tard)
+void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
+    sf::Vector2f world = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+    if (leftDown)  menu_->onMousePressed(world);
+    if (moved)     menu_->onMouseMoved(world);
+    if (leftUp)    menu_->onMouseReleased(world);
 }
+
 
 // ---- update ----
 void GameScene::update(float dt) {
@@ -208,6 +205,8 @@ void GameScene::update(float dt) {
     if (menuAnim_ < target) menuAnim_ = std::min(target, menuAnim_ + dt * menuAnimSpeed_);
     if (menuAnim_ > target) menuAnim_ = std::max(target, menuAnim_ - dt * menuAnimSpeed_);
     menuAlpha_ = 255.f * menuAnim_;
+
+    menu_->update(dt);
 
     updateMenuLayout();
 }
@@ -226,6 +225,9 @@ void GameScene::draw() {
 
         // draw: panneau
     if (menuAnim_ > 0.01f) drawMenu();
+
+    menu_->draw(win_);
+
 }
 
 // ====== ★ NEW : layout + draw menu ======
