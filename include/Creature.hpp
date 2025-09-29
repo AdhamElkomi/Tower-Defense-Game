@@ -43,7 +43,10 @@ public:
     void  update(float dt); // avance le long du chemin + anime
     void  draw(sf::RenderTarget& rt) const;
     // Creature.hpp
+    const CreatureDef def_;
     void setScale(float s);
+    CreatureType type() const { return def_.type; }
+
 
 
     // position écran (centre du sprite)
@@ -52,7 +55,7 @@ public:
     void stopAudio() { if (loop_) loop_->stop(); }  
 
 private:
-    const CreatureDef def_;
+    
     const sf::Texture* tex_;
     sf::Sprite sprite_;          // SFML3 : spr crée avec texture dans le ctor
 

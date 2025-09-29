@@ -1,10 +1,18 @@
+#include <SFML/Graphics.hpp>
+#include <memory>
+#include <random>
+#include <vector>
 #include "GameScene.hpp"
 #include <filesystem>
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include "MapGenerator.hpp"
+#include "TileMap.hpp"
+#include "CreatureSystem.hpp"
+#include "TreeSystem.hpp"
 #include "BuildMenu.hpp"
-#include "Button.hpp"
+#include "Defense.hpp" 
 
 // ---- helpers existants ----
 void GameScene::setPixelPerfectView(int worldW, int worldH, float tileSize){
@@ -88,6 +96,7 @@ WaypointPath GameScene::buildMainPathPolyline(const Map& m, float tileSize) cons
 GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     const int W = 60, H = 24;
     tileSize_  = 64.f;
+     worldW_ = W; worldH_ = H;
 
     (void)terrain_.loadFromFile("../assets/tiles/terrain_atlas_z.png");
     terrain_.setSmooth(false);
@@ -181,9 +190,34 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     // GameScene.cpp (fin du constructeur)
     menu_ = std::make_unique<BuildMenu>(win_, tileSize_, map_);
 
+    // load tower icon texture
+    (void)cannonIconTex_.loadFromFile("../assets/ui/tower_build/cannon.png");
+    cannonIconTex_.setSmooth(false);
+    buildOcc_.assign(W*H, 0);
+
+
     // position initiale (fermé)
     updateMenuLayout();
 }
+
+bool cannonAvailable_ = true;
+
+void GameScene::placeCannon(sf::Vector2f center){
+    if (!cannonAvailable_) return;
+
+    // Ensure we have a texture (lazy-load once)
+    if (cannonTex_.getSize().x == 0) {
+        (void)cannonTex_.loadFromFile("../assets/ui/tower-build/cannon.png");
+        cannonTex_.setSmooth(false);
+    }
+
+    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
+    cannonAvailable_ = false;
+
+    if (menu_) menu_->setUnitEnabled(BuildMenu::Unit::Cannon, false);
+}
+
+
 
 // ---- input ----
 void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
@@ -191,7 +225,115 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
     if (leftDown)  menu_->onMousePressed(world);
     if (moved)     menu_->onMouseMoved(world);
     if (leftUp)    menu_->onMouseReleased(world);
+
+     sf::Vector2i mp = sf::Mouse::getPosition(win_);
+
+    // --- placement after drag: one cannon only ---
+    // If your BuildMenu exposes: isDragging(), draggingUnit(), dragPosition()
+    if (leftUp && cannonAvailable_){
+        // Accept placement if cursor currently valid & we are (conceptually) dragging a cannon
+        // If your BuildMenu is a separate object with state, you can also check that.
+        // Here we just check buildability at the release point.
+        if (isBuildableAtPixel(world)){
+            // Snap to tile center
+            int tx = int(world.x / tileSize_);
+            int ty = int(world.y / tileSize_);
+            sf::Vector2f center( (tx + 0.5f) * tileSize_, (ty + 0.5f) * tileSize_ );
+
+            towers_.push_back(std::make_unique<CannonTower>(center, cannonIconTex_));
+            cannonAvailable_ = false; // disable further placement for now
+        }
+    }
+
+    // --- manual fire: click inside any tower radius to shoot at mouse point ---
+    if (leftUp){
+        for (auto& t : towers_){
+            // only fire if the click is inside this tower's radius
+            sf::Vector2f d = world - t->pos();
+            if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()){
+                t->tryFireAt(world, creeps_);
+                break;
+            }
+        }
+    }
+
+
+    if (menu_ && menu_->isDragging()){
+        draggingUnit_ = true;
+        dragWorld_ = menu_->dragPosition();
+
+        // map unit type -> footprint
+        switch (menu_->draggingUnit()){
+            case BuildMenu::Unit::Cannon: dragW_=1; dragH_=1; break;
+            case BuildMenu::Unit::Archer: dragW_=2; dragH_=2; break;
+            case BuildMenu::Unit::Mage:   dragW_=3; dragH_=3; break;
+            case BuildMenu::Unit::Count:  default:  dragW_=1; dragH_=1; break;
+        }
+
+        // snap top-left to tile under mouse so the footprint is aligned
+        int tx = int(dragWorld_.x / tileSize_);
+        int ty = int(dragWorld_.y / tileSize_);
+        dragValid_ = canPlaceRect(tx,ty,dragW_,dragH_);
+
+        // On release → place if valid
+        if (leftUp){
+            if (dragValid_){
+                // occupy cells
+                occupyRect(tx,ty,dragW_,dragH_, true);
+
+                // place tower center = footprint center
+                float cx = (tx + dragW_*0.5f) * tileSize_;
+                float cy = (ty + dragH_*0.5f) * tileSize_;
+                placeCannon(sf::Vector2f(cx,cy)); // (see §2 below)
+                menu_->endDrag();                  // tell menu to stop dragging
+            }
+        }
+        return;
+    }else{
+        draggingUnit_ = false;
+    }
+
+
+
 }
+
+
+bool GameScene::canPlaceRect(int tx, int ty, int w, int h) const {
+    for (int j=0;j<h;++j)
+        for (int i=0;i<w;++i){
+            int x = tx+i, y = ty+j;
+            if (!inB(x,y)) return false;
+            const auto& t = map_.at(x,y);
+            if (!t.buildable || t.ground != Tile::Rock) return false; // your rule
+            if (buildOcc_[cellId(x,y)]) return false;
+        }
+    return true;
+}
+void GameScene::occupyRect(int tx, int ty, int w, int h, bool on){
+    for (int j=0;j<h;++j)
+        for (int i=0;i<w;++i)
+            buildOcc_[cellId(tx+i,ty+j)] = on ? 1 : 0;
+}
+
+// Somewhere in GameScene.cpp (after includes and within the namespace if any)
+
+// Place a 1x1 cannon centered on a tile center in world coordinates
+/*void GameScene::placeCannon(sf::Vector2f center){
+    // lazy-load cannon texture once if needed
+    if (cannonTex_.getSize().x == 0) {
+        (void)cannonTex_.loadFromFile("../assets/ui/units/cannon.png");
+        cannonTex_.setSmooth(false);
+    }
+    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
+}*/
+
+// For now, return the last placed tower as the “active” one
+CannonTower* GameScene::getActiveAimingTower(){
+    if (towers_.empty()) return nullptr;
+    return towers_.back().get();
+}
+
+
 
 
 // ---- update ----
@@ -207,8 +349,17 @@ void GameScene::update(float dt) {
     menuAlpha_ = 255.f * menuAnim_;
 
     menu_->update(dt);
-
     updateMenuLayout();
+
+     // towers
+    for (auto& t : towers_) t->update(dt, creeps_);
+    towers_.erase(
+        std::remove_if(towers_.begin(), towers_.end(),
+                       [](const std::unique_ptr<CannonTower>& t){ return t->isDead(); }),
+        towers_.end()
+    );
+
+    
 }
 
 // ---- draw ----
@@ -222,6 +373,32 @@ void GameScene::draw() {
     // bouton menu (toujours visible)
    // draw: bouton menu
     if (menuButton_) win_.draw(*menuButton_);
+
+    // towers
+    for (const auto& t : towers_) t->draw(win_, /*showRadius=*/true);
+     if (auto* tower = getActiveAimingTower()){
+    sf::Vector2f m = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+    sf::Vector2f d = m - tower->pos();
+    float L2 = d.x*d.x + d.y*d.y;
+    bool inRange = (L2 <= tower->radius() * tower->radius());
+
+    sf::CircleShape r(tower->radius());
+    r.setOrigin(sf::Vector2f(tower->radius(), tower->radius()));
+    r.setPosition(tower->pos());
+    r.setFillColor(sf::Color(0,0,0,0));
+    r.setOutlineThickness(3.f);
+    r.setOutlineColor(inRange ? sf::Color(80,210,100,200)
+                              : sf::Color(210,90,90,200));
+    win_.draw(r);
+
+    sf::Vertex line[2];
+    line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
+                                               : sf::Color(180,60,60,220));
+    line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
+                                               : sf::Color(160,40,40,220));
+    win_.draw(line, 2, sf::PrimitiveType::Lines);
+}
+
 
         // draw: panneau
     if (menuAnim_ > 0.01f) drawMenu();
@@ -239,6 +416,7 @@ void GameScene::updateMenuLayout(){
     // bg
     if (menuBg_){
         menuBg_->setPosition(pos);
+        
         menuBg_->setColor(sf::Color(255,255,255,(std::uint8_t)menuAlpha_));
     }
 

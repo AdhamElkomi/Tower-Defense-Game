@@ -280,6 +280,18 @@ void BuildMenu::onMousePressed(sf::Vector2f mouse){
     }
 }
 
+void BuildMenu::setUnitEnabled(Unit u, bool on){
+    int i = static_cast<int>(u);
+    if (i >= 0 && i < 3 && defs_[i]) defs_[i]->setEnabled(on);
+}
+
+void BuildMenu::endDrag(){
+    dragging_ = false;
+    dragGhost_.reset();
+}
+
+
+
 void BuildMenu::onMouseReleased(sf::Vector2f mouse){
     if (!dragging_) return;
     bool ok = canPlaceAtPixel(mouse);

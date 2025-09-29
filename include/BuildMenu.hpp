@@ -48,6 +48,11 @@ public:
     // bouton menu (pour tests/clic externes éventuels)
     sf::FloatRect menuButtonBounds() const { return menuBtn_ ? menuBtn_->getGlobalBounds() : sf::FloatRect{}; }
 
+    void endDrag();
+    // Enable/disable a unit button from the scene (e.g., disable Cannon after placing it)
+void setUnitEnabled(Unit u, bool on);
+
+
 private:
     // === widgets internes ================================================
     struct MatBox {

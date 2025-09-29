@@ -321,6 +321,30 @@ src/CreatureSystem.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.s
 .PHONY : src/CreatureSystem.cpp.s
 
+src/Defense.o: src/Defense.cpp.o
+.PHONY : src/Defense.o
+
+# target to build an object file
+src/Defense.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Defense.cpp.o
+.PHONY : src/Defense.cpp.o
+
+src/Defense.i: src/Defense.cpp.i
+.PHONY : src/Defense.i
+
+# target to preprocess a source file
+src/Defense.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Defense.cpp.i
+.PHONY : src/Defense.cpp.i
+
+src/Defense.s: src/Defense.cpp.s
+.PHONY : src/Defense.s
+
+# target to generate assembly for a file
+src/Defense.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Defense.cpp.s
+.PHONY : src/Defense.cpp.s
+
 src/GameScene.o: src/GameScene.cpp.o
 .PHONY : src/GameScene.o
 
@@ -545,6 +569,9 @@ help:
 	@echo "... src/CreatureSystem.o"
 	@echo "... src/CreatureSystem.i"
 	@echo "... src/CreatureSystem.s"
+	@echo "... src/Defense.o"
+	@echo "... src/Defense.i"
+	@echo "... src/Defense.s"
 	@echo "... src/GameScene.o"
 	@echo "... src/GameScene.i"
 	@echo "... src/GameScene.s"

@@ -13,6 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/TowerDefense.dir/src/Creature.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.o.d"
+  "CMakeFiles/TowerDefense.dir/src/Defense.cpp.o"
+  "CMakeFiles/TowerDefense.dir/src/Defense.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o"

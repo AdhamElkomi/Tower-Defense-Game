@@ -372,5 +372,6 @@ CMakeFiles/TowerDefense.dir/src/App.cpp.o: \
  /home/adhamking4/Tower-Defense-Game/include/TileMap.hpp \
  /home/adhamking4/Tower-Defense-Game/include/CreatureSystem.hpp \
  /home/adhamking4/Tower-Defense-Game/include/Creature.hpp \
+ /home/adhamking4/Tower-Defense-Game/include/Defense.hpp \
  /home/adhamking4/Tower-Defense-Game/include/TreeSystem.hpp \
  /home/adhamking4/Tower-Defense-Game/include/BuildMenu.hpp

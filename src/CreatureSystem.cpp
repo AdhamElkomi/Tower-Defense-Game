@@ -1,8 +1,10 @@
 #include "CreatureSystem.hpp"
 #include <algorithm>
 #include <SFML/Audio.hpp> 
+#include <cmath>
 
 CreatureSystem::CreatureSystem(float tileSize) : tileSize_(tileSize) {}
+
 
 void CreatureSystem::loadTextures(){
     auto load = [&](CreatureType t, const std::string& path){
@@ -125,7 +127,19 @@ void CreatureSystem::loadSounds(){
     load(CreatureType::Golem, "../assets/sfx/rogue_spawn.ogg");
 }
 
-
+bool CreatureSystem::hitFirstAt(sf::Vector2f p, float r, int dmg){
+    float r2 = r*r;
+    for (auto& uptr : alive_){
+        auto* c = uptr.get();
+        sf::Vector2f cp = c->pos();             // center (we set sprite origin properly earlier)
+        sf::Vector2f d = cp - p;
+        if (d.x*d.x + d.y*d.y <= r2){
+            c->hit(dmg);
+            return true;
+        }
+    }
+    return false;
+}
 
 
 
@@ -196,4 +210,34 @@ void CreatureSystem::update(float dt, float timeNow){
 
 void CreatureSystem::draw(sf::RenderTarget& rt) const{
     for (auto& c : alive_) c->draw(rt);
+}
+
+
+int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
+                                     std::vector<MaterialDrop>& outDrops)
+{
+    int killed = 0;
+    for (auto& c : alive_){
+        if (!c) continue;
+        sf::Vector2f d = c->pos() - center;
+        if (d.x*d.x + d.y*d.y <= radius*radius){
+            c->hit(dmg);
+            if (c->isDead()){
+                // pick material by type
+                Material m = Material::Wood;
+                switch (c->def_.type){
+                    case CreatureType::Grunt: m = Material::Stone; break;
+                    case CreatureType::Rogue: m = Material::Crystal; break;
+                    case CreatureType::Golem: m = Material::Wood; break;
+                }
+                outDrops.push_back(MaterialDrop{m, c->pos()});
+                killed++;
+            }
+        }
+    }
+    // purge dead here (or in your usual cleanup)
+    alive_.erase(std::remove_if(alive_.begin(), alive_.end(),
+                 [](const std::unique_ptr<Creature>& c){ return !c || c->isDead(); }),
+                 alive_.end());
+    return killed;
 }
