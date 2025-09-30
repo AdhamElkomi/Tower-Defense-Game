@@ -293,6 +293,35 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
         draggingUnit_ = false;
     }
 
+    // Map mouse + keyboard
+        //sf::Vector2f world = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+        bool esc = sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape);
+        bool rmb = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
+
+        // --- exit aiming if ESC or RMB ---
+        if (esc || rmb) {
+            deselectTower();
+        }
+
+        // --- select tower when you click inside its radius, but only if not already aiming
+        if (leftDown && !isAiming()) {
+            for (int i = (int)towers_.size()-1; i >= 0; --i) { // top-most first
+                auto& t = towers_[i];
+                sf::Vector2f d = world - t->pos();
+                if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()) {
+                    activeTowerIndex_ = i; // now we’re aiming this tower
+                    break;
+                }
+            }
+        }
+
+        // --- fire only if we are aiming and release LMB inside range
+        if (leftUp && isAiming()) {
+            auto* t = getActiveAimingTower();
+            if (t) t->tryFireAt(world, creeps_);
+        }
+
+
 
 
 }
@@ -358,6 +387,33 @@ void GameScene::update(float dt) {
                        [](const std::unique_ptr<CannonTower>& t){ return t->isDead(); }),
         towers_.end()
     );
+    // Collect drops from towers (their local batches)
+    for (auto& t : towers_) t->extractDrops(pendingDrops_);
+
+    // Also collect any drops the CreatureSystem queued internally (safety)
+    creeps_.extractPendingDrops(pendingDrops_);
+
+    // Credit inventory
+    for (const auto& d : pendingDrops_) {
+        switch (d.type) {
+            case Material::Wood:    materialCount_[0]++; break;
+            case Material::Stone:   materialCount_[1]++; break;
+            case Material::Crystal: materialCount_[2]++; break;
+        }
+    }
+    pendingDrops_.clear();
+
+    // Update counts in the menu (if you expose setters)
+    if (menu_) {
+        menu_->setMaterialCount(BuildMenu::Material::Wood,    materialCount_[0]);
+        menu_->setMaterialCount(BuildMenu::Material::Stone,   materialCount_[1]);
+        menu_->setMaterialCount(BuildMenu::Material::Crystal, materialCount_[2]);
+
+        // Enable/disable depending on affordability
+        menu_->setUnitEnabled(BuildMenu::Unit::Cannon, canAfford(costCannon_));
+        menu_->setUnitEnabled(BuildMenu::Unit::Archer, canAfford(costArcher_));
+        menu_->setUnitEnabled(BuildMenu::Unit::Mage,   canAfford(costMage_));
+    }
 
     
 }
@@ -376,28 +432,31 @@ void GameScene::draw() {
 
     // towers
     for (const auto& t : towers_) t->draw(win_, /*showRadius=*/true);
-     if (auto* tower = getActiveAimingTower()){
-    sf::Vector2f m = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
-    sf::Vector2f d = m - tower->pos();
-    float L2 = d.x*d.x + d.y*d.y;
-    bool inRange = (L2 <= tower->radius() * tower->radius());
+        if (auto* tower = getActiveAimingTower()) {
+                sf::Vector2f m = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+                sf::Vector2f d = m - tower->pos();
+                float L2 = d.x*d.x + d.y*d.y;
+                float R  = tower->radius();
+                bool inRange = (L2 <= R*R);
 
-    sf::CircleShape r(tower->radius());
-    r.setOrigin(sf::Vector2f(tower->radius(), tower->radius()));
-    r.setPosition(tower->pos());
-    r.setFillColor(sf::Color(0,0,0,0));
-    r.setOutlineThickness(3.f);
-    r.setOutlineColor(inRange ? sf::Color(80,210,100,200)
-                              : sf::Color(210,90,90,200));
-    win_.draw(r);
+                // Range circle
+                sf::CircleShape r(R);
+                r.setOrigin(sf::Vector2f(R, R));
+                r.setPosition(tower->pos());
+                r.setFillColor(sf::Color(0,0,0,0));
+                r.setOutlineThickness(3.f);
+                r.setOutlineColor(inRange ? sf::Color(80,210,100,200) : sf::Color(210,90,90,200));
+                win_.draw(r);
 
-    sf::Vertex line[2];
-    line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
-                                               : sf::Color(180,60,60,220));
-    line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
-                                               : sf::Color(160,40,40,220));
-    win_.draw(line, 2, sf::PrimitiveType::Lines);
-}
+                // Aiming ray
+                sf::Vertex line[2];
+                line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
+                                                        : sf::Color(180,60,60,220));
+                line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
+                                                        : sf::Color(160,40,40,220));
+                win_.draw(line, 2, sf::PrimitiveType::Lines);
+        }
+
 
 
         // draw: panneau

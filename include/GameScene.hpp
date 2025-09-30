@@ -24,6 +24,7 @@ public:
     CannonTower* getActiveAimingTower();  // simple helper for the aim overlay
 
    // std::unique_ptr<BuildMenu> menu_;
+   
 
 private:
     // utils
@@ -110,4 +111,32 @@ private:
 
     // (optional) texture you use for the cannon
     sf::Texture cannonTex_;
+
+        int  activeTowerIndex_ = -1;   // -1 => none selected
+        bool isAiming() const { return activeTowerIndex_ >= 0 && activeTowerIndex_ < (int)towers_.size(); }
+        void deselectTower() { activeTowerIndex_ = -1; }
+
+       // Inventory (shared with BuildMenu display)
+    //int materialCount_[3] = {0,0,0}; // 0:Wood, 1:Stone, 2:Crystal
+
+    // Costs
+    struct Cost { int wood, stone, crystal; };
+    Cost costCannon_{ /*wood*/2, /*stone*/1, /*crystal*/0 };
+    Cost costArcher_{ /*wood*/3, /*stone*/2, /*crystal*/0 };
+    Cost costMage_  { /*wood*/0, /*stone*/5, /*crystal*/2 };
+
+    bool canAfford(const Cost& c) const {
+        return materialCount_[0] >= c.wood
+            && materialCount_[1] >= c.stone
+            && materialCount_[2] >= c.crystal;
+    }
+    void spend(const Cost& c) {
+        materialCount_[0] -= c.wood;
+        materialCount_[1] -= c.stone;
+        materialCount_[2] -= c.crystal;
+    }
+
+    // Drops buffer fetched from systems/towers this frame
+    std::vector<MaterialDrop> pendingDrops_;
+
 };

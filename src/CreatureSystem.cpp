@@ -217,27 +217,42 @@ int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
                                      std::vector<MaterialDrop>& outDrops)
 {
     int killed = 0;
-    for (auto& c : alive_){
+
+    for (auto& c : alive_) {
         if (!c) continue;
         sf::Vector2f d = c->pos() - center;
-        if (d.x*d.x + d.y*d.y <= radius*radius){
+        if (d.x*d.x + d.y*d.y <= radius*radius) {
             c->hit(dmg);
-            if (c->isDead()){
-                // pick material by type
-                Material m = Material::Wood;
-                switch (c->def_.type){
-                    case CreatureType::Grunt: m = Material::Stone; break;
-                    case CreatureType::Rogue: m = Material::Crystal; break;
-                    case CreatureType::Golem: m = Material::Wood; break;
+            if (c->isDead()) {
+                // ----- loot table -----
+                switch (c->def_.type) {
+                    case CreatureType::Rogue: {
+                        outDrops.push_back({Material::Wood,   c->pos()});
+                        outDrops.push_back({Material::Wood,   c->pos()});
+                    } break;
+                    case CreatureType::Grunt: {
+                        outDrops.push_back({Material::Wood,   c->pos()});
+                        outDrops.push_back({Material::Wood,   c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
+                    } break;
+                    case CreatureType::Golem: {
+                        outDrops.push_back({Material::Crystal,c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
+                    } break;
                 }
-                outDrops.push_back(MaterialDrop{m, c->pos()});
                 killed++;
             }
         }
     }
-    // purge dead here (or in your usual cleanup)
+
+    // purge dead
     alive_.erase(std::remove_if(alive_.begin(), alive_.end(),
-                 [](const std::unique_ptr<Creature>& c){ return !c || c->isDead(); }),
+                    [](const std::unique_ptr<Creature>& c){ return !c || c->isDead(); }),
                  alive_.end());
+
+    // ALSO store them internally so GameScene can fetch later
+    pendingDrops_.insert(pendingDrops_.end(), outDrops.begin(), outDrops.end());
+
     return killed;
 }

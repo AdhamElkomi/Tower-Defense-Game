@@ -11,9 +11,14 @@
 
 
 // Material types you already use in the menu
-enum class Material { Wood, Stone, Crystal };
+// Near the top, shared by GameScene
+/*enum class Material { Wood=0, Stone=1, Crystal=2 };
 
-struct MaterialDrop { Material type; sf::Vector2f pos; };
+struct MaterialDrop {
+    Material type;
+    sf::Vector2f pos; // world position where it appears (optional for your UX)
+};*/
+
 
 class CreatureSystem {
 public:
@@ -41,6 +46,12 @@ public:
     int applyDamagePoint(sf::Vector2f center, float radius, int dmg,
                                      std::vector<MaterialDrop>& outDrops);
 
+    // NEW: move pending drops out (for GameScene)
+    void extractPendingDrops(std::vector<MaterialDrop>& out) {
+        out.insert(out.end(), pendingDrops_.begin(), pendingDrops_.end());
+        pendingDrops_.clear();
+    }
+
 
 
 private:
@@ -64,4 +75,6 @@ private:
     std::vector<Scheduled> timeline_;
 
     std::vector<std::unique_ptr<Creature>> alive_;
+
+    std::vector<MaterialDrop> pendingDrops_;
 };
