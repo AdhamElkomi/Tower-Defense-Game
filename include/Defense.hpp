@@ -37,36 +37,112 @@ struct Projectile {
     void draw(sf::RenderTarget& rt) const;
 };
 
-class CannonTower {
+enum class TowerType { Cannon, Archer, Mage };
+
+struct TowerCost {
+    int wood = 0, stone = 0, crystal = 0;
+};
+
+inline TowerCost getTowerCost(TowerType type) {
+    switch(type) {
+        case TowerType::Cannon: return {2, 1, 0};
+        case TowerType::Archer: return {3, 2, 0};
+        case TowerType::Mage:   return {0, 3, 2};
+        default: return {};
+    }
+}
+
+class Tower {
+public:
+    virtual ~Tower() = default;
+    virtual void update(float dt, CreatureSystem& creeps) = 0;
+    virtual void draw(sf::RenderTarget& rt, bool showRadius) const = 0;
+    virtual TowerType type() const = 0;
+    virtual sf::Vector2f pos() const = 0;
+    virtual bool isDead() const = 0;
+    virtual void extractDrops(std::vector<MaterialDrop>& out) = 0;
+    virtual float radius() const = 0;
+    virtual void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) = 0;
+};
+
+class CannonTower : public Tower {
+public:
+    static constexpr int DefaultShots = 8; // canon = le moins
+    static constexpr float DefaultPower = 30.f;
+    static constexpr float DefaultRadius = 180.f;
 public:
     CannonTower(sf::Vector2f center, const sf::Texture& baseTex);
-
-    void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps);
-    void update(float dt, CreatureSystem& creeps);
-    void draw(sf::RenderTarget& rt, bool showRadius) const;
-
-    int   footprintW() const { return 1; }
-    int   footprintH() const { return 1; }
-    sf::Vector2f pos() const { return pos_; }
-    float        radius() const { return radius_; }
-    bool         isDead() const { return shotsLeft_ <= 0 && projectiles_.empty() && muzzleT_<=0.f; }
-    int          shotsLeft() const { return shotsLeft_; }
-    void extractDrops(std::vector<MaterialDrop>& out) {
-        out.insert(out.end(), dropBatch_.begin(), dropBatch_.end());
-        dropBatch_.clear();
-    }
+    void update(float dt, CreatureSystem& creeps) override;
+    void draw(sf::RenderTarget& rt, bool showRadius) const override;
+    TowerType type() const override { return TowerType::Cannon; }
+    sf::Vector2f pos() const override { return pos_; }
+    bool isDead() const override;
+    int shotsLeft() const { return shotsLeft_; }
+    void extractDrops(std::vector<MaterialDrop>& out) override;
+    float radius() const override { return radius_; }
+    void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
 
 private:
-    sf::Vector2f  pos_;
-    sf::Sprite    base_;          // cannon icon
-    float         radius_   = 400.f;  // ⬅ bigger default range
-    float         cooldown_ = 0.25f, cd_ = 0.f;
-    int           shotsLeft_ = 8;
-
-    // FX
-    float         recoilT_ = 0.f;   // recoil timer
-    float         muzzleT_ = 0.f;   // muzzle flash timer
-    std::vector<Projectile>  projectiles_;
+    sf::Vector2f pos_;
+    sf::Sprite base_;
+    float radius_ = DefaultRadius;
+    float cd_ = 0.f, cooldown_ = 0.7f;
+    int shotsLeft_ = DefaultShots;
+    float power_ = DefaultPower;
+    float recoilT_ = 0.f, muzzleT_ = 0.f;
+    std::vector<Projectile> projectiles_;
     std::vector<ImpactBurst> impacts_;
-     std::vector<MaterialDrop> dropBatch_;
+    std::vector<MaterialDrop> dropBatch_;
+};
+
+class ArcherTower : public Tower {
+public:
+    static constexpr int DefaultShots = 14; // archer = intermédiaire
+    static constexpr float DefaultPower = 50.f;
+    static constexpr float DefaultRadius = 220.f;
+public:
+    ArcherTower(sf::Vector2f center, const sf::Texture& baseTex);
+    void update(float dt, CreatureSystem& creeps) override;
+    void draw(sf::RenderTarget& rt, bool showRadius) const override;
+    TowerType type() const override { return TowerType::Archer; }
+    sf::Vector2f pos() const override;
+    bool isDead() const override;
+    int shotsLeft() const { return shotsLeft_; }
+    void extractDrops(std::vector<MaterialDrop>& out) override;
+    float radius() const override { return 120.f; }
+    void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
+
+private:
+    sf::Vector2f pos_;
+    sf::Sprite base_;
+    int shotsLeft_ = DefaultShots;
+    float power_ = DefaultPower;
+    float radius_ = DefaultRadius;
+    // Ajoutez ici les membres spécifiques à l'archer (ex: projectiles, cooldown, etc.)
+};
+
+class MageTower : public Tower {
+public:
+    static constexpr int DefaultShots = 10; // mage = le plus puissant mais moins d'attaques
+    static constexpr float DefaultPower = 80.f;
+    static constexpr float DefaultRadius = 260.f;
+public:
+    MageTower(sf::Vector2f center, const sf::Texture& baseTex);
+    void update(float dt, CreatureSystem& creeps) override;
+    void draw(sf::RenderTarget& rt, bool showRadius) const override;
+    TowerType type() const override { return TowerType::Mage; }
+    sf::Vector2f pos() const override;
+    bool isDead() const override;
+    int shotsLeft() const { return shotsLeft_; }
+    void extractDrops(std::vector<MaterialDrop>& out) override;
+    float radius() const override { return 120.f; }
+    void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
+
+private:
+    sf::Vector2f pos_;
+    sf::Sprite base_;
+    int shotsLeft_ = DefaultShots;
+    float power_ = DefaultPower;
+    float radius_ = DefaultRadius;
+    // Ajoutez ici les membres spécifiques au mage (ex: projectiles, cooldown, etc.)
 };

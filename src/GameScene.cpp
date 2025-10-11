@@ -94,6 +94,7 @@ WaypointPath GameScene::buildMainPathPolyline(const Map& m, float tileSize) cons
 
 // ---- ctor ----
 GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
+    resourceCount_ = 20;
     const int W = 60, H = 24;
     tileSize_  = 64.f;
      worldW_ = W; worldH_ = H;
@@ -171,7 +172,15 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
         }*/
 
 
-    // slots matériaux (carrés radius 10%)
+    // Initialiser le stock de matériaux pour permettre au moins 2 tours de chaque type
+    // Coûts max : Mage (0,3,2) x2 = 0 bois, 6 pierre, 4 cristal
+    // Archer (3,2,0) x2 = 6 bois, 4 pierre, 0 cristal
+    // Cannon (2,1,0) x2 = 4 bois, 2 pierre, 0 cristal
+    // Total safe : bois=10, pierre=10, cristal=5
+    materialCount_[0] = 10; // bois
+    materialCount_[1] = 10; // pierre
+    materialCount_[2] = 5;  // cristal
+
     for (int i=0;i<3;++i){
         matSlots_[i].setSize(sf::Vector2f(72.f, 72.f));
         matSlots_[i].setFillColor(sf::Color(220,220,220,240));
@@ -200,22 +209,8 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     updateMenuLayout();
 }
 
-bool cannonAvailable_ = true;
 
-void GameScene::placeCannon(sf::Vector2f center){
-    if (!cannonAvailable_) return;
 
-    // Ensure we have a texture (lazy-load once)
-    if (cannonTex_.getSize().x == 0) {
-        (void)cannonTex_.loadFromFile("../assets/ui/tower-build/cannon.png");
-        cannonTex_.setSmooth(false);
-    }
-
-    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
-    cannonAvailable_ = false;
-
-    if (menu_) menu_->setUnitEnabled(BuildMenu::Unit::Cannon, false);
-}
 
 
 
@@ -230,27 +225,21 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
 
     // --- placement after drag: one cannon only ---
     // If your BuildMenu exposes: isDragging(), draggingUnit(), dragPosition()
-    if (leftUp && cannonAvailable_){
-        // Accept placement if cursor currently valid & we are (conceptually) dragging a cannon
-        // If your BuildMenu is a separate object with state, you can also check that.
-        // Here we just check buildability at the release point.
+    if (leftUp){
         if (isBuildableAtPixel(world)){
-            // Snap to tile center
             int tx = int(world.x / tileSize_);
             int ty = int(world.y / tileSize_);
             sf::Vector2f center( (tx + 0.5f) * tileSize_, (ty + 0.5f) * tileSize_ );
-
-            towers_.push_back(std::make_unique<CannonTower>(center, cannonIconTex_));
-            cannonAvailable_ = false; // disable further placement for now
+            placeTower(BuildMenu::Unit::Cannon, center);
         }
     }
 
     // --- manual fire: click inside any tower radius to shoot at mouse point ---
     if (leftUp){
         for (auto& t : towers_){
-            // only fire if the click is inside this tower's radius
             sf::Vector2f d = world - t->pos();
-            if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()){
+            float R = t->radius();
+            if (d.x*d.x + d.y*d.y <= R*R){
                 t->tryFireAt(world, creeps_);
                 break;
             }
@@ -284,7 +273,7 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
                 // place tower center = footprint center
                 float cx = (tx + dragW_*0.5f) * tileSize_;
                 float cy = (ty + dragH_*0.5f) * tileSize_;
-                placeCannon(sf::Vector2f(cx,cy)); // (see §2 below)
+                placeTower(menu_->draggingUnit(), sf::Vector2f(cx,cy));
                 menu_->endDrag();                  // tell menu to stop dragging
             }
         }
@@ -294,22 +283,33 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
     }
 
     // Map mouse + keyboard
-        //sf::Vector2f world = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
-        bool esc = sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape);
-        bool rmb = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
+    bool esc = sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape);
+    bool rmb = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
 
-        // --- exit aiming if ESC or RMB ---
-        if (esc || rmb) {
-            deselectTower();
+    // --- exit aiming if ESC or RMB ---
+    if (esc || rmb) {
+        deselectTower();
+    }
+
+    // --- exit aiming if mouse leaves tower radius while aiming ---
+    if (moved && isAiming()) {
+        auto* t = getActiveAimingTower();
+        if (t) {
+            sf::Vector2f d = world - t->pos();
+            float R = t->radius();
+            if (d.x*d.x + d.y*d.y > R*R) {
+                deselectTower();
+            }
         }
+    }
 
-        // --- select tower when you click inside its radius, but only if not already aiming
-        if (leftDown && !isAiming()) {
+        // --- select tower when you click inside its radius (même si déjà désélectionné)
+        if (leftDown) {
             for (int i = (int)towers_.size()-1; i >= 0; --i) { // top-most first
                 auto& t = towers_[i];
                 sf::Vector2f d = world - t->pos();
                 if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()) {
-                    activeTowerIndex_ = i; // now we’re aiming this tower
+                    activeTowerIndex_ = i; // on sélectionne toujours la tour cliquée
                     break;
                 }
             }
@@ -325,6 +325,7 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
 
 
 }
+
 
 
 bool GameScene::canPlaceRect(int tx, int ty, int w, int h) const {
@@ -356,10 +357,67 @@ void GameScene::occupyRect(int tx, int ty, int w, int h, bool on){
     towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
 }*/
 
-// For now, return the last placed tower as the “active” one
-CannonTower* GameScene::getActiveAimingTower(){
-    if (towers_.empty()) return nullptr;
-    return towers_.back().get();
+
+// Pour plusieurs types de tours
+Tower* GameScene::getActiveAimingTower(){
+        if (!isAiming()) return nullptr;
+        return towers_[activeTowerIndex_].get();
+    }
+
+void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
+    // Interdire la construction dans la zone de tir d'une autre tour
+    float newRadius = 120.f;
+    for (const auto& t : towers_) {
+        float dist2 = (t->pos().x - center.x)*(t->pos().x - center.x) + (t->pos().y - center.y)*(t->pos().y - center.y);
+        float minDist = t->radius() + newRadius;
+        if (dist2 < minDist*minDist) {
+            // Trop proche d'une autre tour
+            return;
+        }
+    }
+        switch (unit) {
+            case BuildMenu::Unit::Cannon:
+                newRadius = CannonTower::DefaultRadius; 
+                if (cannonTex_.getSize().x == 0) {
+                    (void)cannonTex_.loadFromFile("../assets/ui/tower_build/cannon.png");
+                    cannonTex_.setSmooth(false);
+                }
+                if (materialCount_[0] >= costCannon_.wood && materialCount_[1] >= costCannon_.stone && materialCount_[2] >= costCannon_.crystal) {
+                    materialCount_[0] -= costCannon_.wood;
+                    materialCount_[1] -= costCannon_.stone;
+                    materialCount_[2] -= costCannon_.crystal;
+                    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
+                }
+                break;
+            case BuildMenu::Unit::Archer:
+                newRadius = ArcherTower::DefaultRadius; 
+                if (archerTex_.getSize().x == 0) {
+                    (void)archerTex_.loadFromFile("../assets/ui/tower_build/archer.png");
+                    archerTex_.setSmooth(false);
+                }
+                if (materialCount_[0] >= costArcher_.wood && materialCount_[1] >= costArcher_.stone && materialCount_[2] >= costArcher_.crystal) {
+                    materialCount_[0] -= costArcher_.wood;
+                    materialCount_[1] -= costArcher_.stone;
+                    materialCount_[2] -= costArcher_.crystal;
+                    towers_.push_back(std::make_unique<ArcherTower>(center, archerTex_));
+                }
+                break;
+            case BuildMenu::Unit::Mage:
+                newRadius = MageTower::DefaultRadius; 
+                if (mageTex_.getSize().x == 0) {
+                    (void)mageTex_.loadFromFile("../assets/ui/tower_build/mage.png");
+                    mageTex_.setSmooth(false);
+                }
+                if (materialCount_[0] >= costMage_.wood && materialCount_[1] >= costMage_.stone && materialCount_[2] >= costMage_.crystal) {
+                    materialCount_[0] -= costMage_.wood;
+                    materialCount_[1] -= costMage_.stone;
+                    materialCount_[2] -= costMage_.crystal;
+                    towers_.push_back(std::make_unique<MageTower>(center, mageTex_));
+                }
+                break;
+            default:
+                break;
+        }
 }
 
 
@@ -380,14 +438,13 @@ void GameScene::update(float dt) {
     menu_->update(dt);
     updateMenuLayout();
 
-     // towers
+    // towers (générique)
     for (auto& t : towers_) t->update(dt, creeps_);
     towers_.erase(
         std::remove_if(towers_.begin(), towers_.end(),
-                       [](const std::unique_ptr<CannonTower>& t){ return t->isDead(); }),
+                       [](const std::unique_ptr<Tower>& t){ return t->isDead(); }),
         towers_.end()
     );
-    // Collect drops from towers (their local batches)
     for (auto& t : towers_) t->extractDrops(pendingDrops_);
 
     // Also collect any drops the CreatureSystem queued internally (safety)
@@ -410,7 +467,7 @@ void GameScene::update(float dt) {
         menu_->setMaterialCount(BuildMenu::Material::Crystal, materialCount_[2]);
 
         // Enable/disable depending on affordability
-        menu_->setUnitEnabled(BuildMenu::Unit::Cannon, canAfford(costCannon_));
+    menu_->setUnitEnabled(BuildMenu::Unit::Cannon, canAfford(costCannon_));
         menu_->setUnitEnabled(BuildMenu::Unit::Archer, canAfford(costArcher_));
         menu_->setUnitEnabled(BuildMenu::Unit::Mage,   canAfford(costMage_));
     }
@@ -432,30 +489,30 @@ void GameScene::draw() {
 
     // towers
     for (const auto& t : towers_) t->draw(win_, /*showRadius=*/true);
-        if (auto* tower = getActiveAimingTower()) {
-                sf::Vector2f m = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
-                sf::Vector2f d = m - tower->pos();
-                float L2 = d.x*d.x + d.y*d.y;
-                float R  = tower->radius();
-                bool inRange = (L2 <= R*R);
+    if (auto* tower = getActiveAimingTower()) {
+        sf::Vector2f m = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+        sf::Vector2f d = m - tower->pos();
+        float L2 = d.x*d.x + d.y*d.y;
+        float R  = tower->radius();
+        bool inRange = (L2 <= R*R);
 
-                // Range circle
-                sf::CircleShape r(R);
-                r.setOrigin(sf::Vector2f(R, R));
-                r.setPosition(tower->pos());
-                r.setFillColor(sf::Color(0,0,0,0));
-                r.setOutlineThickness(3.f);
-                r.setOutlineColor(inRange ? sf::Color(80,210,100,200) : sf::Color(210,90,90,200));
-                win_.draw(r);
+        // Range circle
+        sf::CircleShape r(R);
+        r.setOrigin(sf::Vector2f(R, R));
+        r.setPosition(tower->pos());
+        r.setFillColor(sf::Color(0,0,0,0));
+        r.setOutlineThickness(3.f);
+        r.setOutlineColor(inRange ? sf::Color(80,210,100,200) : sf::Color(210,90,90,200));
+        win_.draw(r);
 
-                // Aiming ray
-                sf::Vertex line[2];
-                line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
-                                                        : sf::Color(180,60,60,220));
-                line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
-                                                        : sf::Color(160,40,40,220));
-                win_.draw(line, 2, sf::PrimitiveType::Lines);
-        }
+        // Aiming ray
+        sf::Vertex line[2];
+        line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
+                            : sf::Color(180,60,60,220));
+        line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
+                            : sf::Color(160,40,40,220));
+        win_.draw(line, 2, sf::PrimitiveType::Lines);
+    }
 
 
 
@@ -463,6 +520,15 @@ void GameScene::draw() {
     if (menuAnim_ > 0.01f) drawMenu();
 
     menu_->draw(win_);
+
+    // Affichage du nombre de ressources restantes
+    sf::Font font;
+    font.openFromFile("../assets/ui/FreckleFace-Regular.ttf");  // SFML 3
+
+    sf::Text resText(font, "Ressources: " + std::to_string(resourceCount_), 32);
+    resText.setFillColor(sf::Color::Yellow);
+    resText.setPosition(sf::Vector2f(30.f, 30.f));              // or {30.f, 30.f}
+    win_.draw(resText);
 
 }
 

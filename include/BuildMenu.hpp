@@ -5,6 +5,8 @@
 #include <string>
 #include <cstdint>
 #include "Map.hpp"
+#include "Map.hpp"            // for Map / Tile
+#include "TileMap.hpp"
 
 class BuildMenu {
 public:
@@ -76,6 +78,7 @@ private:
 
         DefButton(const sf::Texture& tex, const sf::Font& font, const std::string& name);
         void setEnabled(bool on);
+        void setUnitEnabled(Unit u, bool on);
         void setPosition(sf::Vector2f center);
         sf::FloatRect bounds() const; // pour hit-test
         void draw(sf::RenderTarget& rt) const;

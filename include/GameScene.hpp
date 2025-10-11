@@ -20,8 +20,8 @@ public:
     void update(float dt);
     void draw();
     // ===== NEW (declared so GameScene.cpp can define/use them) =====
-    void placeCannon(sf::Vector2f center);
-    CannonTower* getActiveAimingTower();  // simple helper for the aim overlay
+    void placeTower(BuildMenu::Unit unit, sf::Vector2f center);
+    Tower* getActiveAimingTower();
 
    // std::unique_ptr<BuildMenu> menu_;
    
@@ -71,7 +71,7 @@ private:
     sf::CircleShape    unitBtns_[3];
     bool unitAffordable_[3] = {true,true,true};
     int  materialCount_[3]  = {0,0,0};
-
+    int resourceCount_ = 20; // Nombre de ressources de base
     bool  menuOpen_ = false;
     float menuAnim_ = 0.f;
     float menuAnimSpeed_ = 3.f;
@@ -88,14 +88,15 @@ private:
     sf::Vector2f dragWorld_{};
     bool dragValid_ = false;
 
-
     inline int cellId(int tx,int ty) const { return ty*worldW_ + tx; }
     bool inB(int tx,int ty) const { return tx>=0 && ty>=0 && tx<worldW_ && ty<worldH_; }
     bool canPlaceRect(int tx, int ty, int w, int h) const;
     void occupyRect(int tx, int ty, int w, int h, bool on);
-    std::vector<std::unique_ptr<CannonTower>> towers_;
-    bool cannonAvailable_ = true;   // only one at start
-    sf::Texture cannonIconTex_;     // def_cannon.png for the tower icon
+    std::vector<std::unique_ptr<Tower>> towers_;
+
+    sf::Texture cannonIconTex_;
+    sf::Texture archerTex_;
+    sf::Texture mageTex_;
 
     // helper
     bool isBuildableAtPixel(sf::Vector2f px) const {
@@ -138,5 +139,14 @@ private:
 
     // Drops buffer fetched from systems/towers this frame
     std::vector<MaterialDrop> pendingDrops_;
+
+    // --- Aiming / hover state ---
+    //int  activeTowerIndex_ = -1;   // -1 => none selected (hover off)
+    //bool isAiming() const { return activeTowerIndex_ >= 0 && activeTowerIndex_ < (int)towers_.size(); }
+    //void deselectTower() { activeTowerIndex_ = -1; }
+
+    // Accès pratique à la tour actuellement "aimée"
+    
+
 
 };

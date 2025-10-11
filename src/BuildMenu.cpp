@@ -28,6 +28,12 @@ void BuildMenu::MatBox::setCount(int v){
     badgeTxt.setString(std::to_string(count));
 }
 
+
+void BuildMenu::setUnitEnabled(Unit u, bool on){
+    int i = static_cast<int>(u);
+    if (i>=0 && i<3 && defs_[i]) defs_[i]->setEnabled(on);
+}
+
 void BuildMenu::MatBox::setPosition(sf::Vector2f p){
     plate.setPosition(p);
 
@@ -280,10 +286,10 @@ void BuildMenu::onMousePressed(sf::Vector2f mouse){
     }
 }
 
-void BuildMenu::setUnitEnabled(Unit u, bool on){
+/*void BuildMenu::setUnitEnabled(Unit u, bool on){
     int i = static_cast<int>(u);
-    if (i >= 0 && i < 3 && defs_[i]) defs_[i]->setEnabled(on);
-}
+    if (i>=0 && i<3 && defs_[i]) defs_[i]->setEnabled(on);
+}*/
 
 void BuildMenu::endDrag(){
     dragging_ = false;

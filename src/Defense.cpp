@@ -1,7 +1,11 @@
+
 #include "Defense.hpp"
 #include "CreatureSystem.hpp"
 #include <algorithm>
 #include <cmath>
+#include <SFML/Graphics.hpp>
+#include <memory>
+#include <random>
 
 CannonTower::CannonTower(sf::Vector2f center, const sf::Texture& baseTex)
 : pos_(center), base_(baseTex)
@@ -10,6 +14,94 @@ CannonTower::CannonTower(sf::Vector2f center, const sf::Texture& baseTex)
     base_.setPosition(pos_);
     base_.setScale(sf::Vector2f(0.65f, 0.65f)); // smaller icon if needed
 }
+
+
+// ===================== ArcherTower =====================
+ArcherTower::ArcherTower(sf::Vector2f center, const sf::Texture& baseTex)
+    : pos_(center), base_(baseTex)
+{
+    base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
+    base_.setPosition(pos_);
+    base_.setScale(sf::Vector2f(0.65f, 0.65f));
+}
+
+void ArcherTower::update(float dt, CreatureSystem& creeps) {
+    // TODO: Implémenter la logique de tir de l'archer (projectile rapide, dégâts modérés, etc.)
+}
+
+void ArcherTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
+    if (shotsLeft_ <= 0) return;
+    // TODO: Ajoutez la logique de projectile réel ici
+    // Appliquer les dégâts personnalisés
+    std::vector<MaterialDrop> drops;
+    creeps.applyDamagePoint(mouseWorld, power_, 40, drops);
+    shotsLeft_--;
+}
+
+void MageTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
+    if (shotsLeft_ <= 0) return;
+    // TODO: Ajoutez la logique de projectile réel ici
+    // Appliquer les dégâts personnalisés
+    std::vector<MaterialDrop> drops;
+    creeps.applyDamagePoint(mouseWorld, power_, 40, drops);
+    shotsLeft_--;
+}
+
+void ArcherTower::draw(sf::RenderTarget& rt, bool showRadius) const {
+    // Affiche le rayon si demandé
+    if (showRadius) {
+        float r = 120.f;
+        sf::CircleShape range(r);
+        range.setOrigin(sf::Vector2f(r, r));
+        range.setPosition(pos_);
+        range.setFillColor(sf::Color(0,0,0,0));
+        range.setOutlineThickness(1.f);
+        range.setOutlineColor(sf::Color(80,180,100,120));
+        rt.draw(range);
+    }
+    // Dessine la base de la tour
+    rt.draw(base_);
+    // TODO: dessiner les projectiles de l'archer
+}
+
+sf::Vector2f ArcherTower::pos() const { return pos_; }
+bool ArcherTower::isDead() const { return shotsLeft_ <= 0; }
+void ArcherTower::extractDrops(std::vector<MaterialDrop>& out) { /* TODO: drops spécifiques */ }
+
+
+// ===================== MageTower =====================
+MageTower::MageTower(sf::Vector2f center, const sf::Texture& baseTex)
+    : pos_(center), base_(baseTex)
+{
+    base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
+    base_.setPosition(pos_);
+    base_.setScale(sf::Vector2f(0.65f, 0.65f));
+}
+
+void MageTower::update(float dt, CreatureSystem& creeps) {
+    // TODO: Implémenter la logique de tir du mage (projectile lent, dégâts de zone, etc.)
+}
+
+void MageTower::draw(sf::RenderTarget& rt, bool showRadius) const {
+    // Affiche le rayon si demandé
+    if (showRadius) {
+        float r = 120.f;
+        sf::CircleShape range(r);
+        range.setOrigin(sf::Vector2f(r, r));
+        range.setPosition(pos_);
+        range.setFillColor(sf::Color(0,0,0,0));
+        range.setOutlineThickness(1.f);
+        range.setOutlineColor(sf::Color(80,100,180,120));
+        rt.draw(range);
+    }
+    // Dessine la base de la tour
+    rt.draw(base_);
+    // TODO: dessiner les projectiles du mage
+}
+
+sf::Vector2f MageTower::pos() const { return pos_; }
+bool MageTower::isDead() const { return shotsLeft_ <= 0; }
+void MageTower::extractDrops(std::vector<MaterialDrop>& out) { /* TODO: drops spécifiques */ }
 
 
 
@@ -35,9 +127,22 @@ void CannonTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps){
     recoilT_ = 0.10f;
     muzzleT_ = 0.06f;
 
+
     // ammo / cooldown
     shotsLeft_--;
     cd_ = cooldown_;
+}
+
+bool CannonTower::isDead() const {
+    return shotsLeft_ <= 0;
+    return shotsLeft_ <= 0;
+    return shotsLeft_ <= 0;
+}
+
+void CannonTower::extractDrops(std::vector<MaterialDrop>& out) {
+    // Déplacer les drops collectés dans dropBatch_ vers le vecteur out
+    out.insert(out.end(), dropBatch_.begin(), dropBatch_.end());
+    dropBatch_.clear();
 }
 
 
@@ -102,7 +207,7 @@ void CannonTower::update(float dt, CreatureSystem& creeps){
         if (hit){
             // damage + drops
             std::vector<MaterialDrop> drops;
-            creeps.applyDamagePoint(prj.target, 50.f, 40, drops);
+            creeps.applyDamagePoint(prj.target, power_, 40, drops);
             // queue a short impact flash
             impacts_.push_back({prj.target, 0.18f});
             // keep a copy for the tower (so GameScene can pick them up this frame)

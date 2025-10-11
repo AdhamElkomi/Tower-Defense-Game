@@ -17,7 +17,7 @@ void CreatureSystem::loadTextures(){
     // -------- Défs complètes (tous les champs, ordre = celui de CreatureDef) --------
     defs_[CreatureType::Grunt] = CreatureDef{
         /*type*/         CreatureType::Grunt,
-        /*texturePath*/  "../assets/creeps/grunt.png",
+        /*texturePath*/  "assets/creeps/grunt.png",
         /*frameSize*/    {128,128},    // chaque case ≈ 128x128 px (à ajuster si besoin)
         /*framesPerRow*/ 4,            // 4 colonnes
         /*animFps*/      8.f,
@@ -35,7 +35,7 @@ void CreatureSystem::loadTextures(){
 
     defs_[CreatureType::Rogue] = CreatureDef{
         /*type*/         CreatureType::Rogue,
-        /*texturePath*/  "../assets/creeps/rogue.png",
+        /*texturePath*/  "assets/creeps/rogue.png",
         /*frameSize*/    {64,64},    // largeur × hauteur d’un frame
         /*framesPerRow*/ 4,          // 8 images d’animation par ligne
         /*animFps*/      12.f,       // anim plus rapide que Grunt
@@ -53,7 +53,7 @@ void CreatureSystem::loadTextures(){
 
     defs_[CreatureType::Golem] = CreatureDef{
         CreatureType::Golem,
-        "../assets/creeps/golem2.png", // <-- corrigé
+        "assets/creeps/golem2.png", // <-- corrigé
         {128,128},
         4,
         7.f,
@@ -122,9 +122,9 @@ void CreatureSystem::loadSounds(){
         }
     };
 
-    load(CreatureType::Grunt, "../assets/sfx/grunt_spawn.ogg");
-    load(CreatureType::Rogue, "../assets/sfx/grunt_spawn.ogg");
-    load(CreatureType::Golem, "../assets/sfx/rogue_spawn.ogg");
+    load(CreatureType::Grunt, "assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Rogue, "assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Golem, "assets/sfx/rogue_spawn.ogg");
 }
 
 bool CreatureSystem::hitFirstAt(sf::Vector2f p, float r, int dmg){
@@ -228,17 +228,20 @@ int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
                 switch (c->def_.type) {
                     case CreatureType::Rogue: {
                         outDrops.push_back({Material::Wood,   c->pos()});
-                        outDrops.push_back({Material::Wood,   c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
                     } break;
                     case CreatureType::Grunt: {
                         outDrops.push_back({Material::Wood,   c->pos()});
                         outDrops.push_back({Material::Wood,   c->pos()});
                         outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Crystal,c->pos()});
                     } break;
                     case CreatureType::Golem: {
+                        outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Stone,  c->pos()});
                         outDrops.push_back({Material::Crystal,c->pos()});
-                        outDrops.push_back({Material::Stone,  c->pos()});
-                        outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Crystal,c->pos()});
                     } break;
                 }
                 killed++;
