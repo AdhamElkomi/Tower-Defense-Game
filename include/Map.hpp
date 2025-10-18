@@ -22,6 +22,8 @@ struct Point { int x{}, y{}; };
 struct Map {
     int w{}, h{};
     std::vector<Cell> cells; // size = w*h
+    std::vector<Point> entries;
+    std::vector<Point> exits;
     Map() = default;
     Map(int W, int H) : w(W), h(H), cells(W*H) {}
     inline int idx(int x,int y) const { return y*w + x; }

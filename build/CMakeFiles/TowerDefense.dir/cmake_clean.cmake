@@ -21,6 +21,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/Menu.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/Menu.cpp.o.d"
+  "CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o"
+  "CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/Slider.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/Slider.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o"

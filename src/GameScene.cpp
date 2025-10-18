@@ -147,11 +147,52 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     {
         creeps_.loadTextures();
         creeps_.loadSounds();
-        WaypointPath p = buildMainPathPolyline(map_, tileSize_);
-        if (!p.pts.empty()){
-            creeps_.setPath(p);
-            creeps_.spawnWave(1, 2, 1, 0.2f, 0.9f);
+
+        // Find base tiles (Rock tiles that are walkable)
+        std::vector<sf::Vector2i> baseTiles;
+        for (int y = 0; y < map_.h; ++y) {
+            for (int x = 0; x < map_.w; ++x) {
+                const auto& cell = map_.at(x, y);
+                if (cell.ground == Tile::Rock && cell.walkable) {
+                    baseTiles.emplace_back(x, y);
+                }
+            }
         }
+
+        // Use stored exits
+        std::vector<sf::Vector2i> exits;
+        for (auto& p : map_.exits) {
+            exits.emplace_back(p.x, p.y);
+        }
+
+        // Use stored entries as start
+        sf::Vector2i start(-1, -1);
+        if (!map_.entries.empty()) {
+            start = sf::Vector2i(map_.entries[0].x, map_.entries[0].y);
+        }
+
+        // Walkable function: Path tiles and Rock tiles that are not buildable (base only)
+        auto isWalkable = [](const Cell& cell, int x, int y) -> bool {
+            return cell.ground == Tile::Path || (cell.ground == Tile::Rock && !cell.buildable);
+        };
+
+        if (!baseTiles.empty() && !exits.empty() && start.x != -1) {
+            creeps_.setPathViaBase(map_, start, baseTiles, exits, isWalkable, nullptr);
+        } else {
+            // Fallback to old path
+            WaypointPath p = buildMainPathPolyline(map_, tileSize_);
+            if (!p.pts.empty()){
+                creeps_.setPath(p);
+            }
+        }
+
+        // Set resource position (center of the map)
+        sf::Vector2f resourcePos((worldW_ * tileSize_) * 0.5f, (worldH_ * tileSize_) * 0.5f);
+        creeps_.setResourcePos(resourcePos);
+
+        // Initialize waves
+        generateWaves();
+        spawnNextWave();
     }
 
 // ====== UI – bouton menu ======
@@ -202,6 +243,10 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     // load tower icon texture
     (void)cannonIconTex_.loadFromFile("../assets/ui/tower_build/cannon.png");
     cannonIconTex_.setSmooth(false);
+    (void)arrowTex_.loadFromFile("../assets/ui/attack_tower/arrow.png");
+    arrowTex_.setSmooth(false);
+    (void)cannonBallTex_.loadFromFile("../assets/ui/attack_tower/cannon_ball.png");
+    cannonBallTex_.setSmooth(false);
     buildOcc_.assign(W*H, 0);
 
 
@@ -223,14 +268,14 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
 
      sf::Vector2i mp = sf::Mouse::getPosition(win_);
 
-    // --- placement after drag: one cannon only ---
+    // --- placement after drag: place the dragged unit ---
     // If your BuildMenu exposes: isDragging(), draggingUnit(), dragPosition()
     if (leftUp){
         if (isBuildableAtPixel(world)){
             int tx = int(world.x / tileSize_);
             int ty = int(world.y / tileSize_);
             sf::Vector2f center( (tx + 0.5f) * tileSize_, (ty + 0.5f) * tileSize_ );
-            placeTower(BuildMenu::Unit::Cannon, center);
+            placeTower(menu_->draggingUnit(), center);
         }
     }
 
@@ -386,7 +431,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costCannon_.wood;
                     materialCount_[1] -= costCannon_.stone;
                     materialCount_[2] -= costCannon_.crystal;
-                    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_));
+                    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_, cannonBallTex_));
                 }
                 break;
             case BuildMenu::Unit::Archer:
@@ -399,7 +444,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costArcher_.wood;
                     materialCount_[1] -= costArcher_.stone;
                     materialCount_[2] -= costArcher_.crystal;
-                    towers_.push_back(std::make_unique<ArcherTower>(center, archerTex_));
+                    towers_.push_back(std::make_unique<ArcherTower>(center, archerTex_, arrowTex_));
                 }
                 break;
             case BuildMenu::Unit::Mage:
@@ -450,6 +495,53 @@ void GameScene::update(float dt) {
     // Also collect any drops the CreatureSystem queued internally (safety)
     creeps_.extractPendingDrops(pendingDrops_);
 
+    // Collect collected resources from creatures (near resource)
+    std::vector<CreatureSystem::CollectedResource> collected;
+    creeps_.extractCollected(collected);
+    for (const auto& c : collected) {
+        // No resource deduction here, just animation
+        // Add animation for collected resources
+        stolenAnimations_.push_back({c.pos, "Stealing!", 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
+    }
+
+    // Collect stolen resources from creatures (reached exit with resource)
+    std::vector<CreatureSystem::StolenResource> stolen;
+    creeps_.extractStolen(stolen);
+    for (const auto& c : stolen) {
+        int points = 0;
+        switch (c.type) {
+            case CreatureType::Grunt: points = 2; break;
+            case CreatureType::Rogue: points = 1; break;
+            case CreatureType::Golem: points = 3; break;
+        }
+        resourceCount_ -= points;
+        if (resourceCount_ < 0) resourceCount_ = 0; // Prevent negative
+        // Add animation for stolen resources
+        stolenAnimations_.push_back({c.pos, "-" + std::to_string(points), 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
+    }
+
+    // Check if it's time to spawn the next wave
+    if (currentWaveIndex_ < waves_.size() && gameTime_ >= waves_[currentWaveIndex_].spawnTime) {
+        spawnNextWave();
+    }
+
+    // Update stolen animations
+    for (auto it = stolenAnimations_.begin(); it != stolenAnimations_.end(); ) {
+        it->lifetime -= dt;
+        if (it->lifetime > 0) {
+            // Animate scale and offset
+            float progress = 1.0f - (it->lifetime / 2.0f); // 0 to 1 over 2 seconds
+            it->scale = 1.0f + progress * 4.0f; // Scale from 1.0 to 3.0
+            it->offset.y = -progress * 50.f; // Move up by 50 pixels
+            it->alpha = 255.f * (it->lifetime / 2.0f); // Fade from 255 to 0 over 2 seconds
+        }
+        if (it->lifetime <= 0) {
+            it = stolenAnimations_.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
     // Credit inventory
     for (const auto& d : pendingDrops_) {
         switch (d.type) {
@@ -475,13 +567,29 @@ void GameScene::update(float dt) {
     
 }
 
-// ---- draw ----
+    // ---- draw ----
 void GameScene::draw() {
     win_.draw(tilemap_);
     win_.draw(trees_);
     creeps_.draw(win_);
     if (resourceShadow_) win_.draw(*resourceShadow_);
     if (resourceSprite_) win_.draw(*resourceSprite_);
+
+    // Draw entry tiles in blue
+    for (auto& e : map_.entries) {
+        sf::RectangleShape rect(sf::Vector2f(static_cast<float>(tileSize_), static_cast<float>(tileSize_)));
+        rect.setPosition(sf::Vector2f(static_cast<float>(e.x * tileSize_), static_cast<float>(e.y * tileSize_)));
+        rect.setFillColor(sf::Color(0, 0, 255, 100)); // Semi-transparent blue
+        win_.draw(rect);
+    }
+
+    // Draw exit tiles in red
+    for (auto& ex : map_.exits) {
+        sf::RectangleShape rect(sf::Vector2f(static_cast<float>(tileSize_), static_cast<float>(tileSize_)));
+        rect.setPosition(sf::Vector2f(static_cast<float>(ex.x * tileSize_), static_cast<float>(ex.y * tileSize_)));
+        rect.setFillColor(sf::Color(255, 0, 0, 100)); // Semi-transparent red
+        win_.draw(rect);
+    }
 
     // bouton menu (toujours visible)
    // draw: bouton menu
@@ -506,12 +614,12 @@ void GameScene::draw() {
         win_.draw(r);
 
         // Aiming ray
-        sf::Vertex line[2];
-        line[0] = sf::Vertex(tower->pos(), inRange ? sf::Color(40,140,60,220)
-                            : sf::Color(180,60,60,220));
-        line[1] = sf::Vertex(m,            inRange ? sf::Color(20,100,40,220)
-                            : sf::Color(160,40,40,220));
-        win_.draw(line, 2, sf::PrimitiveType::Lines);
+        sf::VertexArray line(sf::PrimitiveType::Lines, 2);
+        line[0].position = tower->pos();
+        line[0].color = inRange ? sf::Color(40,140,60,220) : sf::Color(180,60,60,220);
+        line[1].position = m;
+        line[1].color = inRange ? sf::Color(20,100,40,220) : sf::Color(160,40,40,220);
+        win_.draw(line);
     }
 
 
@@ -521,6 +629,8 @@ void GameScene::draw() {
 
     menu_->draw(win_);
 
+    // Update stolen animations (moved to update function)
+
     // Affichage du nombre de ressources restantes
     sf::Font font;
     font.openFromFile("../assets/ui/FreckleFace-Regular.ttf");  // SFML 3
@@ -529,6 +639,17 @@ void GameScene::draw() {
     resText.setFillColor(sf::Color::Yellow);
     resText.setPosition(sf::Vector2f(30.f, 30.f));              // or {30.f, 30.f}
     win_.draw(resText);
+
+    // Draw stolen animations
+    for (const auto& anim : stolenAnimations_) {
+        sf::Text animText(font, anim.text, 24);
+        sf::Color color = sf::Color::Red;
+        color.a = static_cast<std::uint8_t>(anim.alpha);
+        animText.setFillColor(color);
+        animText.setPosition(anim.pos + anim.offset);
+        animText.setScale(sf::Vector2f(anim.scale, anim.scale));
+        win_.draw(animText);
+    }
 
 }
 
@@ -607,5 +728,29 @@ void GameScene::drawMenu(){
 
     // unités
     for (int i=0;i<3;++i) win_.draw(unitBtns_[i]);
+}
+
+void GameScene::generateWaves() {
+    waves_.clear();
+    float time = 0.f;
+    int grunt = 1;
+    int rogue = 1;
+    int golem = 1;
+    for (int i = 0; i < 10; ++i) { // Generate 10 waves for example
+        waves_.push_back({grunt, rogue, golem, time});
+        grunt *= 2; // Double grunts each wave (+1 times more, i.e., double)
+        rogue += 2; // Add 2 rogues each wave
+        if ((i + 1) % 2 == 0) golem += 1; // Add 1 golem every 2 waves
+        time += 15.f; // 15 seconds delay between waves
+    }
+}
+
+void GameScene::spawnNextWave() {
+    if (currentWaveIndex_ < waves_.size()) {
+        const auto& wave = waves_[currentWaveIndex_];
+        float speedMultiplier = 1.0f + static_cast<float>(currentWaveIndex_) * 0.1f; // Increase speed by 10% per wave
+        creeps_.spawnWave(wave.grunt, wave.rogue, wave.golem, wave.spawnTime, 0.5f / speedMultiplier); // Adjust period for speed
+        currentWaveIndex_++;
+    }
 }
 

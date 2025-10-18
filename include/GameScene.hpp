@@ -97,6 +97,8 @@ private:
     sf::Texture cannonIconTex_;
     sf::Texture archerTex_;
     sf::Texture mageTex_;
+    sf::Texture arrowTex_;
+    sf::Texture cannonBallTex_;
 
     // helper
     bool isBuildableAtPixel(sf::Vector2f px) const {
@@ -146,7 +148,27 @@ private:
     //void deselectTower() { activeTowerIndex_ = -1; }
 
     // Accès pratique à la tour actuellement "aimée"
-    
 
+    // Stolen resource animations
+    struct StolenAnimation {
+        sf::Vector2f pos;
+        std::string text;
+        float lifetime;
+        float scale;
+        sf::Vector2f offset;
+        float alpha;
+    };
+    std::vector<StolenAnimation> stolenAnimations_;
+
+    // Wave system
+    struct Wave {
+        int grunt, rogue, golem;
+        float spawnTime;
+    };
+    std::vector<Wave> waves_;
+    int currentWaveIndex_ = 0;
+
+    void generateWaves();
+    void spawnNextWave();
 
 };

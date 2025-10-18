@@ -52,7 +52,15 @@ public:
     // position écran (centre du sprite)
     sf::Vector2f pos() const { return pos_; }
 
-    void stopAudio() { if (loop_) loop_->stop(); }  
+    void stopAudio() { if (loop_) loop_->stop(); }
+
+    // Check if creature has reached the end of the path (exit)
+    bool hasReachedExit() const { return pathIdx_ >= path_.pts.size(); }
+
+    bool hasCollectedResource() const { return collectedResource_; }
+    void setCollectedResource(bool collected) { collectedResource_ = collected; }
+
+    bool hasReachedExitWithResource() const { return hasReachedExit() && collectedResource_; }
 
 private:
     
@@ -73,7 +81,10 @@ private:
     // PV
     int   hp_;
 
+    // Resource collection flag
+    bool collectedResource_ = false;
+
     // audio loop (créé seulement si un buffer est fourni)
-    std::unique_ptr<sf::Sound> loop_;      
+    std::unique_ptr<sf::Sound> loop_;
 };
 

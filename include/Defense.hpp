@@ -28,12 +28,36 @@ struct Projectile {
     sf::Vector2f pos, vel, target;
     float life = 1.0f;
     bool  alive = true;
+    std::unique_ptr<sf::Sprite> sprite;
 
     struct Trail { sf::Vector2f p; float t; };
     std::vector<Trail> trail;
     float trailSpawn = 0.f;
 
-    bool update(float dt);
+    Projectile() : sprite(nullptr) {}
+    Projectile(const Projectile&) = delete;
+    Projectile& operator=(const Projectile&) = delete;
+    Projectile(Projectile&&) = default;
+    Projectile& operator=(Projectile&&) = default;
+
+    bool update(float dt, CreatureSystem& creeps);
+    void draw(sf::RenderTarget& rt) const;
+};
+
+struct ArrowProjectile {
+    sf::Vector2f pos, vel, target;
+    float life = 1.0f;
+    bool  alive = true;
+    std::unique_ptr<sf::Sprite> sprite;
+    float rotation = 0.f;
+
+    ArrowProjectile() : sprite(nullptr) {}
+    ArrowProjectile(const ArrowProjectile&) = delete;
+    ArrowProjectile& operator=(const ArrowProjectile&) = delete;
+    ArrowProjectile(ArrowProjectile&&) = default;
+    ArrowProjectile& operator=(ArrowProjectile&&) = default;
+
+    bool update(float dt, CreatureSystem& creeps);
     void draw(sf::RenderTarget& rt) const;
 };
 
@@ -68,10 +92,10 @@ public:
 class CannonTower : public Tower {
 public:
     static constexpr int DefaultShots = 8; // canon = le moins
-    static constexpr float DefaultPower = 30.f;
-    static constexpr float DefaultRadius = 180.f;
+    static constexpr float DefaultPower = 30.f; // Less powerful than archer and mage
+    static constexpr float DefaultRadius = 300.f; // Reduced range
 public:
-    CannonTower(sf::Vector2f center, const sf::Texture& baseTex);
+    CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& cannonBallTex);
     void update(float dt, CreatureSystem& creeps) override;
     void draw(sf::RenderTarget& rt, bool showRadius) const override;
     TowerType type() const override { return TowerType::Cannon; }
@@ -85,6 +109,7 @@ public:
 private:
     sf::Vector2f pos_;
     sf::Sprite base_;
+    const sf::Texture* cannonBallTexture_;
     float radius_ = DefaultRadius;
     float cd_ = 0.f, cooldown_ = 0.7f;
     int shotsLeft_ = DefaultShots;
@@ -98,10 +123,10 @@ private:
 class ArcherTower : public Tower {
 public:
     static constexpr int DefaultShots = 14; // archer = intermédiaire
-    static constexpr float DefaultPower = 50.f;
-    static constexpr float DefaultRadius = 220.f;
+    static constexpr float DefaultPower = 60.f; // More powerful than cannon
+    static constexpr float DefaultRadius = 400.f; // Reduced range
 public:
-    ArcherTower(sf::Vector2f center, const sf::Texture& baseTex);
+    ArcherTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& arrowTex);
     void update(float dt, CreatureSystem& creeps) override;
     void draw(sf::RenderTarget& rt, bool showRadius) const override;
     TowerType type() const override { return TowerType::Archer; }
@@ -109,23 +134,27 @@ public:
     bool isDead() const override;
     int shotsLeft() const { return shotsLeft_; }
     void extractDrops(std::vector<MaterialDrop>& out) override;
-    float radius() const override { return 120.f; }
+    float radius() const override { return radius_; }
     void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
 
 private:
     sf::Vector2f pos_;
     sf::Sprite base_;
+    const sf::Texture* arrowTexture_;
     int shotsLeft_ = DefaultShots;
     float power_ = DefaultPower;
     float radius_ = DefaultRadius;
-    // Ajoutez ici les membres spécifiques à l'archer (ex: projectiles, cooldown, etc.)
+    float cd_ = 0.f, cooldown_ = 0.5f; // Faster than cannon
+    std::vector<ArrowProjectile> arrows_;
+    std::vector<ImpactBurst> impacts_;
+    std::vector<MaterialDrop> dropBatch_;
 };
 
 class MageTower : public Tower {
 public:
     static constexpr int DefaultShots = 10; // mage = le plus puissant mais moins d'attaques
     static constexpr float DefaultPower = 80.f;
-    static constexpr float DefaultRadius = 260.f;
+    static constexpr float DefaultRadius = 550.f; // Reduced range
 public:
     MageTower(sf::Vector2f center, const sf::Texture& baseTex);
     void update(float dt, CreatureSystem& creeps) override;

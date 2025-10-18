@@ -417,6 +417,30 @@ src/Menu.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Menu.cpp.s
 .PHONY : src/Menu.cpp.s
 
+src/Pathfinding.o: src/Pathfinding.cpp.o
+.PHONY : src/Pathfinding.o
+
+# target to build an object file
+src/Pathfinding.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o
+.PHONY : src/Pathfinding.cpp.o
+
+src/Pathfinding.i: src/Pathfinding.cpp.i
+.PHONY : src/Pathfinding.i
+
+# target to preprocess a source file
+src/Pathfinding.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.i
+.PHONY : src/Pathfinding.cpp.i
+
+src/Pathfinding.s: src/Pathfinding.cpp.s
+.PHONY : src/Pathfinding.s
+
+# target to generate assembly for a file
+src/Pathfinding.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.s
+.PHONY : src/Pathfinding.cpp.s
+
 src/Slider.o: src/Slider.cpp.o
 .PHONY : src/Slider.o
 
@@ -581,6 +605,9 @@ help:
 	@echo "... src/Menu.o"
 	@echo "... src/Menu.i"
 	@echo "... src/Menu.s"
+	@echo "... src/Pathfinding.o"
+	@echo "... src/Pathfinding.i"
+	@echo "... src/Pathfinding.s"
 	@echo "... src/Slider.o"
 	@echo "... src/Slider.i"
 	@echo "... src/Slider.s"

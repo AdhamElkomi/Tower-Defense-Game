@@ -17,7 +17,7 @@ void CreatureSystem::loadTextures(){
     // -------- Défs complètes (tous les champs, ordre = celui de CreatureDef) --------
     defs_[CreatureType::Grunt] = CreatureDef{
         /*type*/         CreatureType::Grunt,
-        /*texturePath*/  "assets/creeps/grunt.png",
+        /*texturePath*/  "../assets/creeps/grunt.png",
         /*frameSize*/    {128,128},    // chaque case ≈ 128x128 px (à ajuster si besoin)
         /*framesPerRow*/ 4,            // 4 colonnes
         /*animFps*/      8.f,
@@ -35,7 +35,7 @@ void CreatureSystem::loadTextures(){
 
     defs_[CreatureType::Rogue] = CreatureDef{
         /*type*/         CreatureType::Rogue,
-        /*texturePath*/  "assets/creeps/rogue.png",
+        /*texturePath*/  "../assets/creeps/rogue.png",
         /*frameSize*/    {64,64},    // largeur × hauteur d’un frame
         /*framesPerRow*/ 4,          // 8 images d’animation par ligne
         /*animFps*/      12.f,       // anim plus rapide que Grunt
@@ -53,7 +53,7 @@ void CreatureSystem::loadTextures(){
 
     defs_[CreatureType::Golem] = CreatureDef{
         CreatureType::Golem,
-        "assets/creeps/golem2.png", // <-- corrigé
+        "../assets/creeps/golem2.png", // <-- corrigé
         {128,128},
         4,
         7.f,
@@ -122,9 +122,9 @@ void CreatureSystem::loadSounds(){
         }
     };
 
-    load(CreatureType::Grunt, "assets/sfx/grunt_spawn.ogg");
-    load(CreatureType::Rogue, "assets/sfx/grunt_spawn.ogg");
-    load(CreatureType::Golem, "assets/sfx/rogue_spawn.ogg");
+    load(CreatureType::Grunt, "../assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Rogue, "../assets/sfx/grunt_spawn.ogg");
+    load(CreatureType::Golem, "../assets/sfx/rogue_spawn.ogg");
 }
 
 bool CreatureSystem::hitFirstAt(sf::Vector2f p, float r, int dmg){
@@ -145,6 +145,48 @@ bool CreatureSystem::hitFirstAt(sf::Vector2f p, float r, int dmg){
 
 
 void CreatureSystem::setPath(const WaypointPath& p){ path_ = p; }
+
+void CreatureSystem::setExits(const std::vector<sf::Vector2i>& exits) {
+    exits_ = exits;
+}
+
+void CreatureSystem::setResourcePos(sf::Vector2f pos) {
+    resourcePos_ = pos;
+}
+
+bool CreatureSystem::isOnExitTile(sf::Vector2f pos) const {
+    int tileX = static_cast<int>(pos.x / tileSize_);
+    int tileY = static_cast<int>(pos.y / tileSize_);
+    for (const auto& exit : exits_) {
+        if (exit.x == tileX && exit.y == tileY) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CreatureSystem::isNearResource(sf::Vector2f pos) const {
+    sf::Vector2f d = pos - resourcePos_;
+    float distSq = d.x * d.x + d.y * d.y;
+    return distSq <= resourceRadius_ * resourceRadius_;
+}
+
+void CreatureSystem::extractCollected(std::vector<CollectedResource>& out) {
+    out.insert(out.end(), collectedResources_.begin(), collectedResources_.end());
+    collectedResources_.clear();
+}
+
+// New function to set path via base to exit
+void CreatureSystem::setPathViaBase(const Map& map, sf::Vector2i start, const std::vector<sf::Vector2i>& baseTiles, const std::vector<sf::Vector2i>& exits, const WalkableFn& isWalkable, const OccupancyGrid* occ) {
+    TilePath tilePath = routeViaBaseToBestExit(map, start, baseTiles, exits, isWalkable, occ);
+    if (!tilePath.empty()) {
+        path_.pts.clear();
+        for (auto& tile : tilePath) {
+            path_.pts.emplace_back((tile.x + 0.5f) * tileSize_, (tile.y + 0.5f) * tileSize_);
+        }
+    }
+    setExits(exits);
+}
 
 void CreatureSystem::spawn(CreatureType t, float atTime){
     timeline_.push_back({t, atTime});
@@ -188,10 +230,28 @@ void CreatureSystem::update(float dt, float timeNow){
 
     for (auto it = alive_.begin(); it != alive_.end(); ){
         (*it)->update(dt);
-        if ((*it)->isDead()){
+        bool shouldRemove = (*it)->isDead() || isOnExitTile((*it)->pos());
+        if (shouldRemove){
+            // Check if creature is on exit tile with resource
+            if (isOnExitTile((*it)->pos()) && (*it)->hasCollectedResource()) {
+                stolenResources_.push_back({(*it)->type(), (*it)->pos()});
+                // Increase HP after passage by resource tower (stealing)
+                int hpBoost = 0;
+                switch ((*it)->type()) {
+                    case CreatureType::Grunt: hpBoost = 10; break;
+                    case CreatureType::Rogue: hpBoost = 7; break;
+                    case CreatureType::Golem: hpBoost = 15; break;
+                }
+                (*it)->hit(-hpBoost); // Negative damage to heal
+            }
             (*it)->stopAudio();          // ⬅️ coupe le loop
             it = alive_.erase(it);
         }else{
+            // Check if creature is near resource and hasn't collected yet
+            if (isNearResource((*it)->pos()) && !(*it)->hasCollectedResource()) {
+                collectedResources_.push_back({(*it)->type(), (*it)->pos()});
+                (*it)->setCollectedResource(true);
+            }
             ++it;
         }
     }
@@ -258,4 +318,9 @@ int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
     pendingDrops_.insert(pendingDrops_.end(), outDrops.begin(), outDrops.end());
 
     return killed;
+}
+
+void CreatureSystem::extractStolen(std::vector<StolenResource>& out) {
+    out.insert(out.end(), stolenResources_.begin(), stolenResources_.end());
+    stolenResources_.clear();
 }

@@ -629,6 +629,10 @@ Map MapGenerator::generate(int w, int h, int eMin, int eMax, int xMin, int xMax)
     auto entries = randomEdgePoints(w,h,de(rng_));
     auto exits   = randomEdgePoints(w,h,dx(rng_));
 
+    // Store entries and exits in map
+    m.entries = entries;
+    m.exits = exits;
+
     // Centre et base
     Point R{ w/2, h/2 };
     Point gate = placeResourceBaseArea(m, R.x, R.y, 3, 3);
@@ -721,7 +725,7 @@ Point MapGenerator::placeResourceBaseArea(Map& m, int cx, int cy, int wTiles, in
         for(int x = 0; x < wTiles; ++x){
             auto& c = m.at(x0+x, y0+y);
             c.ground    = Tile::Rock;   // FREE/pad
-            c.walkable  = false;
+            c.walkable  = true;         // Allow creatures to walk on base for pathfinding
             c.buildable = false;
         }
     }

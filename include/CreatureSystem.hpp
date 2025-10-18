@@ -2,12 +2,13 @@
 #pragma once
 #include "Creature.hpp"
 #include "Defense.hpp"
+#include "Pathfinding.hpp"
 #include <memory>
 #include <unordered_map>
 #include <SFML/Audio.hpp>   // ⬅️ IMPORTANT
 #include <memory>
 #include <unordered_map>
-#include <vector>  
+#include <vector>
 
 
 // Material types you already use in the menu
@@ -34,6 +35,30 @@ public:
     // path global (entrée -> gate -> sortie) en px
     void setPath(const WaypointPath& p);
 
+    // New function to set path via base to exit
+    void setPathViaBase(const Map& map, sf::Vector2i start, const std::vector<sf::Vector2i>& baseTiles, const std::vector<sf::Vector2i>& exits, const WalkableFn& isWalkable, const OccupancyGrid* occ = nullptr);
+
+    void setExits(const std::vector<sf::Vector2i>& exits);
+
+    void setResourcePos(sf::Vector2f pos);
+
+    bool isOnExitTile(sf::Vector2f pos) const;
+
+    bool isNearResource(sf::Vector2f pos) const;
+
+    struct CollectedResource {
+        CreatureType type;
+        sf::Vector2f pos;
+    };
+
+    struct StolenResource {
+        CreatureType type;
+        sf::Vector2f pos;
+    };
+
+    void extractCollected(std::vector<CollectedResource>& out);
+    void extractStolen(std::vector<StolenResource>& out);
+
     // spawns
     void spawn(CreatureType t, float atTime);        // une créature plus tard
     void spawnWave(int nGrunt, int nRogue, int nGolem, float startTime, float period);
@@ -57,6 +82,9 @@ public:
 private:
     float tileSize_;
     WaypointPath path_;
+    std::vector<sf::Vector2i> exits_;  // Store exit tiles
+    sf::Vector2f resourcePos_;  // The resource position
+    float resourceRadius_ = 100.f;  // Radius for stealing resources
 
     std::unordered_map<CreatureType, CreatureDef> defs_;
     std::unordered_map<CreatureType, std::unique_ptr<sf::Texture>> textures_;
@@ -77,4 +105,7 @@ private:
     std::vector<std::unique_ptr<Creature>> alive_;
 
     std::vector<MaterialDrop> pendingDrops_;
+
+    std::vector<CollectedResource> collectedResources_;
+    std::vector<StolenResource> stolenResources_;
 };
