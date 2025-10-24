@@ -90,11 +90,38 @@ void ArcherTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
 }
 
 void MageTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
-    if (shotsLeft_ <= 0) return;
-    // TODO: Ajoutez la logique de projectile réel ici
-    // Appliquer les dégâts personnalisés
-    std::vector<MaterialDrop> drops;
-    creeps.applyDamagePoint(mouseWorld, power_, 40, drops);
+    if (shotsLeft_ <= 0 || isHolding_) return;
+
+    // Only fire if gauge is full
+    if (holdTime_ < maxHold_) {
+        // If not full, start holding
+        isHolding_ = true;
+        return;
+    }
+
+    // Calculate power based on hold time (should be max since full)
+    float powerMultiplier = 1.0f; // always full power when firing
+    int numProjectiles = 15 + static_cast<int>(15 * powerMultiplier); // 15 to 30 projectiles for denser arc
+
+    // Spawn projectiles in a semicircle
+    float startAngle = -M_PI / 2; // -90 degrees (left)
+    float endAngle = M_PI / 2;    // 90 degrees (right)
+    float angleStep = (endAngle - startAngle) / (numProjectiles - 1);
+
+    for (int i = 0; i < numProjectiles; ++i) {
+        float angle = startAngle + i * angleStep;
+        MageFireProjectile proj;
+        proj.pos = pos_;
+        proj.vel = sf::Vector2f(std::cos(angle), std::sin(angle)) * 400.f; // faster speed
+        proj.angle = angle;
+        proj.life = radius_ / 400.f; // time to reach max range
+        proj.powerMultiplier = powerMultiplier; // set power multiplier
+        projectiles_.push_back(std::move(proj));
+    }
+
+    // Reset hold
+    isHolding_ = false;
+    holdTime_ = 0.f;
     shotsLeft_--;
 }
 
@@ -144,15 +171,32 @@ MageTower::MageTower(sf::Vector2f center, const sf::Texture& baseTex)
 }
 
 void MageTower::update(float dt, CreatureSystem& creeps) {
-    // TODO: Implémenter la logique de tir du mage (projectile lent, dégâts de zone, etc.)
+    // Handle hold mechanics
+    if (isHolding_) {
+        holdTime_ += dt;
+        if (holdTime_ > maxHold_) holdTime_ = maxHold_;
+    }
+
+    // Update projectiles
+    for (auto& proj : projectiles_) {
+        if (proj.update(dt, creeps)) {
+            // Hit something, apply damage using stored powerMultiplier
+            float damage = power_ * (1.0f + proj.powerMultiplier);
+            std::vector<MaterialDrop> drops;
+            creeps.applyDamagePoint(proj.pos, damage, 30.f, drops);
+            // Queue impacts or effects if needed
+        }
+    }
+    projectiles_.erase(std::remove_if(projectiles_.begin(), projectiles_.end(),
+                                      [](const MageFireProjectile& p){ return !p.alive; }),
+                       projectiles_.end());
 }
 
 void MageTower::draw(sf::RenderTarget& rt, bool showRadius) const {
     // Affiche le rayon si demandé
     if (showRadius) {
-        float r = 120.f;
-        sf::CircleShape range(r);
-        range.setOrigin(sf::Vector2f(r, r));
+        sf::CircleShape range(radius_);
+        range.setOrigin(sf::Vector2f(radius_, radius_));
         range.setPosition(pos_);
         range.setFillColor(sf::Color(0,0,0,0));
         range.setOutlineThickness(1.f);
@@ -161,7 +205,30 @@ void MageTower::draw(sf::RenderTarget& rt, bool showRadius) const {
     }
     // Dessine la base de la tour
     rt.draw(base_);
-    // TODO: dessiner les projectiles du mage
+
+    // Draw power gauge if holding
+    if (isHolding_) {
+        float gaugeHeight = 20.f;
+        float gaugeWidth = 100.f;
+        sf::Vector2f gaugePos = pos_ + sf::Vector2f(-gaugeWidth/2, -60.f);
+        sf::RectangleShape bg(sf::Vector2f(gaugeWidth, gaugeHeight));
+        bg.setPosition(gaugePos);
+        bg.setFillColor(sf::Color(50,50,50,200));
+        bg.setOutlineThickness(2.f);
+        bg.setOutlineColor(sf::Color::White);
+        rt.draw(bg);
+
+        float fillRatio = holdTime_ / maxHold_;
+        sf::RectangleShape fill(sf::Vector2f(gaugeWidth * fillRatio, gaugeHeight));
+        fill.setPosition(gaugePos);
+        fill.setFillColor(sf::Color(255,100,0,200)); // orange
+        rt.draw(fill);
+    }
+
+    // Draw projectiles
+    for (const auto& proj : projectiles_) {
+        proj.draw(rt);
+    }
 }
 
 sf::Vector2f MageTower::pos() const { return pos_; }
@@ -389,5 +456,38 @@ void CannonTower::draw(sf::RenderTarget& rt, bool showRadius) const{
         ring.setOutlineColor(sf::Color(255,200,120, (std::uint8_t)(180*a)));
         rt.draw(ring);
     }
+}
+
+bool MageFireProjectile::update(float dt, CreatureSystem& creeps){
+    if (!alive) return false;
+    pos += vel * dt;
+    life -= dt;
+    if (life <= 0.f){ alive = false; return true; } // reached range
+
+    // Check for hits
+    std::vector<MaterialDrop> dummyDrops;
+    if (creeps.applyDamagePoint(pos, 0.f, 15.f, dummyDrops)) { // small hit radius
+        alive = false;
+        return true; // hit
+    }
+    return false;
+}
+
+void MageFireProjectile::draw(sf::RenderTarget& rt) const{
+    float baseSize = 20.f; // increased base size for visibility
+    float size = baseSize * (1.0f + powerMultiplier * 0.5f); // size varies from 20 to 30
+    sf::CircleShape fire(size); // larger fire balls based on power
+    fire.setOrigin(sf::Vector2f(size, size));
+    fire.setPosition(pos);
+    fire.setFillColor(sf::Color(255, 69, 0, 255)); // brighter orange-red fire
+    rt.draw(fire);
+
+    // Add a glow
+    float glowSize = 35.f * (1.0f + powerMultiplier * 0.5f); // glow size varies from 35 to 52.5
+    sf::CircleShape glow(glowSize); // larger glow based on power
+    glow.setOrigin(sf::Vector2f(glowSize, glowSize));
+    glow.setPosition(pos);
+    glow.setFillColor(sf::Color(255, 100, 0, 150)); // brighter glow
+    rt.draw(glow);
 }
 

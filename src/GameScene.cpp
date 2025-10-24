@@ -333,6 +333,17 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
 
     // --- exit aiming if ESC or RMB ---
     if (esc || rmb) {
+        // Stop hold for Mage if holding
+        if (isAiming()) {
+            auto* t = getActiveAimingTower();
+            if (t && t->canHold() && t->type() == TowerType::Mage) {
+                MageTower* mage = dynamic_cast<MageTower*>(t);
+                if (mage) {
+                    mage->isHolding_ = false;
+                    mage->holdTime_ = 0.f;
+                }
+            }
+        }
         deselectTower();
     }
 
@@ -355,15 +366,28 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
                 sf::Vector2f d = world - t->pos();
                 if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()) {
                     activeTowerIndex_ = i; // on sélectionne toujours la tour cliquée
+                    // For Mage tower, handle click: if gauge full, fire; else start holding
+                    if (t->type() == TowerType::Mage) {
+                        MageTower* mage = dynamic_cast<MageTower*>(t.get());
+                        if (mage && mage->isGaugeFull()) {
+                            // Fire if gauge is full
+                            t->tryFireAt(world, creeps_);
+                        } else if (mage) {
+                            // Start holding if not full
+                            mage->isHolding_ = true;
+                        }
+                    }
                     break;
                 }
             }
         }
 
-        // --- fire only if we are aiming and release LMB inside range
+        // --- fire only if we are aiming and release LMB inside range (for non-Mage towers)
         if (leftUp && isAiming()) {
             auto* t = getActiveAimingTower();
-            if (t) t->tryFireAt(world, creeps_);
+            if (t && t->type() != TowerType::Mage) {
+                t->tryFireAt(world, creeps_);
+            }
         }
 
 

@@ -61,6 +61,23 @@ struct ArrowProjectile {
     void draw(sf::RenderTarget& rt) const;
 };
 
+struct MageFireProjectile {
+    sf::Vector2f pos, vel;
+    float life = 1.0f;
+    bool  alive = true;
+    float angle = 0.f; // direction angle
+    float powerMultiplier = 1.0f; // power based on hold time
+
+    MageFireProjectile() = default;
+    MageFireProjectile(const MageFireProjectile&) = delete;
+    MageFireProjectile& operator=(const MageFireProjectile&) = delete;
+    MageFireProjectile(MageFireProjectile&&) = default;
+    MageFireProjectile& operator=(MageFireProjectile&&) = default;
+
+    bool update(float dt, CreatureSystem& creeps);
+    void draw(sf::RenderTarget& rt) const;
+};
+
 enum class TowerType { Cannon, Archer, Mage };
 
 struct TowerCost {
@@ -87,6 +104,7 @@ public:
     virtual void extractDrops(std::vector<MaterialDrop>& out) = 0;
     virtual float radius() const = 0;
     virtual void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) = 0;
+    virtual bool canHold() const { return false; }
 };
 
 class CannonTower : public Tower {
@@ -164,8 +182,14 @@ public:
     bool isDead() const override;
     int shotsLeft() const { return shotsLeft_; }
     void extractDrops(std::vector<MaterialDrop>& out) override;
-    float radius() const override { return 120.f; }
+    float radius() const override { return radius_; }
     void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
+    bool canHold() const override { return true; }
+    bool isGaugeFull() const { return holdTime_ >= maxHold_; }
+
+public:
+    bool isHolding_ = false;
+    float holdTime_ = 0.f;
 
 private:
     sf::Vector2f pos_;
@@ -173,5 +197,6 @@ private:
     int shotsLeft_ = DefaultShots;
     float power_ = DefaultPower;
     float radius_ = DefaultRadius;
-    // Ajoutez ici les membres spécifiques au mage (ex: projectiles, cooldown, etc.)
+    float maxHold_ = 2.0f; // max hold time for full power
+    std::vector<MageFireProjectile> projectiles_;
 };
