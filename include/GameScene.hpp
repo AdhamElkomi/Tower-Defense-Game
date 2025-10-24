@@ -38,7 +38,7 @@ private:
     sf::RenderWindow& win_;
 
     // terrain
-    sf::Texture terrain_;
+    std::unique_ptr<sf::Texture> terrain_;
     TileMap     tilemap_;
     Map         map_;
     float       tileSize_ = 64.f;
@@ -48,7 +48,7 @@ private:
     std::mt19937 rng_{ std::random_device{}() };
 
     // bâtiment ressource
-    sf::Texture resourceTex_;
+    std::unique_ptr<sf::Texture> resourceTex_;
     std::unique_ptr<sf::Sprite> resourceSprite_;  // SFML3 : pas de ctor par défaut
     std::unique_ptr<sf::Sprite> resourceShadow_;  // idem
 
@@ -57,14 +57,14 @@ private:
     float gameTime_ = 0.f;
 
     // ===== UI (SFML3: Sprite/Text via pointeurs) =====
-    sf::Texture menuButtonTex_, menuBgTex_;
+    std::unique_ptr<sf::Texture> menuButtonTex_, menuBgTex_;
     std::unique_ptr<sf::Sprite> menuButton_;   // ← était sf::Sprite
     std::unique_ptr<sf::Sprite> menuBg_;       // ← était sf::Sprite
     // GameScene.hpp
     std::unique_ptr<BuildMenu> menu_;
 
 
-    sf::Font    uiFont_;
+    std::unique_ptr<sf::Font>    uiFont_;
     std::unique_ptr<sf::Text> uiTitle_;        // ← était sf::Text
 
     sf::RectangleShape matSlots_[3];
@@ -170,5 +170,31 @@ private:
 
     void generateWaves();
     void spawnNextWave();
+
+    // Audio management
+    void stopGameSceneSounds();
+    void playGameOverSounds();
+
+public:
+    // Game over state
+    bool shouldReturnToMenu() const { return returnToMenu_; }
+
+private:
+    // Game Over Animation
+    bool gameOver_ = false;
+    enum class GameOverState { Pausing, Collapsing, ShowingImage };
+    GameOverState gameOverState_ = GameOverState::Pausing;
+    float collapseTimer_ = 0.f;
+    float collapseDuration_ = 3.f; // seconds
+    sf::Shader pixelShader_;
+    sf::Texture gameOverTexture_;
+    std::unique_ptr<sf::Sprite> gameOverSprite_;
+    sf::Font buttonFont_;
+    std::unique_ptr<Button> returnButton_;
+    bool returnToMenu_ = false;
+    sf::SoundBuffer collapseBuffer_;
+    sf::SoundBuffer gameOverBuffer_;
+    std::optional<sf::Sound> collapseSound_;
+    std::optional<sf::Sound> gameOverSound_;
 
 };

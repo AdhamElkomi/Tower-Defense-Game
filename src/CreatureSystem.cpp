@@ -324,3 +324,15 @@ void CreatureSystem::extractStolen(std::vector<StolenResource>& out) {
     out.insert(out.end(), stolenResources_.begin(), stolenResources_.end());
     stolenResources_.clear();
 }
+
+void CreatureSystem::stopAllCreatureSounds() {
+    // Stop sounds for all alive creatures
+    for (auto& c : alive_) {
+        c->stopAudio();
+    }
+    // Stop any active spawn sounds
+    for (auto& s : activeSounds_) {
+        s.stop();
+    }
+    activeSounds_.clear();
+}

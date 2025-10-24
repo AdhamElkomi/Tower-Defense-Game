@@ -77,6 +77,9 @@ public:
         pendingDrops_.clear();
     }
 
+    // Stop all creature sounds
+    void stopAllCreatureSounds();
+
 
 
 private:

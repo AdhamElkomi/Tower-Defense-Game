@@ -18,6 +18,9 @@ App::App() {
 void App::goToGame(){
     game_ = std::make_unique<GameScene>(window_);
     state_ = State::Game;
+    // Stop menu music and start game music
+    // Note: AudioManager is in MenuScene, so we need to access it differently
+    // For now, we'll handle music in GameScene itself
 }
 
 
@@ -68,6 +71,14 @@ void App::run() {
             game_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
             game_->update(dt);
             game_->draw();
+
+            // Check if game over and return to menu requested
+            if (game_->shouldReturnToMenu()) {
+                state_ = State::Menu;
+                game_.reset(); // Reset game scene
+                menu_ = std::make_unique<MenuScene>(window_);
+                // Note: AudioManager is in MenuScene, so music will be handled there
+            }
         }
 
         window_.display();

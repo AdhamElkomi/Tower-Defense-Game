@@ -99,14 +99,15 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     tileSize_  = 64.f;
      worldW_ = W; worldH_ = H;
 
-    (void)terrain_.loadFromFile("../assets/tiles/terrain_atlas_z.png");
-    terrain_.setSmooth(false);
-    terrain_.setRepeated(false);
+    terrain_ = std::make_unique<sf::Texture>();
+    (void)terrain_->loadFromFile("../assets/tiles/terrain_atlas_z.png");
+    terrain_->setSmooth(false);
+    terrain_->setRepeated(false);
 
     MapGenerator gen;
     map_ = gen.generate(W, H, /*entrées*/1, 2, /*sorties*/1, 2);
 
-    tilemap_.setTexture(terrain_, {64, 64});
+    tilemap_.setTexture(*terrain_, {64, 64});
     tilemap_.build(map_, tileSize_);
 
     setPixelPerfectView(W, H, tileSize_);
@@ -116,14 +117,15 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     trees_.generate(map_, tileSize_, treeCount, rng_, /*roadPaddingTiles=*/1);
 
     {
-        bool ok = resourceTex_.loadFromFile("../assets/buildings/resources_build.jpg");
-        if (!ok) (void)resourceTex_.loadFromFile("../assets/tiles/resources_build-1.png");
-        resourceTex_.setSmooth(false);
+        resourceTex_ = std::make_unique<sf::Texture>();
+        bool ok = resourceTex_->loadFromFile("../assets/buildings/resources_build.jpg");
+        if (!ok) (void)resourceTex_->loadFromFile("../assets/tiles/resources_build-1.png");
+        resourceTex_->setSmooth(false);
 
-        resourceSprite_ = std::make_unique<sf::Sprite>(resourceTex_);
-        resourceShadow_ = std::make_unique<sf::Sprite>(resourceTex_);
+        resourceSprite_ = std::make_unique<sf::Sprite>(*resourceTex_);
+        resourceShadow_ = std::make_unique<sf::Sprite>(*resourceTex_);
 
-        const auto texSz = resourceTex_.getSize();
+        const auto texSz = resourceTex_->getSize();
         const float targetW = 6.f * tileSize_;
         const float targetH = 6.f * tileSize_;
         const float sx = (targetW / static_cast<float>(texSz.x)) * 0.92f;
@@ -195,23 +197,24 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
         spawnNextWave();
     }
 
-// ====== UI – bouton menu ======
-       /*  (void)menuButtonTex_.loadFromFile("../assets/ui/menu_button.png");
-        menuButton_ = std::make_unique<sf::Sprite>(menuButtonTex_);
-        menuButton_->setScale(sf::Vector2f(0.4f, 0.4f));
-        menuButton_->setPosition(sf::Vector2f(20.f, 5.f));
+    // ===== UI =====
+    menuButtonTex_ = std::make_unique<sf::Texture>();
+    (void)menuButtonTex_->loadFromFile("../assets/ui/menu_button.png");
+    menuButtonTex_->setSmooth(false);
+    menuButton_ = std::make_unique<sf::Sprite>(*menuButtonTex_);
+    menuButton_->setScale({0.5f, 0.5f});
 
-        // ====== UI – panneau ======
-        (void)menuBgTex_.loadFromFile("../assets/ui/menu_bg.png");
-        menuBg_ = std::make_unique<sf::Sprite>(menuBgTex_);
-        menuBg_->setScale(sf::Vector2f(1.4f, 1.1f));
+    menuBgTex_ = std::make_unique<sf::Texture>();
+    (void)menuBgTex_->loadFromFile("../assets/ui/menu_bg.png");
+    menuBgTex_->setSmooth(false);
+    menuBg_ = std::make_unique<sf::Sprite>(*menuBgTex_);
+    menuBg_->setScale({0.5f, 0.5f});
 
-        // police / titre
-        if (uiFont_.openFromFile("../assets/fonts/Roboto-Regular_2.ttf")) {  // SFML3
-            uiTitle_ = std::make_unique<sf::Text>(uiFont_, "Armory & Supplies", 28);
-            uiTitle_->setFillColor(sf::Color::White);
-        }*/
-
+    uiFont_ = std::make_unique<sf::Font>();
+    if (uiFont_->openFromFile("../assets/fonts/Roboto-Regular_2.ttf")) {  // SFML3
+        uiTitle_ = std::make_unique<sf::Text>(*uiFont_, "Armory & Supplies", 28);
+        uiTitle_->setFillColor(sf::Color::White);
+    }
 
     // Initialiser le stock de matériaux pour permettre au moins 2 tours de chaque type
     // Coûts max : Mage (0,3,2) x2 = 0 bois, 6 pierre, 4 cristal
@@ -231,12 +234,12 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     }
 
     // boutons unités (ronds) + luminance selon affordability
-   /*  for (int i=0;i<3;++i){
+    for (int i=0;i<3;++i){
         unitBtns_[i] = sf::CircleShape(40.f);
         unitBtns_[i].setFillColor(sf::Color(255,255,255, unitAffordable_[i] ? 255 : 120)); // “luminosité”
         unitBtns_[i].setOutlineThickness(3.f);
         unitBtns_[i].setOutlineColor(sf::Color(30,30,30,220));
-    }*/
+    }
     // GameScene.cpp (fin du constructeur)
     menu_ = std::make_unique<BuildMenu>(win_, tileSize_, map_);
 
@@ -252,6 +255,56 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
 
     // position initiale (fermé)
     updateMenuLayout();
+
+    // Load Game Over assets
+    if (!gameOverTexture_.loadFromFile("../assets/ui/gameover.png")) {
+        // Fallback: create a simple game over texture
+        sf::RenderTexture tempRenderTexture;
+        tempRenderTexture.resize({900, 450});
+        tempRenderTexture.clear(sf::Color::Black);
+        // Draw "GAME OVER" text on the texture
+        sf::Font tempFont;
+        if (tempFont.openFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
+            sf::Text tempText(tempFont, "GAME OVER", 48);
+            tempText.setFillColor(sf::Color::Red);
+            tempText.setStyle(sf::Text::Bold);
+            sf::FloatRect textRect = tempText.getLocalBounds();
+            tempText.setOrigin({textRect.position.x + textRect.size.x / 2.0f, textRect.position.y + textRect.size.y / 2.0f});
+            tempText.setPosition({200.f, 100.f});
+            tempRenderTexture.draw(tempText);
+        }
+        tempRenderTexture.display();
+        gameOverTexture_ = tempRenderTexture.getTexture();
+    }
+    gameOverSprite_ = std::make_unique<sf::Sprite>(gameOverTexture_);
+    gameOverSprite_->setOrigin({gameOverTexture_.getSize().x / 2.0f, gameOverTexture_.getSize().y / 2.0f});
+    gameOverSprite_->setPosition({win_.getSize().x / 2.0f, win_.getSize().y / 2.0f});
+
+    // Load button font and create return button
+    if (!buttonFont_.openFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
+        buttonFont_.openFromFile("../assets/fonts/Roboto-Regular.ttf");
+    }
+    returnButton_ = std::make_unique<Button>(buttonFont_, sf::Vector2f(200.f, 50.f), "Return to Menu", sf::Color(140, 200, 110), sf::Color::White, 3.f);
+    returnButton_->setPosition({win_.getSize().x / 2.0f - 100.f, win_.getSize().y / 2.0f + 190.f});
+
+
+
+    // Load sounds
+    if (collapseBuffer_.loadFromFile("../assets/ui/game_over_sound/collapse.mp3")) {
+        collapseSound_.emplace(collapseBuffer_);
+    }
+    if (gameOverBuffer_.loadFromFile("../assets/ui/game_over_sound/game_over.mp3")) {
+        gameOverSound_.emplace(gameOverBuffer_);
+        // Note: sf::Sound doesn't have setLoop, only sf::Music does
+        // We'll handle looping in update if needed
+    } else if (gameOverBuffer_.loadFromFile("../assets/sfx/game_over.ogg")) {
+        gameOverSound_.emplace(gameOverBuffer_);
+        // Note: sf::Sound doesn't have setLoop, only sf::Music does
+        // We'll handle looping in update if needed
+    }
+
+    // Stop any existing music and start game music
+    // Note: We don't have direct access to AudioManager here, so we'll assume it's handled elsewhere
 }
 
 
@@ -261,6 +314,19 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
 
 // ---- input ----
 void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
+    // Handle return to menu button always
+    if (leftUp && returnButton_) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+        if (returnButton_->bounds().contains(static_cast<sf::Vector2f>(mousePos))) {
+            returnToMenu_ = true;
+        }
+    }
+
+    if (gameOver_ && gameOverState_ == GameOverState::ShowingImage) {
+        return; // Don't process other input when game over
+    }
+
+    if (gameOver_) return; // Don't process input during collapse animation
     sf::Vector2f world = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
     if (leftDown)  menu_->onMousePressed(world);
     if (moved)     menu_->onMouseMoved(world);
@@ -494,59 +560,88 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
 
 // ---- update ----
 void GameScene::update(float dt) {
-    // créatures/time
-    gameTime_ += dt;
-    creeps_.update(dt, gameTime_);
+    if (!gameOver_) {
+        // créatures/time
+        gameTime_ += dt;
+        creeps_.update(dt, gameTime_);
 
-    // ====== ★ NEW : animation du menu ======
-    float target = menuOpen_ ? 1.f : 0.f;
-    if (menuAnim_ < target) menuAnim_ = std::min(target, menuAnim_ + dt * menuAnimSpeed_);
-    if (menuAnim_ > target) menuAnim_ = std::max(target, menuAnim_ - dt * menuAnimSpeed_);
-    menuAlpha_ = 255.f * menuAnim_;
+        // ====== ★ NEW : animation du menu ======
+        float target = menuOpen_ ? 1.f : 0.f;
+        if (menuAnim_ < target) menuAnim_ = std::min(target, menuAnim_ + dt * menuAnimSpeed_);
+        if (menuAnim_ > target) menuAnim_ = std::max(target, menuAnim_ - dt * menuAnimSpeed_);
+        menuAlpha_ = 255.f * menuAnim_;
 
-    menu_->update(dt);
-    updateMenuLayout();
+        menu_->update(dt);
+        updateMenuLayout();
 
-    // towers (générique)
-    for (auto& t : towers_) t->update(dt, creeps_);
-    towers_.erase(
-        std::remove_if(towers_.begin(), towers_.end(),
-                       [](const std::unique_ptr<Tower>& t){ return t->isDead(); }),
-        towers_.end()
-    );
-    for (auto& t : towers_) t->extractDrops(pendingDrops_);
+        // towers (générique)
+        for (auto& t : towers_) t->update(dt, creeps_);
+        towers_.erase(
+            std::remove_if(towers_.begin(), towers_.end(),
+                           [](const std::unique_ptr<Tower>& t){ return t->isDead(); }),
+            towers_.end()
+        );
+        for (auto& t : towers_) t->extractDrops(pendingDrops_);
 
-    // Also collect any drops the CreatureSystem queued internally (safety)
-    creeps_.extractPendingDrops(pendingDrops_);
+        // Also collect any drops the CreatureSystem queued internally (safety)
+        creeps_.extractPendingDrops(pendingDrops_);
 
-    // Collect collected resources from creatures (near resource)
-    std::vector<CreatureSystem::CollectedResource> collected;
-    creeps_.extractCollected(collected);
-    for (const auto& c : collected) {
-        // No resource deduction here, just animation
-        // Add animation for collected resources
-        stolenAnimations_.push_back({c.pos, "Stealing!", 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
-    }
-
-    // Collect stolen resources from creatures (reached exit with resource)
-    std::vector<CreatureSystem::StolenResource> stolen;
-    creeps_.extractStolen(stolen);
-    for (const auto& c : stolen) {
-        int points = 0;
-        switch (c.type) {
-            case CreatureType::Grunt: points = 2; break;
-            case CreatureType::Rogue: points = 1; break;
-            case CreatureType::Golem: points = 3; break;
+        // Collect collected resources from creatures (near resource)
+        std::vector<CreatureSystem::CollectedResource> collected;
+        creeps_.extractCollected(collected);
+        for (const auto& c : collected) {
+            // No resource deduction here, just animation
+            // Add animation for collected resources
+            stolenAnimations_.push_back({c.pos, "Stealing!", 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
         }
-        resourceCount_ -= points;
-        if (resourceCount_ < 0) resourceCount_ = 0; // Prevent negative
-        // Add animation for stolen resources
-        stolenAnimations_.push_back({c.pos, "-" + std::to_string(points), 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
-    }
 
-    // Check if it's time to spawn the next wave
-    if (currentWaveIndex_ < waves_.size() && gameTime_ >= waves_[currentWaveIndex_].spawnTime) {
-        spawnNextWave();
+        // Collect stolen resources from creatures (reached exit with resource)
+        std::vector<CreatureSystem::StolenResource> stolen;
+        creeps_.extractStolen(stolen);
+        for (const auto& c : stolen) {
+            int points = 0;
+            switch (c.type) {
+                case CreatureType::Grunt: points = 2; break;
+                case CreatureType::Rogue: points = 1; break;
+                case CreatureType::Golem: points = 3; break;
+            }
+            resourceCount_ -= points;
+            if (resourceCount_ < 0) resourceCount_ = 0; // Prevent negative
+            // Add animation for stolen resources
+            stolenAnimations_.push_back({c.pos, "-" + std::to_string(points), 2.0f, 1.0f, sf::Vector2f(0.f, 0.f), 255.f}); // 2 seconds lifetime, initial scale 1.0, no offset, full alpha
+        }
+
+        // Check for game over
+        if (resourceCount_ <= 0) {
+            gameOver_ = true;
+            gameOverState_ = GameOverState::Pausing;
+            collapseTimer_ = 0.f;
+            creeps_.stopAllCreatureSounds(); // Stop all creature sounds on game over
+            if (collapseSound_) {
+                collapseSound_->play();
+            }
+        }
+
+        // Check if it's time to spawn the next wave
+        if (currentWaveIndex_ < waves_.size() && gameTime_ >= waves_[currentWaveIndex_].spawnTime) {
+            spawnNextWave();
+        }
+    } else {
+        // Update game over animation
+        if (gameOverState_ == GameOverState::Pausing) {
+            collapseTimer_ += dt;
+            if (collapseTimer_ >= 1.0f) { // Pause for 1 second
+                gameOverState_ = GameOverState::Collapsing;
+                collapseTimer_ = 0.f;
+            }
+        } else if (gameOverState_ == GameOverState::Collapsing) {
+            collapseTimer_ += dt;
+            if (collapseTimer_ >= collapseDuration_) {
+                gameOverState_ = GameOverState::ShowingImage;
+                playGameOverSounds();
+                // Scale game over image to cover entire window
+            }
+        }
     }
 
     // Update stolen animations
@@ -675,6 +770,97 @@ void GameScene::draw() {
         win_.draw(animText);
     }
 
+    // Draw game over animation
+    if (gameOver_) {
+        if (gameOverState_ == GameOverState::Pausing) {
+            // Game is paused, no drawing changes yet
+        } else if (gameOverState_ == GameOverState::Collapsing) {
+            // Apply pixelation shader to the entire screen
+            sf::RenderTexture renderTexture;
+            renderTexture.resize({win_.getSize().x, win_.getSize().y});
+            renderTexture.clear(sf::Color::Transparent);
+
+            // Note: In SFML 3, capturing the screen requires different approach
+            // For now, we'll create a pixelation effect on a full-screen quad
+
+            sf::RectangleShape screenQuad({win_.getSize().x, win_.getSize().y});
+            screenQuad.setPosition({0.f, 0.f});
+            screenQuad.setFillColor(sf::Color::White);
+
+            // Load pixelation shader if not loaded
+            if (!pixelShader_.isAvailable()) {
+                const std::string vertexShader = R"(
+                    void main() {
+                        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                        gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+                    }
+                )";
+                const std::string fragmentShader = R"(
+                    uniform sampler2D texture;
+                    uniform float pixelSize;
+                    uniform float time;
+                    uniform float screenWidth;
+                    uniform float screenHeight;
+
+                    void main() {
+                        vec2 texCoord = gl_TexCoord[0].xy;
+                        // Create a wave-like distortion effect
+                        float wave = sin(texCoord.y * 10.0 + time * 5.0) * 0.01;
+                        texCoord.x += wave;
+
+                        // Pixelation effect
+                        float pixel = pixelSize + (time * 30.0);
+                        vec2 pixelated = floor(texCoord * pixel) / pixel;
+
+                        // Add some color distortion
+                        vec4 color = texture2D(texture, pixelated);
+                        color.r += sin(time * 2.0) * 0.1;
+                        color.g += cos(time * 3.0) * 0.1;
+                        color.b += sin(time * 4.0) * 0.1;
+
+                        // Fade to black as time progresses
+                        float fade = 1.0 - (time / 3.0);
+                        color *= fade;
+
+                        gl_FragColor = color;
+                    }
+                )";
+                pixelShader_.loadFromMemory(vertexShader, fragmentShader);
+            }
+
+            float pixelSize = 1.f + (collapseTimer_ / collapseDuration_) * 50.f;
+            pixelShader_.setUniform("pixelSize", pixelSize);
+            pixelShader_.setUniform("time", collapseTimer_);
+            pixelShader_.setUniform("screenWidth", static_cast<float>(win_.getSize().x));
+            pixelShader_.setUniform("screenHeight", static_cast<float>(win_.getSize().y));
+
+            win_.draw(screenQuad, &pixelShader_);
+        } else if (gameOverState_ == GameOverState::ShowingImage) {
+            // Set view to default to cover entire window
+            win_.setView(win_.getDefaultView());
+
+            // Draw full black background
+            sf::RectangleShape blackBg({win_.getSize().x, win_.getSize().y});
+            blackBg.setPosition({0.f, 0.f});
+            blackBg.setFillColor(sf::Color::Black);
+            win_.draw(blackBg);
+
+            // Scale game over image to cover entire window
+            float scaleX = static_cast<float>(win_.getSize().x) / gameOverTexture_.getSize().x;
+            float scaleY = static_cast<float>(win_.getSize().y) / gameOverTexture_.getSize().y;
+            float scale = std::max(scaleX, scaleY);
+            gameOverSprite_->setScale(sf::Vector2f(scale+0.4f, scale+0.4f));
+
+            // Draw game over image
+            win_.draw(*gameOverSprite_);
+
+            // Draw return button
+            if (returnButton_) {
+                returnButton_->draw(win_);
+            }
+        }
+    }
+
 }
 
 // ====== ★ NEW : layout + draw menu ======
@@ -738,8 +924,8 @@ void GameScene::drawMenu(){
     for (int i=0;i<3;++i){
         win_.draw(matSlots_[i]);
 
-        sf::Text count(uiFont_, "", 18);  
-        if (!uiFont_.getInfo().family.empty()) count.setFont(uiFont_);
+        sf::Text count(*uiFont_, "", 18);
+        if (!uiFont_->getInfo().family.empty()) count.setFont(*uiFont_);
         count.setString(std::to_string(materialCount_[i]));
         count.setCharacterSize(18);
         count.setFillColor(sf::Color::Black);
@@ -775,6 +961,20 @@ void GameScene::spawnNextWave() {
         float speedMultiplier = 1.0f + static_cast<float>(currentWaveIndex_) * 0.1f; // Increase speed by 10% per wave
         creeps_.spawnWave(wave.grunt, wave.rogue, wave.golem, wave.spawnTime, 0.5f / speedMultiplier); // Adjust period for speed
         currentWaveIndex_++;
+    }
+}
+
+void GameScene::stopGameSceneSounds() {
+    // Stop any game-related sounds
+    // Note: We don't have direct access to AudioManager, so we can't stop music here
+    // This would need to be handled at the App level
+}
+
+void GameScene::playGameOverSounds() {
+    // Stop game scene sounds and play game over sounds
+    stopGameSceneSounds();
+    if (gameOverSound_) {
+        gameOverSound_->play();
     }
 }
 
