@@ -3,6 +3,8 @@
 #include <memory>
 #include <random>
 #include <cstdint>                // ← pour std::uint8_t
+#include <unordered_map>
+#include <optional>
 
 #include "MapGenerator.hpp"
 #include "TileMap.hpp"
@@ -197,4 +199,24 @@ private:
     std::optional<sf::Sound> collapseSound_;
     std::optional<sf::Sound> gameOverSound_;
 
+    // Drop system
+    enum class DropType { Wood, Stone, Crystal, Resource };
+    struct Drop {
+        DropType type;
+        sf::Vector2f pos;
+        float lifetime;
+        sf::Sprite sprite;
+        Drop(DropType t, sf::Vector2f p, float lt, sf::Sprite s) : type(t), pos(p), lifetime(lt), sprite(std::move(s)) {}
+    };
+    std::vector<Drop> drops_;
+    std::unordered_map<DropType, std::unique_ptr<sf::Texture>> dropTextures_;
+    int totalKills_ = 0;
+    float dropSpawnInterval_ = 20.f; // 3 per minute = every 20 seconds
+    float lastDropSpawnTime_ = 0.f;
+
+    void loadDropTextures();
+    void spawnDrop();
+    void updateDrops(float dt);
+    void handleDropClick(sf::Vector2f clickPos);
+    void drawDrops();
 };

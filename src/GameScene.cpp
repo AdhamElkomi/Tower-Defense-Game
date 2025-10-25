@@ -456,6 +456,11 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
             }
         }
 
+        // Handle drop clicks
+        if (leftUp) {
+            handleDropClick(world);
+        }
+
 
 
 
@@ -661,12 +666,15 @@ void GameScene::update(float dt) {
         }
     }
 
+    // Update drops
+    updateDrops(dt);
+
     // Credit inventory
     for (const auto& d : pendingDrops_) {
         switch (d.type) {
-            case Material::Wood:    materialCount_[0]++; break;
-            case Material::Stone:   materialCount_[1]++; break;
-            case Material::Crystal: materialCount_[2]++; break;
+            case Material::Wood:    materialCount_[0]++; totalKills_++; break;
+            case Material::Stone:   materialCount_[1]++; totalKills_++; break;
+            case Material::Crystal: materialCount_[2]++; totalKills_++; break;
         }
     }
     pendingDrops_.clear();
@@ -769,6 +777,9 @@ void GameScene::draw() {
         animText.setScale(sf::Vector2f(anim.scale, anim.scale));
         win_.draw(animText);
     }
+
+    // Draw drops
+    drawDrops();
 
     // Draw game over animation
     if (gameOver_) {
@@ -975,6 +986,132 @@ void GameScene::playGameOverSounds() {
     stopGameSceneSounds();
     if (gameOverSound_) {
         gameOverSound_->play();
+    }
+}
+
+void GameScene::loadDropTextures() {
+    dropTextures_[DropType::Wood] = std::make_unique<sf::Texture>();
+    if (!dropTextures_[DropType::Wood]->loadFromFile("../assets/ui/ico_drop/ico_wood.png")) {
+        // Handle error if needed
+    }
+    dropTextures_[DropType::Wood]->setSmooth(false);
+
+    dropTextures_[DropType::Stone] = std::make_unique<sf::Texture>();
+    if (!dropTextures_[DropType::Stone]->loadFromFile("../assets/ui/ico_drop/ico_stone.png")) {
+        // Handle error if needed
+    }
+    dropTextures_[DropType::Stone]->setSmooth(false);
+
+    dropTextures_[DropType::Crystal] = std::make_unique<sf::Texture>();
+    if (!dropTextures_[DropType::Crystal]->loadFromFile("../assets/ui/ico_drop/ico_crystal.png")) {
+        // Handle error if needed
+    }
+    dropTextures_[DropType::Crystal]->setSmooth(false);
+
+    dropTextures_[DropType::Resource] = std::make_unique<sf::Texture>();
+    if (!dropTextures_[DropType::Resource]->loadFromFile("../assets/ui/ico_drop/ico_ressource.png")) {
+        // Handle error if needed
+    }
+    dropTextures_[DropType::Resource]->setSmooth(false);
+}
+
+void GameScene::spawnDrop() {
+    if (dropTextures_.empty()) loadDropTextures();
+
+    // Random drop type based on rarity (more kills = higher chance for better drops)
+    float rarity = static_cast<float>(totalKills_) / 100.f; // Example: every 100 kills increase rarity
+    rarity = std::min(rarity, 1.f); // Cap at 1.0
+
+    DropType type;
+    float rand = static_cast<float>(rng_()) / static_cast<float>(rng_.max());
+    if (rand < 0.4f - rarity * 0.2f) { // Wood: 40% - 20% = 20% at max rarity
+        type = DropType::Wood;
+    } else if (rand < 0.7f - rarity * 0.3f) { // Stone: 30% - 30% = 0% at max rarity
+        type = DropType::Stone;
+    } else if (rand < 0.9f - rarity * 0.1f) { // Crystal: 20% - 10% = 10% at max rarity
+        type = DropType::Crystal;
+    } else { // Resource: 10% + rarity adjustments
+        type = DropType::Resource;
+    }
+
+    // Random valid position on the map (Water or Forest tiles that are unoccupied)
+    sf::Vector2f pos;
+    int attempts = 0;
+    do {
+        int tx = rng_() % worldW_;
+        int ty = rng_() % worldH_;
+        const auto& tile = map_.at(tx, ty);
+        if ((tile.ground == Tile::Water || tile.ground == Tile::Forest) && !buildOcc_[ty * worldW_ + tx]) {
+            pos.x = static_cast<float>(tx) * tileSize_;
+            pos.y = static_cast<float>(ty) * tileSize_;
+            break;
+        }
+        attempts++;
+    } while (attempts < 100); // Prevent infinite loop
+    if (attempts >= 100) {
+        // Fallback to random position if no valid tile found
+        pos.x = static_cast<float>(rng_() % worldW_) * tileSize_;
+        pos.y = static_cast<float>(rng_() % worldH_) * tileSize_;
+    }
+
+    sf::Sprite sprite(*dropTextures_[type]);
+    sprite.setPosition(pos);
+    sprite.setScale({0.1f, 0.1f}); // Smaller size
+    sprite.setOrigin({sprite.getLocalBounds().size.x / 2.f, sprite.getLocalBounds().size.y / 2.f});
+
+    Drop drop(type, pos, 15.f, std::move(sprite)); // 15 seconds lifetime
+
+    drops_.push_back(drop);
+}
+
+void GameScene::updateDrops(float dt) {
+    // Spawn drops periodically (3 per minute = every 20 seconds)
+    lastDropSpawnTime_ += dt;
+    if (lastDropSpawnTime_ >= 20.f) {
+        spawnDrop();
+        lastDropSpawnTime_ = 0.f;
+    }
+
+    // Update existing drops
+    for (auto it = drops_.begin(); it != drops_.end(); ) {
+        it->lifetime -= dt;
+        if (it->lifetime <= 0) {
+            it = drops_.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void GameScene::handleDropClick(sf::Vector2f clickPos) {
+    for (auto it = drops_.begin(); it != drops_.end(); ++it) {
+        sf::FloatRect bounds = it->sprite.getGlobalBounds();
+        if (bounds.contains(clickPos)) {
+            // Collect the drop
+            switch (it->type) {
+                case DropType::Wood:
+                    materialCount_[0]++;
+                    break;
+                case DropType::Stone:
+                    materialCount_[1]++;
+                    break;
+                case DropType::Crystal:
+                    materialCount_[2]++;
+                    break;
+                case DropType::Resource:
+                    resourceCount_++;
+                    break;
+            }
+            // Remove the drop
+            drops_.erase(it);
+            break; // Only collect one drop per click
+        }
+    }
+}
+
+void GameScene::drawDrops() {
+    for (const auto& drop : drops_) {
+        win_.draw(drop.sprite);
     }
 }
 

@@ -1,2 +1,11 @@
 - [x] Add stopAllCreatureSounds method to CreatureSystem
 - [x] Call stopAllCreatureSounds when game over is triggered in GameScene
+- [x] Implement drop system: clickable icons spawning randomly on valid tiles, giving materials (+1) or resources (+2), rarity based on kills, disappear after 15s or on click, 3/minute
+  - [x] Add Drop struct and vector to GameScene
+  - [x] Add totalKills_ counter
+  - [x] Add dropSpawnTimer_ and lastSpawnTime_
+  - [x] Load drop textures in constructor
+  - [x] Implement spawnDrop() function
+  - [x] Update drops in update() method
+  - [x] Handle drop clicks in handleInput()
+  - [x] Draw drops in draw() method
