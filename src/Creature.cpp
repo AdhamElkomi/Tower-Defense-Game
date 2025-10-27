@@ -75,6 +75,20 @@ void Creature::hit(int dmg){
 }
 
 void Creature::update(float dt){
+    // Burn damage over time
+    if (burnTime_ > 0.f) {
+        burnTime_ -= dt;
+        if (burnTime_ <= 0.f) {
+            burnTime_ = 0.f;
+            burnDamage_ = 0.f;
+        } else {
+            int burnDmg = static_cast<int>(burnDamage_ * dt);
+            if (burnDmg > 0) {
+                hit(burnDmg);
+            }
+        }
+    }
+
     // Mouvement
     if (pathIdx_+1 < path_.pts.size()){
         sf::Vector2f target = path_.pts[pathIdx_+1];
@@ -115,6 +129,20 @@ void Creature::draw(sf::RenderTarget& rt) const{
     // rt.draw(shadow);
 
     rt.draw(sprite_);
+
+    // Burn effect: fire particles if burning
+    if (burnTime_ > 0.f) {
+        // Draw 3-5 small fire particles around the creature
+        for (int i = 0; i < 5; ++i) {
+            float angle = (i * 72.f) * 3.14159f / 180.f; // 72 degrees apart
+            sf::Vector2f offset(std::cos(angle) * 10.f, std::sin(angle) * 10.f);
+            sf::CircleShape flame(3.f + (i % 2) * 2.f);
+            flame.setOrigin(sf::Vector2f(flame.getRadius(), flame.getRadius()));
+            flame.setPosition(pos_ + offset);
+            flame.setFillColor(sf::Color(255, 100 + i * 20, 0, 200));
+            rt.draw(flame);
+        }
+    }
 
     // Barre de vie (au-dessus)
     float w = def_.frameSize.x * def_.scale * 0.5;

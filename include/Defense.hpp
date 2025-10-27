@@ -63,10 +63,12 @@ struct ArrowProjectile {
 
 struct MageFireProjectile {
     sf::Vector2f pos, vel;
-    float life = 1.0f;
+    float life = 3.0f; // longer life for dragon breath effect
     bool  alive = true;
     float angle = 0.f; // direction angle
     float powerMultiplier = 1.0f; // power based on hold time
+    std::vector<sf::Vector2f> trail; // for particle trail
+    float trailTimer = 0.f;
 
     MageFireProjectile() = default;
     MageFireProjectile(const MageFireProjectile&) = delete;
@@ -105,6 +107,7 @@ public:
     virtual float radius() const = 0;
     virtual void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) = 0;
     virtual bool canHold() const { return false; }
+    virtual void startHolding() {}
 };
 
 class CannonTower : public Tower {
@@ -170,8 +173,8 @@ private:
 
 class MageTower : public Tower {
 public:
-    static constexpr int DefaultShots = 10; // mage = le plus puissant mais moins d'attaques
-    static constexpr float DefaultPower = 80.f;
+    static constexpr int DefaultShots = 5; // mage = le plus puissant mais moins d'attaques
+    static constexpr float DefaultPower = 120.f;
     static constexpr float DefaultRadius = 550.f; // Reduced range
 public:
     MageTower(sf::Vector2f center, const sf::Texture& baseTex);
@@ -186,6 +189,7 @@ public:
     void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
     bool canHold() const override { return true; }
     bool isGaugeFull() const { return holdTime_ >= maxHold_; }
+    void startHolding() override;
 
 public:
     bool isHolding_ = false;
@@ -198,5 +202,6 @@ private:
     float power_ = DefaultPower;
     float radius_ = DefaultRadius;
     float maxHold_ = 2.0f; // max hold time for full power
+    float rechargeCooldown_ = 0.f; // cooldown after firing before recharging gauge
     std::vector<MageFireProjectile> projectiles_;
 };

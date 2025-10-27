@@ -168,22 +168,63 @@ MageTower::MageTower(sf::Vector2f center, const sf::Texture& baseTex)
     base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
     base_.setPosition(pos_);
     base_.setScale(sf::Vector2f(0.5f, 0.5f));
+    isHolding_ = true; // Start holding automatically upon placement
 }
 
 void MageTower::update(float dt, CreatureSystem& creeps) {
-    // Handle hold mechanics
+    // Handle recharge cooldown after firing
+    if (rechargeCooldown_ > 0.f) {
+        rechargeCooldown_ -= dt;
+        if (rechargeCooldown_ <= 0.f) {
+            // Start recharging gauge after cooldown
+            isHolding_ = true;
+            holdTime_ = 0.f;
+        }
+    }
+
+    // Handle hold mechanics (recharging gauge)
     if (isHolding_) {
         holdTime_ += dt;
         if (holdTime_ > maxHold_) holdTime_ = maxHold_;
     }
 
+    // Automatic firing when gauge is full
+    if (isGaugeFull() && shotsLeft_ > 0) {
+        sf::Vector2f target = creeps.findClosestInRange(pos_, radius_);
+        if (target != sf::Vector2f(0, 0)) { // valid target found
+            // Fire sweeping arc of 7 projectiles in a fan towards the target direction
+            sf::Vector2f dir = target - pos_;
+            float baseAngle = std::atan2(dir.y, dir.x);
+            float arcAngle = 120.f * 3.14159f / 180.f; // 120 degrees arc
+            int numProjectiles = 7;
+            float angleStep = arcAngle / (numProjectiles - 1);
+
+            for (int i = 0; i < numProjectiles; ++i) {
+                float angle = baseAngle - arcAngle/2 + i * angleStep;
+                MageFireProjectile proj;
+                proj.pos = pos_;
+                proj.vel = sf::Vector2f(std::cos(angle), std::sin(angle)) * 250.f; // moderate speed
+                proj.angle = angle;
+                proj.life = radius_ / 250.f; // reach max range
+                proj.powerMultiplier = 1.0f; // full power
+                projectiles_.push_back(std::move(proj));
+            }
+
+            // Reset hold, start recharge cooldown, and consume shot
+            isHolding_ = false;
+            holdTime_ = 0.f;
+            rechargeCooldown_ = 2.0f; // 2 second cooldown before recharging
+            shotsLeft_--;
+        }
+    }
+
     // Update projectiles
     for (auto& proj : projectiles_) {
         if (proj.update(dt, creeps)) {
-            // Hit something, apply damage using stored powerMultiplier
+            // Hit something, apply damage + burn using stored powerMultiplier
             float damage = power_ * (1.0f + proj.powerMultiplier);
             std::vector<MaterialDrop> drops;
-            creeps.applyDamagePoint(proj.pos, damage, 30.f, drops);
+            creeps.applyDamagePoint(proj.pos, damage, 25.f, drops, true, 3.0f, 15.f); // burn for 3s at 15 DPS
             // Queue impacts or effects if needed
         }
     }
@@ -234,6 +275,10 @@ void MageTower::draw(sf::RenderTarget& rt, bool showRadius) const {
 sf::Vector2f MageTower::pos() const { return pos_; }
 bool MageTower::isDead() const { return shotsLeft_ <= 0; }
 void MageTower::extractDrops(std::vector<MaterialDrop>& out) { /* TODO: drops spécifiques */ }
+
+void MageTower::startHolding() {
+    isHolding_ = true;
+}
 
 
 
@@ -462,32 +507,59 @@ bool MageFireProjectile::update(float dt, CreatureSystem& creeps){
     if (!alive) return false;
     pos += vel * dt;
     life -= dt;
+
+    // Add trail particles
+    trailTimer += dt;
+    if (trailTimer >= 0.05f) { // every 0.05s
+        trail.push_back(pos);
+        if (trail.size() > 20) trail.erase(trail.begin()); // limit trail length
+        trailTimer = 0.f;
+    }
+
     if (life <= 0.f){ alive = false; return true; } // reached range
 
-    // Check for hits
+    // Check for hits during movement (continuous damage)
     std::vector<MaterialDrop> dummyDrops;
-    if (creeps.applyDamagePoint(pos, 0.f, 15.f, dummyDrops)) { // small hit radius
-        alive = false;
-        return true; // hit
+    if (creeps.applyDamagePoint(pos, 25.f, 0.f, dummyDrops, true, 0.1f, 5.f)) { // small damage radius, short burn
+        // Don't kill projectile on hit, let it continue sweeping
+        // alive = false; // commented out to allow continuous damage
+        // return true; // commented out
     }
-    return false;
+    return false; // no hit to report for projectile lifetime
 }
 
 void MageFireProjectile::draw(sf::RenderTarget& rt) const{
-    float baseSize = 20.f; // increased base size for visibility
-    float size = baseSize * (1.0f + powerMultiplier * 0.5f); // size varies from 20 to 30
-    sf::CircleShape fire(size); // larger fire balls based on power
+    // Draw thicker trail particles for sweeping wave effect
+    for (size_t i = 0; i < trail.size(); ++i) {
+        float alpha = (float)i / trail.size() * 255.f;
+        sf::CircleShape particle(8.f); // larger particles for thickness
+        particle.setOrigin(sf::Vector2f(8.f, 8.f));
+        particle.setPosition(trail[i]);
+        particle.setFillColor(sf::Color(255, 100, 0, static_cast<std::uint8_t>(alpha))); // fading orange
+        rt.draw(particle);
+    }
+
+    float baseSize = 35.f; // even larger for imposing wave
+    float size = baseSize * (1.0f + powerMultiplier * 0.5f); // size varies from 35 to 52.5
+    sf::CircleShape fire(size); // massive fire balls
     fire.setOrigin(sf::Vector2f(size, size));
     fire.setPosition(pos);
-    fire.setFillColor(sf::Color(255, 69, 0, 255)); // brighter orange-red fire
+    fire.setFillColor(sf::Color(255, 69, 0, 255)); // bright orange-red
     rt.draw(fire);
 
-    // Add a glow
-    float glowSize = 35.f * (1.0f + powerMultiplier * 0.5f); // glow size varies from 35 to 52.5
-    sf::CircleShape glow(glowSize); // larger glow based on power
+    // Add a stronger glow for wave effect
+    float glowSize = 70.f * (1.0f + powerMultiplier * 0.5f); // glow size varies from 70 to 105
+    sf::CircleShape glow(glowSize);
     glow.setOrigin(sf::Vector2f(glowSize, glowSize));
     glow.setPosition(pos);
-    glow.setFillColor(sf::Color(255, 100, 0, 150)); // brighter glow
+    glow.setFillColor(sf::Color(255, 140, 0, 120)); // brighter, more yellow glow
     rt.draw(glow);
+
+    // Add inner core for intensity
+    sf::CircleShape core(size * 0.6f);
+    core.setOrigin(sf::Vector2f(size * 0.6f, size * 0.6f));
+    core.setPosition(pos);
+    core.setFillColor(sf::Color(255, 255, 0, 220)); // yellow core
+    rt.draw(core);
 }
 

@@ -84,6 +84,17 @@ private:
     // Resource collection flag
     bool collectedResource_ = false;
 
+    // Burn status
+    float burnTime_ = 0.f;      // seconds remaining
+    float burnDamage_ = 0.f;    // damage per second
+
+public:
+    // Public accessors for burn status
+    void applyBurn(float time, float dps) {
+        burnTime_ = std::max(burnTime_, time);
+        burnDamage_ = std::max(burnDamage_, dps);
+    }
+
     // audio loop (créé seulement si un buffer est fourni)
     std::unique_ptr<sf::Sound> loop_;
 };

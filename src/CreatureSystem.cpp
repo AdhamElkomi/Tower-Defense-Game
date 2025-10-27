@@ -1,7 +1,8 @@
 #include "CreatureSystem.hpp"
 #include <algorithm>
-#include <SFML/Audio.hpp> 
+#include <SFML/Audio.hpp>
 #include <cmath>
+#include <cfloat>
 
 CreatureSystem::CreatureSystem(float tileSize) : tileSize_(tileSize) {}
 
@@ -274,7 +275,7 @@ void CreatureSystem::draw(sf::RenderTarget& rt) const{
 
 
 int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
-                                     std::vector<MaterialDrop>& outDrops)
+                                     std::vector<MaterialDrop>& outDrops, bool applyBurn, float burnTime, float burnDps)
 {
     int killed = 0;
 
@@ -283,6 +284,10 @@ int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
         sf::Vector2f d = c->pos() - center;
         if (d.x*d.x + d.y*d.y <= radius*radius) {
             c->hit(dmg);
+            // Apply burn if specified
+            if (applyBurn && burnTime > 0.f && burnDps > 0.f) {
+                c->applyBurn(burnTime, burnDps);
+            }
             if (c->isDead()) {
                 // ----- loot table -----
                 switch (c->def_.type) {
@@ -335,4 +340,23 @@ void CreatureSystem::stopAllCreatureSounds() {
         s.stop();
     }
     activeSounds_.clear();
+}
+
+sf::Vector2f CreatureSystem::findClosestInRange(sf::Vector2f center, float radius) const {
+    sf::Vector2f closest = {FLT_MAX, FLT_MAX};
+    float minDistSq = FLT_MAX;
+    float r2 = radius * radius;
+
+    for (const auto& c : alive_) {
+        if (!c) continue;
+        sf::Vector2f pos = c->pos();
+        sf::Vector2f d = pos - center;
+        float distSq = d.x * d.x + d.y * d.y;
+        if (distSq <= r2 && distSq < minDistSq) {
+            minDistSq = distSq;
+            closest = pos;
+        }
+    }
+
+    return (closest.x == FLT_MAX) ? sf::Vector2f(0, 0) : closest; // Return (0,0) if no creature found
 }

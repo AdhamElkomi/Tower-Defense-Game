@@ -432,15 +432,11 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
                 sf::Vector2f d = world - t->pos();
                 if (d.x*d.x + d.y*d.y <= t->radius()*t->radius()) {
                     activeTowerIndex_ = i; // on sélectionne toujours la tour cliquée
-                    // For Mage tower, handle click: if gauge full, fire; else start holding
+                    // For Mage tower, handle click: start holding
                     if (t->type() == TowerType::Mage) {
                         MageTower* mage = dynamic_cast<MageTower*>(t.get());
-                        if (mage && mage->isGaugeFull()) {
-                            // Fire if gauge is full
-                            t->tryFireAt(world, creeps_);
-                        } else if (mage) {
-                            // Start holding if not full
-                            mage->isHolding_ = true;
+                        if (mage) {
+                            mage->startHolding();
                         }
                     }
                     break;
@@ -453,6 +449,12 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
             auto* t = getActiveAimingTower();
             if (t && t->type() != TowerType::Mage) {
                 t->tryFireAt(world, creeps_);
+            } else if (t && t->type() == TowerType::Mage) {
+                // For Mage, release to fire if gauge full
+                MageTower* mage = dynamic_cast<MageTower*>(t);
+                if (mage && mage->isGaugeFull()) {
+                    t->tryFireAt(world, creeps_);
+                }
             }
         }
 
@@ -543,7 +545,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                 }
                 break;
             case BuildMenu::Unit::Mage:
-                newRadius = MageTower::DefaultRadius; 
+                newRadius = MageTower::DefaultRadius;
                 if (mageTex_.getSize().x == 0) {
                     (void)mageTex_.loadFromFile("../assets/ui/tower_build/mage.png");
                     mageTex_.setSmooth(false);
@@ -552,7 +554,9 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costMage_.wood;
                     materialCount_[1] -= costMage_.stone;
                     materialCount_[2] -= costMage_.crystal;
-                    towers_.push_back(std::make_unique<MageTower>(center, mageTex_));
+                    auto mage = std::make_unique<MageTower>(center, mageTex_);
+                    mage->startHolding(); // Start charging immediately
+                    towers_.push_back(std::move(mage));
                 }
                 break;
             default:

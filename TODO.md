@@ -9,3 +9,10 @@
   - [x] Update drops in update() method
   - [x] Handle drop clicks in handleInput()
   - [x] Draw drops in draw() method
+- [ ] Implement mage tower automatic firing
+  - [ ] Change MageTower::DefaultShots to 5
+  - [ ] Add findClosestInRange method to CreatureSystem
+  - [ ] Add startHolding virtual method to Tower base, override in MageTower
+  - [ ] Modify MageTower::update for auto-fire when gauge full
+  - [ ] Call startHolding on mage placement in GameScene::placeTower
+  - [ ] Remove mage user interaction in GameScene::handleInput

@@ -69,7 +69,7 @@ public:
      // Returns true if something was hit.
     bool hitFirstAt(sf::Vector2f p, float r, int dmg);
     int applyDamagePoint(sf::Vector2f center, float radius, int dmg,
-                                     std::vector<MaterialDrop>& outDrops);
+                                     std::vector<MaterialDrop>& outDrops, bool applyBurn = false, float burnTime = 0.f, float burnDps = 0.f);
 
     // NEW: move pending drops out (for GameScene)
     void extractPendingDrops(std::vector<MaterialDrop>& out) {
@@ -79,6 +79,9 @@ public:
 
     // Stop all creature sounds
     void stopAllCreatureSounds();
+
+    // Find closest creature in range
+    sf::Vector2f findClosestInRange(sf::Vector2f center, float radius) const;
 
 
 
