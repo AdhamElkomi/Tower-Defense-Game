@@ -67,16 +67,17 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     btnDifficulty_.emplace(font_, btnSize, "DIFFICULTY", sf::Color(76,175,80),  sf::Color::White, 3.f);
     btnExit_.emplace(font_, btnSize, "EXIT",       sf::Color(244,67,54),  sf::Color::White, 3.f);
 
-
     btnStart_->setHoverTint(theme_.btnHover);
     btnDifficulty_->setHoverTint(theme_.btnHover);
     btnExit_->setHoverTint(theme_.btnHover);
 
+    // Obtenir les bounds globaux du panel après scaling
+    sf::FloatRect panelGlobal = panelSprite_->getGlobalBounds();
+
     // Position des boutons sur le panel
-    const float x = panelSprite_->getPosition().x + 200.f;
-    const float y = panelSprite_->getPosition().y + 180.f;
+    const float x = panelGlobal.position.x + 200.f;
+    const float y = panelGlobal.position.y + 180.f;
     float gap     = 100.f; // espace vertical entre boutons
-    
 
     btnStart_->setPosition(sf::Vector2f(x, y));
     btnDifficulty_->setPosition(sf::Vector2f(x, y + gap));
@@ -88,13 +89,28 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     musicLabel_->setFillColor(theme_.text);
     sfxLabel_->setFillColor(theme_.text);
 
-    // Position sliders et labels (exemple)
-    const float sx = x;
-    const float sy = y + 3*gap + 30.f;
-    musicLabel_->setPosition(sf::Vector2f(sx+480.f, sy+10.f));
-    musicSlider_.setPosition  ({sx+ 480.f, sy + 50.f});
-    sfxLabel_->setPosition   (sf::Vector2f(sx+480.f, sy + 88.f));
-    sfxSlider_.setPosition    ({sx+480.f, sy + 128.f});
+    // Valeurs en pourcentage (éditables)
+    musicValueLabel_.emplace(font_, "70%", 16);
+    sfxValueLabel_.emplace  (font_, "80%", 16);
+    musicValueLabel_->setFillColor(theme_.text);
+    sfxValueLabel_->setFillColor(theme_.text);
+
+    // Cadre pour les sliders
+    settingsPanelBG_.setSize(sf::Vector2f(350.f, 220.f));
+    settingsPanelBG_.setFillColor(sf::Color(40, 43, 55, 220)); // semi-transparent
+    settingsPanelBG_.setOutlineThickness(3.f);
+    settingsPanelBG_.setOutlineColor(sf::Color(100, 100, 100));
+
+    // Position sliders et labels dans le cadre, relative au panel global
+    const float sx = panelGlobal.position.x + panelGlobal.size.x + 50.f;
+    const float sy = panelGlobal.position.y + 50.f;
+    settingsPanelBG_.setPosition(sf::Vector2f(sx - 25.f, sy - 25.f));
+    musicLabel_->setPosition(sf::Vector2f(sx, sy));
+    musicSlider_.setPosition  ({sx, sy + 30.f});
+    musicValueLabel_->setPosition(sf::Vector2f(sx + 280.f, sy + 30.f));
+    sfxLabel_->setPosition   (sf::Vector2f(sx, sy + 78.f));
+    sfxSlider_.setPosition    ({sx, sy + 108.f});
+    sfxValueLabel_->setPosition(sf::Vector2f(sx + 280.f, sy + 108.f));
 
     // Audio
     audio_.load();
@@ -121,19 +137,41 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
         win_.close();
     });
 
-    // Settings bouton (icône)
+    // Settings bouton (à droite du panel)
     settingsBtn_.setPosition(sf::Vector2f(
-        panelSprite_->getPosition().x + plb.size.x - 56.f,
-        panelSprite_->getPosition().y + 600.f
+        panelGlobal.position.x + panelGlobal.size.x + 20.f,
+        panelGlobal.position.y + panelGlobal.size.y * 0.5f  // centré verticalement
     ));
+    settingsBtn_.setIcon(&gearTex_);
     settingsBtn_.setOnClick([this]() {
         settingsOpen_ = !settingsOpen_;
         audio_.playClick();
     });
+    settingsBtn_.setDrawShadow(false);
     // --- BG plein écran (si tu utilises bg.png)
    
 }
 
+
+void MenuScene::handleTextInput(char32_t unicode) {
+    if (!settingsOpen_) return;
+
+    if (editingMusic_) {
+        if (unicode == '\b' && !musicInput_.empty()) {
+            musicInput_.pop_back();
+        } else if (unicode >= '0' && unicode <= '9' && musicInput_.size() < 3) {
+            musicInput_ += static_cast<char>(unicode);
+        }
+        musicValueLabel_->setString(musicInput_ + (musicInput_.empty() ? "" : "%"));
+    } else if (editingSfx_) {
+        if (unicode == '\b' && !sfxInput_.empty()) {
+            sfxInput_.pop_back();
+        } else if (unicode >= '0' && unicode <= '9' && sfxInput_.size() < 3) {
+            sfxInput_ += static_cast<char>(unicode);
+        }
+        sfxValueLabel_->setString(sfxInput_ + (sfxInput_.empty() ? "" : "%"));
+    }
+}
 
 void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
     auto clickSfx = [this](){ audio_.playClick(); };
@@ -141,15 +179,84 @@ void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
     if (btnStart_)      btnStart_->handleInput(win_, mpLeft, clickSfx);
     if (btnDifficulty_) btnDifficulty_->handleInput(win_, mpLeft, clickSfx);
     if (btnExit_)       btnExit_->handleInput(win_, mpLeft, clickSfx);
-
-    settingsBtn_.handleInput(win_, mpLeft, clickSfx);  // ✅ nouvelle API
-
+    settingsBtn_.handleInput(win_, mpLeft, clickSfx);
 
     if (settingsOpen_) {
+        // Gestion des clics sur les labels de valeur pour édition (avec zone élargie)
+        if (mpLeft && musicValueLabel_) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+            sf::FloatRect musicBounds = musicValueLabel_->getGlobalBounds();
+            musicBounds.position.x -= 30.f;
+            musicBounds.position.y -= 30.f;
+            musicBounds.size.x += 30.f;
+            musicBounds.size.y += 30.f;
+            if (musicBounds.contains(sf::Vector2f(mousePos))) {
+                editingMusic_ = true;
+                editingSfx_ = false;
+                musicInput_ = "";
+                musicValueLabel_->setFillColor(sf::Color::Yellow);
+                return;
+            }
+        }
+        if (mpLeft && sfxValueLabel_) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+            sf::FloatRect sfxBounds = sfxValueLabel_->getGlobalBounds();
+            sfxBounds.position.x -= 10.f;
+            sfxBounds.position.y -= 10.f;
+            sfxBounds.size.x += 20.f;
+            sfxBounds.size.y += 20.f;
+            if (sfxBounds.contains(sf::Vector2f(mousePos))) {
+                editingSfx_ = true;
+                editingMusic_ = false;
+                sfxInput_ = "";
+                sfxValueLabel_->setFillColor(sf::Color::Yellow);
+                return;
+            }
+        }
+
+        // Si on clique ailleurs, arrêter l'édition
+        if (mpLeft && (editingMusic_ || editingSfx_)) {
+            if (editingMusic_ && !musicInput_.empty()) {
+                try {
+                    int percent = std::stoi(musicInput_);
+                    percent = std::clamp(percent, 0, 100);
+                    float value = percent / 100.f;
+                    musicSlider_.setValue(value);
+                    audio_.setMusicVolume(value);
+                    musicValueLabel_->setString(std::to_string(percent) + "%");
+                } catch (...) {
+                    // Valeur invalide, garder l'ancienne
+                }
+            }
+            if (editingSfx_ && !sfxInput_.empty()) {
+                try {
+                    int percent = std::stoi(sfxInput_);
+                    percent = std::clamp(percent, 0, 100);
+                    float value = percent / 100.f;
+                    sfxSlider_.setValue(value);
+                    audio_.setSfxVolume(value);
+                    sfxValueLabel_->setString(std::to_string(percent) + "%");
+                } catch (...) {
+                    // Valeur invalide, garder l'ancienne
+                }
+            }
+            editingMusic_ = false;
+            editingSfx_ = false;
+            musicValueLabel_->setFillColor(theme_.text);
+            sfxValueLabel_->setFillColor(theme_.text);
+            return;
+        }
+
         musicSlider_.handleInput(win_, mpLeft, mrLeft, mMoved);
         sfxSlider_.handleInput(win_, mpLeft, mrLeft, mMoved);
         audio_.setMusicVolume(musicSlider_.value());
         audio_.setSfxVolume(sfxSlider_.value());
+
+        // Mettre à jour les labels de valeur
+        int musicPercent = static_cast<int>(musicSlider_.value() * 100.f);
+        int sfxPercent = static_cast<int>(sfxSlider_.value() * 100.f);
+        if (musicValueLabel_ && !editingMusic_) musicValueLabel_->setString(std::to_string(musicPercent) + "%");
+        if (sfxValueLabel_ && !editingSfx_)   sfxValueLabel_->setString(std::to_string(sfxPercent) + "%");
     }
 }
 
@@ -161,12 +268,14 @@ void MenuScene::draw() {
     if (btnStart_)      btnStart_->draw(win_);
     if (btnDifficulty_) btnDifficulty_->draw(win_);
     if (btnExit_)       btnExit_->draw(win_);
-
     settingsBtn_.draw(win_);
 
     if (settingsOpen_) {
+        win_.draw(settingsPanelBG_);
         if (musicLabel_) win_.draw(*musicLabel_);
         if (sfxLabel_)   win_.draw(*sfxLabel_);
+        if (musicValueLabel_) win_.draw(*musicValueLabel_);
+        if (sfxValueLabel_)   win_.draw(*sfxValueLabel_);
         musicSlider_.draw(win_);
         sfxSlider_.draw(win_);
     }

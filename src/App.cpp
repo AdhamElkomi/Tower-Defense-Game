@@ -37,6 +37,12 @@ void App::run() {
                 (void)e;
                 window_.close();
             }
+            // --- TEXT ENTERED
+            else if (const auto* e = ev->getIf<sf::Event::TextEntered>()) {
+                if (state_ == State::Menu && menu_) {
+                    menu_->handleTextInput(e->unicode);
+                }
+            }
             // --- MOUSE MOVED
             else if (const auto* e = ev->getIf<sf::Event::MouseMoved>()) {
                 (void)e;

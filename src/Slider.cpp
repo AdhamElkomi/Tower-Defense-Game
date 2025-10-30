@@ -38,27 +38,33 @@ void Slider::handleInput(const sf::RenderWindow& win,
 }
 
 void Slider::draw(sf::RenderTarget& rt) const {
-    // Rail (plus épais)
-    const float trackH = 10.f; // ← était 6.f
+    // Rail (plus épais et moderne)
+    const float trackH = 12.f;
     sf::FloatRect rail{{pos_.x, pos_.y}, {width_, trackH}};
-    drawDropShadowMini(rt, rail, sf::Color(0,0,0,120), {3.f,5.f});
 
     sf::RectangleShape track(rail.size);
     track.setPosition(rail.position);
-    track.setFillColor(sf::Color(220, 222, 230));
+    track.setFillColor(sf::Color(60, 63, 75)); // gris foncé professionnel
+    track.setOutlineThickness(1.f);
+    track.setOutlineColor(sf::Color(100, 100, 100));
     rt.draw(track);
 
-    // Curseur (plus large/haut)
+    // Curseur (plus large/haut, design moderne)
     float t = (value_ - min_) / (max_ - min_);
     float cx = pos_.x + t * width_;
-    const sf::Vector2f knobSize{22.f, 28.f}; // ← plus grand
+    const sf::Vector2f knobSize{24.f, 32.f};
     sf::FloatRect knob{{cx - knobSize.x * 0.5f, pos_.y - (knobSize.y - trackH) * 0.5f}, knobSize};
-    drawDropShadowMini(rt, knob, sf::Color(0,0,0,140), {2.f,4.f});
 
     sf::RectangleShape handle(knob.size);
     handle.setPosition(knob.position);
     handle.setFillColor(sf::Color(255, 255, 255));
-    handle.setOutlineThickness(2.f);
-    handle.setOutlineColor(sf::Color(30, 144, 255)); // bleu “pro”
+    handle.setOutlineThickness(3.f);
+    handle.setOutlineColor(sf::Color(30, 144, 255)); // bleu professionnel
     rt.draw(handle);
+
+    // Ajouter un petit cercle intérieur pour plus de style
+    sf::CircleShape inner(4.f);
+    inner.setPosition(sf::Vector2f(cx - 4.f, pos_.y + trackH * 0.5f - 4.f));
+    inner.setFillColor(sf::Color(30, 144, 255));
+    rt.draw(inner);
 }

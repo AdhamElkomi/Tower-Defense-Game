@@ -21,6 +21,7 @@ public:
 
     // Valeur courante
     float value() const { return value_; }
+    void setValue(float v) { value_ = std::clamp(v, min_, max_); }
 
     
 

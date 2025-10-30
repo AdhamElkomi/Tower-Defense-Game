@@ -40,6 +40,26 @@ void CircleButton::setPosition(const sf::Vector2f& p) {
 
 void CircleButton::setOnClick(std::function<void()> cb) { onClick_ = std::move(cb); }
 
+void CircleButton::setIcon(const sf::Texture* tex) {
+    if (tex) {
+        icon_.emplace(*tex);
+        float s = (circle_.getRadius() * 1.6f) / static_cast<float>(tex->getSize().x);
+        icon_->setScale(sf::Vector2f(s, s));
+        // Repositionner l'icône
+        const auto c  = circle_.getGlobalBounds();
+        const auto ib = icon_->getLocalBounds();
+        const auto sc = icon_->getScale();
+        icon_->setPosition(sf::Vector2f(
+            c.position.x + (c.size.x - ib.size.x * sc.x) / 2.f,
+            c.position.y + (c.size.y - ib.size.y * sc.y) / 2.f
+        ));
+    } else {
+        icon_.reset();
+    }
+}
+
+void CircleButton::setDrawShadow(bool draw) { drawShadow_ = draw; }
+
 void CircleButton::handleInput(const sf::RenderWindow& win, bool mousePressedLeft, std::function<void()> onPressedSfx) {
     // Survol : test distance au centre
     const auto mouse = sf::Mouse::getPosition(win);
@@ -59,7 +79,6 @@ void CircleButton::handleInput(const sf::RenderWindow& win, bool mousePressedLef
 }
 
 void CircleButton::draw(sf::RenderTarget& rt) const {
-    drawDropShadowCircle(rt, circle_.getGlobalBounds(), sf::Color(0, 0, 0, 120));
     rt.draw(circle_);
 
     if (hovered_) {

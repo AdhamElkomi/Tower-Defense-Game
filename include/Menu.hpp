@@ -18,7 +18,8 @@ public:
     explicit MenuScene(sf::RenderWindow& win);
       MenuScene(sf::RenderWindow& win, std::function<void()> onStartGame);
     void handleInput(bool mousePressedLeft, bool mouseReleasedLeft, bool mouseMoved);
-    void draw(); 
+    void handleTextInput(char32_t unicode);
+    void draw();
     void update(float dt);
      bool started() const { return started_; }
       void setOnStart(std::function<void()> cb) { onStartGame_ = std::move(cb); }
@@ -39,9 +40,15 @@ private:
     std::optional<sf::Text>   title_;
     std::optional<sf::Text>   musicLabel_;
     std::optional<sf::Text>   sfxLabel_;
+    std::optional<sf::Text>   musicValueLabel_;
+    std::optional<sf::Text>   sfxValueLabel_;
     sf::RectangleShape settingsPanelBG_;
     sf::FloatRect settingsBounds_{};
     std::function<void()> onStartGame_;
+    bool editingMusic_{false};
+    bool editingSfx_{false};
+    std::string musicInput_;
+    std::string sfxInput_;
 
     // UI
     std::optional<Button> btnStart_;

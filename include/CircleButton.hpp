@@ -11,6 +11,8 @@ public:
 
     void setPosition(const sf::Vector2f& p);
     void setOnClick(std::function<void()> cb);
+    void setIcon(const sf::Texture* tex);
+    void setDrawShadow(bool draw);
 
     // 👉 SFML 3-friendly : pas de sf::Event ici
     void handleInput(const sf::RenderWindow& win, bool mousePressedLeft, std::function<void()> onPressedSfx);
@@ -21,5 +23,6 @@ private:
     sf::CircleShape circle_;
     std::optional<sf::Sprite> icon_;   // ✅ plus sûr en SFML 3
     bool hovered_{false};
+    bool drawShadow_{true};
     std::function<void()> onClick_;
 };

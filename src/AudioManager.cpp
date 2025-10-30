@@ -26,8 +26,15 @@ void AudioManager::playGameLoop(float volume01) {
     gameMusic_.play();
 }
 
-void AudioManager::setMusicVolume(float v) { musicVol_ = std::clamp(v, 0.f, 1.f); }
-void AudioManager::setSfxVolume(float v)    { sfxVol_   = std::clamp(v, 0.f, 1.f); }
+void AudioManager::setMusicVolume(float v) {
+    musicVol_ = std::clamp(v, 0.f, 1.f);
+    menuMusic_.setVolume(musicVol_ * 100.f);
+    gameMusic_.setVolume(musicVol_ * 100.f);
+}
+void AudioManager::setSfxVolume(float v) {
+    sfxVol_ = std::clamp(v, 0.f, 1.f);
+    if (click_) click_->setVolume(sfxVol_ * 100.f);
+}
 
 void AudioManager::stopAll() { menuMusic_.stop(); gameMusic_.stop(); }
 
