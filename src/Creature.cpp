@@ -1,6 +1,7 @@
 // Creature.cpp
 #include "Creature.hpp"
 #include <cmath>
+#include <memory>
 // Creature.cpp
 #include <SFML/Audio.hpp>
 
@@ -58,9 +59,9 @@ Creature::Creature(const CreatureDef& def,
 
      // 🔊 son continu tant que la créature est vivante
     if (loopBuffer){
-        loop_ = std::make_unique<sf::Sound>(*loopBuffer); // SFML3: ctor avec buffer
-         loop_->setLooping(true); 
-        loop_->setVolume(400.f);      // ajuste par type si tu veux
+        loop_ = std::make_unique<sf::Sound>(*loopBuffer); // SFML2: ctor avec buffer
+         loop_->setLoop(true);
+        loop_->setVolume(40.f);      // ajuste par type si tu veux
         loop_->play();
     }
 

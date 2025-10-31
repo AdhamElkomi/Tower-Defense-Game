@@ -22,13 +22,13 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(TowerDefense PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-# --- SFML 3
-find_package(SFML 3 REQUIRED COMPONENTS System Window Graphics Audio)
+# --- SFML via pkg-config
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SFML REQUIRED sfml-all)
 
-message(STATUS "Using SFML ${SFML_VERSION} (3.x)")
-target_link_libraries(TowerDefense PRIVATE
-    SFML::System SFML::Window SFML::Graphics SFML::Audio
-)
+message(STATUS "Using SFML via pkg-config")
+target_link_libraries(TowerDefense PRIVATE ${SFML_LIBRARIES})
+target_include_directories(TowerDefense PRIVATE ${SFML_INCLUDE_DIRS})
 
 # --- Tests (Catch2 v3)
 enable_testing()

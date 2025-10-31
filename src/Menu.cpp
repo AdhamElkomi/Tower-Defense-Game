@@ -3,9 +3,9 @@
 
 // Couvre l'écran en conservant le ratio
 static void centerSpriteToCover(sf::Sprite& sp, const sf::RenderWindow& win) {
-    const auto& tex = sp.getTexture(); // ✅ référence (pas de test null)
-    const float TW = static_cast<float>(tex.getSize().x);
-    const float TH = static_cast<float>(tex.getSize().y);
+    const auto* tex = sp.getTexture(); // ✅ pointer
+    const float TW = static_cast<float>(tex->getSize().x);
+    const float TH = static_cast<float>(tex->getSize().y);
     const float W  = static_cast<float>(win.getSize().x);
     const float H  = static_cast<float>(win.getSize().y);
     const float s  = std::max(W / TW, H / TH);
@@ -19,7 +19,7 @@ void MenuScene::update(float /*dt*/) {
 
 MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     // Chargement assets (tu peux vérifier les bool si tu veux logger)
-    font_.openFromFile("../assets/fonts/PressStart2P-Regular.ttf");
+    font_.loadFromFile("../assets/fonts/PressStart2P-Regular.ttf");
     bgTex_.loadFromFile("../assets/images/background.png");
     panelTex_.loadFromFile("../assets/images/first-bg.png");
     gearTex_.loadFromFile("../assets/images/gear.png");
@@ -27,7 +27,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     // Construire éléments dépendants des assets
     bgSprite_.emplace(bgTex_);
     panelSprite_.emplace(panelTex_);
-    title_.emplace(font_, "TOWER DEFENSE", 100);
+    title_.emplace("TOWER DEFENSE", font_, 100);
 
     // Redimensionner le panel à une taille cible (par ex. 600x400)
     sf::Vector2f targetSize{700.f, 650.f};
@@ -49,16 +49,16 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     // Panel centré
     const auto plb = panelSprite_->getLocalBounds(); // ✅ local bounds pour taille
     panelSprite_->setPosition(sf::Vector2f(
-        (win_.getSize().x - plb.size.x) * 0.5f + 160.f,
-        (win_.getSize().y - plb.size.y) * 0.5f + 200.f
+        (win_.getSize().x - plb.width) * 0.5f + 160.f,
+        (win_.getSize().y - plb.height) * 0.5f + 200.f
     ));
 
     // Titre
     title_->setFillColor(theme_.text);
     const auto tb = title_->getLocalBounds();
     title_->setPosition(sf::Vector2f(
-        (float)win_.getSize().x * 0.5f - tb.size.x * 0.5f - tb.position.x,
-        120.f - tb.position.y
+        (float)win_.getSize().x * 0.5f - tb.width * 0.5f - tb.left,
+        120.f - tb.top
     ));
 
     // Boutons
@@ -75,8 +75,8 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     sf::FloatRect panelGlobal = panelSprite_->getGlobalBounds();
 
     // Position des boutons sur le panel
-    const float x = panelGlobal.position.x + 200.f;
-    const float y = panelGlobal.position.y + 180.f;
+    const float x = panelGlobal.left + 200.f;
+    const float y = panelGlobal.top + 180.f;
     float gap     = 100.f; // espace vertical entre boutons
 
     btnStart_->setPosition(sf::Vector2f(x, y));
@@ -84,14 +84,14 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     btnExit_->setPosition(sf::Vector2f(x, y + 2*gap));
 
     // Labels sliders (optionnels, car sf::Text non default-constructible)
-    musicLabel_.emplace(font_, "Music Volume", 18);
-    sfxLabel_.emplace  (font_, "SFX Volume",   18);
+    musicLabel_.emplace("Music Volume", font_, 18);
+    sfxLabel_.emplace  ("SFX Volume",   font_, 18);
     musicLabel_->setFillColor(theme_.text);
     sfxLabel_->setFillColor(theme_.text);
 
     // Valeurs en pourcentage (éditables)
-    musicValueLabel_.emplace(font_, "70%", 16);
-    sfxValueLabel_.emplace  (font_, "80%", 16);
+    musicValueLabel_.emplace("70%", font_, 16);
+    sfxValueLabel_.emplace  ("80%", font_, 16);
     musicValueLabel_->setFillColor(theme_.text);
     sfxValueLabel_->setFillColor(theme_.text);
 
@@ -102,8 +102,8 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     settingsPanelBG_.setOutlineColor(sf::Color(100, 100, 100));
 
     // Position sliders et labels dans le cadre, relative au panel global
-    const float sx = panelGlobal.position.x + panelGlobal.size.x + 50.f;
-    const float sy = panelGlobal.position.y + 50.f;
+    const float sx = panelGlobal.left + panelGlobal.width + 50.f;
+    const float sy = panelGlobal.top + 50.f;
     settingsPanelBG_.setPosition(sf::Vector2f(sx - 25.f, sy - 25.f));
     musicLabel_->setPosition(sf::Vector2f(sx, sy));
     musicSlider_.setPosition  ({sx, sy + 30.f});
@@ -126,9 +126,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     });
 
     btnDifficulty_->setOnClick([this]() {
-        static const char* levels[] = {"Easy","Normal","Hard"};
-        idxDiff_ = (idxDiff_ + 1) % 3;
-        difficulty_ = levels[idxDiff_];
+        difficultyMenuOpen_ = !difficultyMenuOpen_;
         audio_.playClick();
     });
 
@@ -139,8 +137,8 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
 
     // Settings bouton (à droite du panel)
     settingsBtn_.setPosition(sf::Vector2f(
-        panelGlobal.position.x + panelGlobal.size.x + 20.f,
-        panelGlobal.position.y + panelGlobal.size.y * 0.5f  // centré verticalement
+        panelGlobal.left + panelGlobal.width + 20.f,
+        panelGlobal.top + panelGlobal.height * 0.5f  // centré verticalement
     ));
     settingsBtn_.setIcon(&gearTex_);
     settingsBtn_.setOnClick([this]() {
@@ -148,6 +146,35 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
         audio_.playClick();
     });
     settingsBtn_.setDrawShadow(false);
+
+    // Difficulty submenu
+    difficultyPanelBG_.setSize(sf::Vector2f(300.f, 400.f));
+    difficultyPanelBG_.setFillColor(sf::Color(40, 43, 55, 220));
+    difficultyPanelBG_.setOutlineThickness(3.f);
+    difficultyPanelBG_.setOutlineColor(sf::Color(100, 100, 100));
+    difficultyPanelBG_.setPosition(sf::Vector2f(panelGlobal.left - 320.f, panelGlobal.top));
+
+    difficultyTitle_.emplace("Select", font_, 30);
+    difficultyTitle_->setFillColor(theme_.text);
+    difficultyTitle_->setPosition(sf::Vector2f(panelGlobal.left - 260.f, panelGlobal.top + 20.f));
+
+    std::vector<std::string> difficulties = {"Easy", "Normal", "Hard", "Legendary"};
+    difficultyButtons_.resize(difficulties.size());
+    for (size_t i = 0; i < difficulties.size(); ++i) {
+        difficultyButtons_[i].emplace(font_, sf::Vector2f(250.f, 60.f), difficulties[i], sf::Color(76,175,80), sf::Color::White, 3.f);
+        difficultyButtons_[i]->setHoverTint(theme_.btnHover);
+        difficultyButtons_[i]->setPosition(sf::Vector2f(panelGlobal.left - 300.f, panelGlobal.top + 80.f + i * 80.f));
+        difficultyButtons_[i]->setOnClick([this, diff = difficulties[i]]() {
+            difficulty_ = diff;
+            difficultyMenuOpen_ = false;
+            audio_.playClick();
+            audio_.playGameLoop(0.7f); // Switch to game music
+            // Launch game immediately after selection
+            started_ = true;
+            if (onStartGame_) onStartGame_();
+        });
+    }
+
     // --- BG plein écran (si tu utilises bg.png)
    
 }
@@ -181,15 +208,22 @@ void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
     if (btnExit_)       btnExit_->handleInput(win_, mpLeft, clickSfx);
     settingsBtn_.handleInput(win_, mpLeft, clickSfx);
 
+    // Handle difficulty submenu input
+    if (difficultyMenuOpen_) {
+        for (auto& btn : difficultyButtons_) {
+            if (btn) btn->handleInput(win_, mpLeft, clickSfx);
+        }
+    }
+
     if (settingsOpen_) {
         // Gestion des clics sur les labels de valeur pour édition (avec zone élargie)
         if (mpLeft && musicValueLabel_) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
             sf::FloatRect musicBounds = musicValueLabel_->getGlobalBounds();
-            musicBounds.position.x -= 30.f;
-            musicBounds.position.y -= 30.f;
-            musicBounds.size.x += 30.f;
-            musicBounds.size.y += 30.f;
+            musicBounds.left -= 30.f;
+            musicBounds.top -= 30.f;
+            musicBounds.width += 30.f;
+            musicBounds.height += 30.f;
             if (musicBounds.contains(sf::Vector2f(mousePos))) {
                 editingMusic_ = true;
                 editingSfx_ = false;
@@ -201,10 +235,10 @@ void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
         if (mpLeft && sfxValueLabel_) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
             sf::FloatRect sfxBounds = sfxValueLabel_->getGlobalBounds();
-            sfxBounds.position.x -= 10.f;
-            sfxBounds.position.y -= 10.f;
-            sfxBounds.size.x += 20.f;
-            sfxBounds.size.y += 20.f;
+            sfxBounds.left -= 10.f;
+            sfxBounds.top -= 10.f;
+            sfxBounds.width += 20.f;
+            sfxBounds.height += 20.f;
             if (sfxBounds.contains(sf::Vector2f(mousePos))) {
                 editingSfx_ = true;
                 editingMusic_ = false;
@@ -278,5 +312,13 @@ void MenuScene::draw() {
         if (sfxValueLabel_)   win_.draw(*sfxValueLabel_);
         musicSlider_.draw(win_);
         sfxSlider_.draw(win_);
+    }
+
+    if (difficultyMenuOpen_) {
+        win_.draw(difficultyPanelBG_);
+        if (difficultyTitle_) win_.draw(*difficultyTitle_);
+        for (auto& btn : difficultyButtons_) {
+            if (btn) btn->draw(win_);
+        }
     }
 }

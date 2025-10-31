@@ -17,6 +17,7 @@
 class GameScene {
 public:
     explicit GameScene(sf::RenderWindow& win);
+    GameScene(sf::RenderWindow& win, const std::string& difficulty);
 
     void handleInput(bool mouseLeft, bool mouseLeftReleased, bool mouseMoved);
     void update(float dt);
@@ -170,8 +171,35 @@ private:
     std::vector<Wave> waves_;
     int currentWaveIndex_ = 0;
 
+    // Difficulty parameters
+    struct DifficultyParams {
+        // Enemy
+        float hpMul;
+        float speedMul;
+        float physRes;
+        float magicRes;
+        float stealMul;
+        std::string compositionPerWave;
+        // Waves
+        float intervalSec;
+        std::pair<int, int> groupSize;
+        float eliteChance;
+        int bossEvery;
+        // Economy
+        int startResources;
+        float dropMul;
+        std::unordered_map<std::string, float> rarityWeights;
+        float sellRefund;
+        float rewardMultiplier;
+        // Player
+        int lives;
+        float graceSec;
+    };
+    DifficultyParams difficultyParams_;
+
     void generateWaves();
     void spawnNextWave();
+    void applyDifficulty(const std::string& difficulty);
 
     // Audio management
     void stopGameSceneSounds();

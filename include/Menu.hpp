@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "Button.hpp"
 #include "CircleButton.hpp"
@@ -23,7 +24,7 @@ public:
     void update(float dt);
      bool started() const { return started_; }
       void setOnStart(std::function<void()> cb) { onStartGame_ = std::move(cb); }
-     
+     std::string getDifficulty() const { return difficulty_; }
 
 private:
     sf::RenderWindow& win_;
@@ -59,12 +60,17 @@ private:
     Slider musicSlider_{0.f, 1.f, 0.7f, 260.f}; // valeurs exemple
     Slider sfxSlider_  {0.f, 1.f, 0.8f, 260.f};
 
+    // Difficulty submenu
+    bool difficultyMenuOpen_{false};
+    sf::RectangleShape difficultyPanelBG_;
+    std::optional<sf::Text> difficultyTitle_;
+    std::vector<std::optional<Button>> difficultyButtons_;
+
     // État
     AudioManager audio_;
     Theme theme_;
 
     bool started_{false};
     bool settingsOpen_{false};
-    int  idxDiff_{0};
     std::string difficulty_{"Normal"};
 };

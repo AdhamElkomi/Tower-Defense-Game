@@ -3,8 +3,8 @@
 
 // Ombre portée rectangulaire simplifiée pour le bouton circulaire
 static void drawDropShadowCircle(sf::RenderTarget& rt, const sf::FloatRect& rect, const sf::Color& color, sf::Vector2f offset = {5.f, 7.f}) {
-    sf::RectangleShape shadow(rect.size);             // ✅ SFML 3 : size / position
-    shadow.setPosition(rect.position + offset);       // ✅ Vector2f
+    sf::RectangleShape shadow(sf::Vector2f(rect.width, rect.height));             // SFML 2
+    shadow.setPosition(sf::Vector2f(rect.left, rect.top) + offset);       // SFML 2
     shadow.setFillColor(color);
     rt.draw(shadow);
 }
@@ -27,13 +27,13 @@ void CircleButton::setPosition(const sf::Vector2f& p) {
     circle_.setPosition(p);
 
     if (icon_.has_value()) {
-        const auto c  = circle_.getGlobalBounds();    // ✅ FloatRect {position, size}
-        const auto ib = icon_->getLocalBounds();      // ✅ FloatRect {position, size}
+        const auto c  = circle_.getGlobalBounds();    // FloatRect {left, top, width, height}
+        const auto ib = icon_->getLocalBounds();      // FloatRect {left, top, width, height}
         const auto sc = icon_->getScale();            // Vector2f
 
         icon_->setPosition(sf::Vector2f(
-            c.position.x + (c.size.x - ib.size.x * sc.x) / 2.f,
-            c.position.y + (c.size.y - ib.size.y * sc.y) / 2.f
+            c.left + (c.width - ib.width * sc.x) / 2.f,
+            c.top + (c.height - ib.height * sc.y) / 2.f
         ));
     }
 }
@@ -50,8 +50,8 @@ void CircleButton::setIcon(const sf::Texture* tex) {
         const auto ib = icon_->getLocalBounds();
         const auto sc = icon_->getScale();
         icon_->setPosition(sf::Vector2f(
-            c.position.x + (c.size.x - ib.size.x * sc.x) / 2.f,
-            c.position.y + (c.size.y - ib.size.y * sc.y) / 2.f
+            c.left + (c.width - ib.width * sc.x) / 2.f,
+            c.top + (c.height - ib.height * sc.y) / 2.f
         ));
     } else {
         icon_.reset();

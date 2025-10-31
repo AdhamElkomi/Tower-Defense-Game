@@ -70,8 +70,8 @@ void TreeSystem::generate(const Map& map, float tileSize, unsigned count, std::m
 
         int k = distTex(rng);
         sf::Sprite sp(tex_[k]);                       // ✅ constructeur avec texture
-        auto r = sp.getLocalBounds();                 // SFML3: {position,size}
-        sp.setOrigin({ r.size.x * 0.5f, r.size.y });  // bas-centre
+        auto r = sp.getLocalBounds();                 // SFML2: left/top/width/height
+        sp.setOrigin(r.width * 0.5f, r.height);  // bas-centre
         sp.setPosition(pos);
 
         // ✅ réduire la taille (exemple : moitié)

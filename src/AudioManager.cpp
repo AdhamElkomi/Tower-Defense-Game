@@ -13,7 +13,7 @@ bool AudioManager::load() {
 void AudioManager::playMenuLoop(float volume01) {
     musicVol_ = std::clamp(volume01, 0.f, 1.f);
     gameMusic_.stop();
-    menuMusic_.setLooping(true);                    // ✅ SFML 3
+    menuMusic_.setLoop(true);                       // SFML 2
     menuMusic_.setVolume(musicVol_ * 100.f);       // ✅ setVolume (sans typo)
     menuMusic_.play();
 }
@@ -21,7 +21,7 @@ void AudioManager::playMenuLoop(float volume01) {
 void AudioManager::playGameLoop(float volume01) {
     musicVol_ = std::clamp(volume01, 0.f, 1.f);
     menuMusic_.stop();
-    gameMusic_.setLooping(true);                   // ✅
+    gameMusic_.setLoop(true);                      // SFML 2
     gameMusic_.setVolume(musicVol_ * 100.f);
     gameMusic_.play();
 }

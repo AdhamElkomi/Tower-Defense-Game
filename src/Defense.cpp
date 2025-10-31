@@ -380,7 +380,7 @@ bool ArrowProjectile::update(float dt, CreatureSystem& creeps){
     // calculate rotation for arrow pointing towards target
     rotation = std::atan2(dir.y, dir.x) * 180.f / 3.14159f;
     sprite->setPosition(pos);
-    sprite->setRotation(sf::degrees(rotation));
+    sprite->setRotation(rotation);
 
     // check for hits on creatures
     std::vector<MaterialDrop> dummyDrops;

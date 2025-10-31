@@ -332,35 +332,6 @@ TowerDefense: CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/main.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/build.make
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-system-s-d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-window-s-d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-graphics-s-d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-audio-s-d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-window-s-d.a
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXrandr.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXcursor.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXrender.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXfixes.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXi.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libXext.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libX11.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libGL.so
-TowerDefense: /usr/lib/x86_64-linux-gnu/libudev.so
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libfreetyped.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libbz2d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libpng16d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libz.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libbz2d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libpng16d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libz.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libbrotlidec.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libbrotlicommon.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libsfml-system-s-d.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbisfile.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbisenc.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libvorbis.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libogg.a
-TowerDefense: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libFLAC.a
 TowerDefense: CMakeFiles/TowerDefense.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable TowerDefense"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/TowerDefense.dir/link.txt --verbose=$(VERBOSE)

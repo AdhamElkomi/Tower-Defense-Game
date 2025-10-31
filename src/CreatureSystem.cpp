@@ -217,7 +217,12 @@ void CreatureSystem::update(float dt, float timeNow){
         const sf::SoundBuffer* loopBuf = nullptr;
         if (auto it = soundBufs_.find(sc.type); it != soundBufs_.end() && it->second)
             loopBuf = it->second.get();
-        auto c = std::make_unique<Creature>(def, tex, path_,loopBuf);
+
+        // Apply speed multiplier to creature definition
+        CreatureDef modifiedDef = def;
+        modifiedDef.speed *= speedMultiplier_;
+
+        auto c = std::make_unique<Creature>(modifiedDef, tex, path_,loopBuf);
 
         //alive_.push_back(std::make_unique<Creature>(def, tex, path_, loopBuf));
 

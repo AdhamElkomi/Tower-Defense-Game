@@ -24,6 +24,7 @@ struct MaterialDrop {
 class CreatureSystem {
 public:
     explicit CreatureSystem(float tileSize);
+    void setSpeedMultiplier(float mul) { speedMultiplier_ = mul; }
 
     // defs
     void loadTextures(); // charge les 3 spritesheets
@@ -87,6 +88,7 @@ public:
 
 private:
     float tileSize_;
+    float speedMultiplier_ = 1.0f;
     WaypointPath path_;
     std::vector<sf::Vector2i> exits_;  // Store exit tiles
     sf::Vector2f resourcePos_;  // The resource position

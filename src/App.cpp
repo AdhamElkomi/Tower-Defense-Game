@@ -16,7 +16,8 @@ App::App() {
 
 
 void App::goToGame(){
-    game_ = std::make_unique<GameScene>(window_);
+    std::string difficulty = menu_->getDifficulty();
+    game_ = std::make_unique<GameScene>(window_, difficulty);
     state_ = State::Game;
     // Stop menu music and start game music
     // Note: AudioManager is in MenuScene, so we need to access it differently
@@ -31,30 +32,29 @@ void App::run() {
         mouseMoved_ = false;
         mouseLeftReleased_ = false;
 
-        while (auto ev = window_.pollEvent()) {
+        sf::Event event;
+        while (window_.pollEvent(event)) {
             // --- CLOSED
-            if (const auto* e = ev->getIf<sf::Event::Closed>()) {
-                (void)e;
+            if (event.type == sf::Event::Closed) {
                 window_.close();
             }
             // --- TEXT ENTERED
-            else if (const auto* e = ev->getIf<sf::Event::TextEntered>()) {
+            else if (event.type == sf::Event::TextEntered) {
                 if (state_ == State::Menu && menu_) {
-                    menu_->handleTextInput(e->unicode);
+                    menu_->handleTextInput(event.text.unicode);
                 }
             }
             // --- MOUSE MOVED
-            else if (const auto* e = ev->getIf<sf::Event::MouseMoved>()) {
-                (void)e;
+            else if (event.type == sf::Event::MouseMoved) {
                 mouseMoved_ = true;
             }
             // --- MOUSE BUTTON PRESSED
-            else if (const auto* e = ev->getIf<sf::Event::MouseButtonPressed>()) {
-                if (e->button == sf::Mouse::Button::Left) mouseLeft_ = true;
+            else if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) mouseLeft_ = true;
             }
             // --- MOUSE BUTTON RELEASED
-            else if (const auto* e = ev->getIf<sf::Event::MouseButtonReleased>()) {
-                if (e->button == sf::Mouse::Button::Left) {
+            else if (event.type == sf::Event::MouseButtonReleased) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
                     mouseLeft_ = false;
                     mouseLeftReleased_ = true;
                 }

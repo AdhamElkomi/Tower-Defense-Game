@@ -92,8 +92,8 @@ tests_EXTERNAL_OBJECTS =
 
 tests: CMakeFiles/tests.dir/tests/test_sanity.cpp.o
 tests: CMakeFiles/tests.dir/build.make
-tests: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/manual-link/libCatch2Maind.a
-tests: /home/adhamking4/Tower-Defense-Game/vcpkg/installed/x64-linux/debug/lib/libCatch2d.a
+tests: /usr/lib/libCatch2Main.a
+tests: /usr/lib/libCatch2.a
 tests: CMakeFiles/tests.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable tests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tests.dir/link.txt --verbose=$(VERBOSE)

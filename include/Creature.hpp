@@ -4,7 +4,8 @@
 #include <vector>
 #include <optional>
 #include <string>
-#include <SFML/Audio.hpp>   
+#include <SFML/Audio.hpp>
+#include <memory>
 
 enum class CreatureType { Grunt, Rogue, Golem };
 

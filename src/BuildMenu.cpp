@@ -5,7 +5,7 @@
 
 // ================= MatBox =================
 BuildMenu::MatBox::MatBox(const sf::Texture& tex, const sf::Font& font, unsigned charSize)
-: plate(), icon(tex), badge(18.f), badgeTxt(font, "0", 48)
+: plate(), icon(tex), badge(18.f), badgeTxt("0", font, 48)
 {
     plate.setSize(sf::Vector2f(120.f, 120.f));              // ⬆️ plus grand
     plate.setFillColor(sf::Color(26,41,44,240));
@@ -41,20 +41,20 @@ void BuildMenu::MatBox::setPosition(sf::Vector2f p){
     const auto pb = plate.getGlobalBounds();            // {position,size}
     const auto ib = icon.getGlobalBounds();             // taille visuelle de l’icône (après scale)
     icon.setPosition(sf::Vector2f(
-        pb.position.x + (pb.size.x - ib.size.x) * 0.5f,
-        pb.position.y + (pb.size.y - ib.size.y) * 0.5f - 4.f
+        pb.left + (pb.width - ib.width) * 0.5f,
+        pb.top + (pb.height - ib.height) * 0.5f - 4.f
     ));
 
     // pastille en bas-droite
     const sf::Vector2f c(
-        pb.position.x + pb.size.x - 10.f,
-        pb.position.y + pb.size.y - 10.f
+        pb.left + pb.width - 10.f,
+        pb.top + pb.height - 10.f
     );
     badge.setPosition(c);
 
     // centrer le texte dans la pastille (offset empirique propre)
     const auto tb = badgeTxt.getGlobalBounds();
-    badgeTxt.setPosition(c - sf::Vector2f(tb.size.x*0.5f, tb.size.y*0.85f));
+    badgeTxt.setPosition(c - sf::Vector2f(tb.width*0.5f, tb.height*0.85f));
 }
 
 void BuildMenu::MatBox::draw(sf::RenderTarget& rt) const{
@@ -66,7 +66,7 @@ void BuildMenu::MatBox::draw(sf::RenderTarget& rt) const{
 
 // ================= DefButton =================
 BuildMenu::DefButton::DefButton(const sf::Texture& tex, const sf::Font& font, const std::string& name)
-: ring(54.f), icon(tex), label(font, name, 28)              // ⬆️ rayon + texte
+: ring(54.f), icon(tex), label(name, font, 28)              // ⬆️ rayon + texte
 {
     ring.setOrigin(sf::Vector2f(54.f,54.f));
     ring.setFillColor(sf::Color(38,52,56,230));
@@ -87,9 +87,9 @@ void BuildMenu::DefButton::setEnabled(bool on){
 void BuildMenu::DefButton::setPosition(sf::Vector2f c){
     ring.setPosition(c);
     const auto ib = icon.getGlobalBounds();
-    icon.setPosition(sf::Vector2f(c.x - ib.size.x*0.5f, c.y - ib.size.y*0.5f));
+    icon.setPosition(sf::Vector2f(c.x - ib.width*0.5f, c.y - ib.height*0.5f));
     const auto lb = label.getGlobalBounds();
-    label.setPosition(sf::Vector2f(c.x - lb.size.x*0.5f, c.y + 60.f)); // ⬇️ un peu plus bas
+    label.setPosition(sf::Vector2f(c.x - lb.width*0.5f, c.y + 60.f)); // ⬇️ un peu plus bas
 }
 
 sf::FloatRect BuildMenu::DefButton::bounds() const{
@@ -139,7 +139,7 @@ BuildMenu::BuildMenu(sf::RenderWindow& win, float tileSize, const Map& map,
 : win_(win), map_(map), tileSize_(tileSize)
 {
     // police
-    (void)font_.openFromFile(fontPath);
+    (void)font_.loadFromFile(fontPath);
 
     // textures UI
     bgTex_      = std::make_unique<sf::Texture>();  (void)bgTex_->loadFromFile(bgPath);
@@ -157,10 +157,10 @@ BuildMenu::BuildMenu(sf::RenderWindow& win, float tileSize, const Map& map,
     // scale bg pour s’adapter au panelBounds_
     {
         auto gb = bg_->getGlobalBounds();
-        float sx = panelBounds_.size.x / std::max(1.f, gb.size.x);
-        float sy = panelBounds_.size.y / std::max(1.f, gb.size.y);
+        float sx = panelBounds_.width / std::max(1.f, gb.width);
+        float sy = panelBounds_.height / std::max(1.f, gb.height);
         bg_->setScale(sf::Vector2f(sx, sy));
-        bg_->setPosition(panelBounds_.position);
+        bg_->setPosition(sf::Vector2f(panelBounds_.left, panelBounds_.top));
     }
 
     // textures items
@@ -191,7 +191,7 @@ BuildMenu::BuildMenu(sf::RenderWindow& win, float tileSize, const Map& map,
 
 
     // titre
-    title_ = std::make_unique<sf::Text>(font_, "STOCK & TOOLS", 50);
+    title_ = std::make_unique<sf::Text>("STOCK & TOOLS", font_, 50);
     title_->setFillColor(sf::Color(250,240,220));
     // position fixée dans layout()
 
@@ -200,19 +200,19 @@ BuildMenu::BuildMenu(sf::RenderWindow& win, float tileSize, const Map& map,
 
 void BuildMenu::layout(){
     // position + scale bg
-    bg_->setPosition(panelBounds_.position);
+    bg_->setPosition(sf::Vector2f(panelBounds_.left, panelBounds_.top));
     {
         const auto gb = bg_->getGlobalBounds();
-        const float sx = panelBounds_.size.x / std::max(1.f, gb.size.x);
-        const float sy = panelBounds_.size.y / std::max(1.f, gb.size.y);
+        const float sx = panelBounds_.width / std::max(1.f, gb.width);
+        const float sy = panelBounds_.height / std::max(1.f, gb.height);
         bg_->setScale(sf::Vector2f(sx, sy));
     }
 
     // titre centré
     auto tb = title_->getGlobalBounds();
     title_->setPosition(sf::Vector2f(
-        panelBounds_.position.x + (panelBounds_.size.x - tb.size.x)*0.71f,
-        panelBounds_.position.y + 110.f
+        panelBounds_.left + (panelBounds_.width - tb.width)*0.71f,
+        panelBounds_.top + 110.f
     ));
 
     // zone de contenu (marges)
@@ -220,8 +220,8 @@ void BuildMenu::layout(){
     const float marginTop = 84.f;
     const float marginBottom = 46.f;
 
-    const float contentW = panelBounds_.size.x - marginX*2.f;
-    const float contentH = panelBounds_.size.y - marginTop - marginBottom;
+    const float contentW = panelBounds_.width - marginX*2.f;
+    const float contentH = panelBounds_.height - marginTop - marginBottom;
 
     // GRID 3 colonnes centrées, 2 lignes (mats / defs)
     const int cols = 3;
@@ -231,12 +231,12 @@ void BuildMenu::layout(){
     // ---- Matériaux (ligne 1) ----
     // hauteur d’un MatBox (plaque 120 + outline) => on se base sur 124
     const float matH = 124.f;
-    const float matY = panelBounds_.position.y + marginTop;
+    const float matY = panelBounds_.top + marginTop;
 
     for (int i=0; i<3; ++i){
         if (!mats_[i]) continue;
         // centre chaque plaque dans sa colonne
-        const float colX = panelBounds_.position.x + marginX + i*colW;
+        const float colX = panelBounds_.left + marginX + i*colW;
         const float x = colX + (colW - 50.f)*0.85f;
         mats_[i]->setPosition(sf::Vector2f(x, matY+100.f));
     }
@@ -245,7 +245,7 @@ void BuildMenu::layout(){
     const float defsY = matY + matH + rowGap;
     for (int i=0; i<3; ++i){
         if (!defs_[i]) continue;
-        const float colX = panelBounds_.position.x + marginX + i*colW;
+        const float colX = panelBounds_.left + marginX + i*colW;
         const float cx = colX + colW*0.5f;   // centre de la colonne
         defs_[i]->setPosition(sf::Vector2f(cx+95.f, defsY + 150.f)); // “70” ≈ centre vertical visuel
     }

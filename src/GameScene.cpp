@@ -94,7 +94,18 @@ WaypointPath GameScene::buildMainPathPolyline(const Map& m, float tileSize) cons
 
 // ---- ctor ----
 GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
-    resourceCount_ = 20;
+    applyDifficulty("Normal");
+    resourceCount_ = difficultyParams_.startResources;
+    const int W = 60, H = 24;
+    tileSize_  = 64.f;
+     worldW_ = W; worldH_ = H;
+
+    terrain_ = std::make_unique<sf::Texture>();
+}
+
+GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win_(win) {
+    applyDifficulty(difficulty);
+    resourceCount_ = difficultyParams_.startResources;
     const int W = 60, H = 24;
     tileSize_  = 64.f;
      worldW_ = W; worldH_ = H;
@@ -115,6 +126,12 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     trees_.loadTextures("../assets/trees");
     const unsigned treeCount = static_cast<unsigned>((W * H) / 18);
     trees_.generate(map_, tileSize_, treeCount, rng_, /*roadPaddingTiles=*/1);
+
+    // Initialize material counts based on difficulty
+    // For now, keep default values; can be adjusted per difficulty later
+    materialCount_[0] = 10; // bois
+    materialCount_[1] = 10; // pierre
+    materialCount_[2] = 5;  // cristal
 
     {
         resourceTex_ = std::make_unique<sf::Texture>();
@@ -192,9 +209,12 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
         sf::Vector2f resourcePos((worldW_ * tileSize_) * 0.5f, (worldH_ * tileSize_) * 0.5f);
         creeps_.setResourcePos(resourcePos);
 
-        // Initialize waves
-        generateWaves();
-        spawnNextWave();
+    // Initialize waves
+    generateWaves();
+    spawnNextWave();
+
+    // Apply speed multiplier to creatures
+    creeps_.setSpeedMultiplier(difficultyParams_.speedMul);
     }
 
     // ===== UI =====
@@ -211,8 +231,8 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     menuBg_->setScale({0.5f, 0.5f});
 
     uiFont_ = std::make_unique<sf::Font>();
-    if (uiFont_->openFromFile("../assets/fonts/Roboto-Regular_2.ttf")) {  // SFML3
-        uiTitle_ = std::make_unique<sf::Text>(*uiFont_, "Armory & Supplies", 28);
+    if (uiFont_->loadFromFile("../assets/fonts/Roboto-Regular_2.ttf")) {  // SFML2
+        uiTitle_ = std::make_unique<sf::Text>("Armory & Supplies", *uiFont_, 28);
         uiTitle_->setFillColor(sf::Color::White);
     }
 
@@ -260,17 +280,17 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     if (!gameOverTexture_.loadFromFile("../assets/ui/gameover.png")) {
         // Fallback: create a simple game over texture
         sf::RenderTexture tempRenderTexture;
-        tempRenderTexture.resize({900, 450});
+        tempRenderTexture.create(900, 450);
         tempRenderTexture.clear(sf::Color::Black);
         // Draw "GAME OVER" text on the texture
         sf::Font tempFont;
-        if (tempFont.openFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
-            sf::Text tempText(tempFont, "GAME OVER", 48);
+        if (tempFont.loadFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
+            sf::Text tempText("GAME OVER", tempFont, 48);
             tempText.setFillColor(sf::Color::Red);
             tempText.setStyle(sf::Text::Bold);
             sf::FloatRect textRect = tempText.getLocalBounds();
-            tempText.setOrigin({textRect.position.x + textRect.size.x / 2.0f, textRect.position.y + textRect.size.y / 2.0f});
-            tempText.setPosition({200.f, 100.f});
+            tempText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+            tempText.setPosition(200.f, 100.f);
             tempRenderTexture.draw(tempText);
         }
         tempRenderTexture.display();
@@ -281,8 +301,8 @@ GameScene::GameScene(sf::RenderWindow& win) : win_(win) {
     gameOverSprite_->setPosition({win_.getSize().x / 2.0f, win_.getSize().y / 2.0f});
 
     // Load button font and create return button
-    if (!buttonFont_.openFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
-        buttonFont_.openFromFile("../assets/fonts/Roboto-Regular.ttf");
+    if (!buttonFont_.loadFromFile("../assets/ui/FreckleFace-Regular.ttf")) {
+        buttonFont_.loadFromFile("../assets/fonts/Roboto-Regular.ttf");
     }
     returnButton_ = std::make_unique<Button>(buttonFont_, sf::Vector2f(200.f, 50.f), "Return to Menu", sf::Color(140, 200, 110), sf::Color::White, 3.f);
     returnButton_->setPosition({win_.getSize().x / 2.0f - 100.f, win_.getSize().y / 2.0f + 190.f});
@@ -764,16 +784,16 @@ void GameScene::draw() {
 
     // Affichage du nombre de ressources restantes
     sf::Font font;
-    font.openFromFile("../assets/ui/FreckleFace-Regular.ttf");  // SFML 3
+    font.loadFromFile("../assets/ui/FreckleFace-Regular.ttf");  // SFML 2
 
-    sf::Text resText(font, "Ressources: " + std::to_string(resourceCount_), 32);
+    sf::Text resText("Ressources: " + std::to_string(resourceCount_), font, 32);
     resText.setFillColor(sf::Color::Yellow);
     resText.setPosition(sf::Vector2f(30.f, 30.f));              // or {30.f, 30.f}
     win_.draw(resText);
 
     // Draw stolen animations
     for (const auto& anim : stolenAnimations_) {
-        sf::Text animText(font, anim.text, 24);
+        sf::Text animText(anim.text, font, 24);
         sf::Color color = sf::Color::Red;
         color.a = static_cast<std::uint8_t>(anim.alpha);
         animText.setFillColor(color);
@@ -792,7 +812,7 @@ void GameScene::draw() {
         } else if (gameOverState_ == GameOverState::Collapsing) {
             // Apply pixelation shader to the entire screen
             sf::RenderTexture renderTexture;
-            renderTexture.resize({win_.getSize().x, win_.getSize().y});
+            renderTexture.create(win_.getSize().x, win_.getSize().y);
             renderTexture.clear(sf::Color::Transparent);
 
             // Note: In SFML 3, capturing the screen requires different approach
@@ -939,15 +959,15 @@ void GameScene::drawMenu(){
     for (int i=0;i<3;++i){
         win_.draw(matSlots_[i]);
 
-        sf::Text count(*uiFont_, "", 18);
+        sf::Text count("", *uiFont_, 18);
         if (!uiFont_->getInfo().family.empty()) count.setFont(*uiFont_);
         count.setString(std::to_string(materialCount_[i]));
         count.setCharacterSize(18);
         count.setFillColor(sf::Color::Black);
 
-        auto rect = matSlots_[i].getGlobalBounds(); // SFML3
-        count.setPosition(sf::Vector2f(rect.position.x + rect.size.x + 8.f,
-                                       rect.position.y + 24.f));
+        auto rect = matSlots_[i].getGlobalBounds(); // SFML2
+        count.setPosition(sf::Vector2f(rect.left + rect.width + 8.f,
+                                       rect.top + 24.f));
         win_.draw(count);
     }
 
@@ -1061,7 +1081,7 @@ void GameScene::spawnDrop() {
     sf::Sprite sprite(*dropTextures_[type]);
     sprite.setPosition(pos);
     sprite.setScale({0.1f, 0.1f}); // Smaller size
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 2.f, sprite.getLocalBounds().size.y / 2.f});
+    sprite.setOrigin(sprite.getLocalBounds().width / 2.f, sprite.getLocalBounds().height / 2.f);
 
     Drop drop(type, pos, 15.f, std::move(sprite)); // 15 seconds lifetime
 
@@ -1116,6 +1136,41 @@ void GameScene::handleDropClick(sf::Vector2f clickPos) {
 void GameScene::drawDrops() {
     for (const auto& drop : drops_) {
         win_.draw(drop.sprite);
+    }
+}
+
+void GameScene::applyDifficulty(const std::string& difficulty) {
+    if (difficulty == "Easy") {
+        difficultyParams_.hpMul = 0.8f;
+        difficultyParams_.speedMul = 0.7f;
+        difficultyParams_.rewardMultiplier = 1.2f;
+        difficultyParams_.lives = 25;
+        difficultyParams_.startResources = 25;
+    } else if (difficulty == "Normal") {
+        difficultyParams_.hpMul = 1.0f;
+        difficultyParams_.speedMul = 1.f;
+        difficultyParams_.rewardMultiplier = 1.0f;
+        difficultyParams_.lives = 20;
+        difficultyParams_.startResources = 20;
+    } else if (difficulty == "Hard") {
+        difficultyParams_.hpMul = 1.3f;
+        difficultyParams_.speedMul = 1.5f;
+        difficultyParams_.rewardMultiplier = 0.9f;
+        difficultyParams_.lives = 15;
+        difficultyParams_.startResources = 15;
+    } else if (difficulty == "Legendary") {
+        difficultyParams_.hpMul = 1.5f;
+        difficultyParams_.speedMul = 2.f;
+        difficultyParams_.rewardMultiplier = 0.8f;
+        difficultyParams_.lives = 10;
+        difficultyParams_.startResources = 10;
+    } else {
+        // Default to Normal
+        difficultyParams_.hpMul = 1.0f;
+        difficultyParams_.speedMul = 1.0f;
+        difficultyParams_.rewardMultiplier = 1.0f;
+        difficultyParams_.lives = 20;
+        difficultyParams_.startResources = 20;
     }
 }
 

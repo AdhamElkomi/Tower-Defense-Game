@@ -4,8 +4,8 @@
 
 // Fonction utilitaire pour l’ombre portée
 static void drawDropShadowRect(sf::RenderTarget& rt, const sf::FloatRect& rect, const sf::Color& color, sf::Vector2f offset = {4.f, 6.f}) {
-    sf::RectangleShape shadow(rect.size);
-    shadow.setPosition(rect.position + offset);          // ✅ SFML 3 : position au lieu de left/top
+    sf::RectangleShape shadow(sf::Vector2f(rect.width, rect.height));
+    shadow.setPosition(sf::Vector2f(rect.left, rect.top) + offset);          // SFML 2
     shadow.setFillColor(color);
     rt.draw(shadow);
 }
@@ -16,7 +16,7 @@ Button::Button(const sf::Font& font,
                const sf::Vector2f& size,
                const std::string& label,
                sf::Color fill, sf::Color border, float borderThickness)
-: text_(font, label, 22) // ✅ construit ici
+: text_(label, font, 22) // SFML 2
 {
     shape_.setSize(size);
     shape_.setFillColor(fill);
@@ -31,8 +31,8 @@ void Button::setPosition(const sf::Vector2f& p) {
      const auto b  = shape_.getGlobalBounds();
     const auto tb = text_.getLocalBounds();
     text_.setPosition(sf::Vector2f(
-        b.position.x + (b.size.x - tb.size.x)/2.f - tb.position.x,
-        b.position.y + (b.size.y - tb.size.y)/2.f - tb.position.y - 4.f
+        b.left + (b.width - tb.width)/2.f - tb.left,
+        b.top + (b.height - tb.height)/2.f - tb.top - 4.f
     ));
 }
 
