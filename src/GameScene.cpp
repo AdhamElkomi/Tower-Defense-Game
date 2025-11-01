@@ -11,8 +11,9 @@
 #include "TileMap.hpp"
 #include "CreatureSystem.hpp"
 #include "TreeSystem.hpp"
+#include "HouseSystem.hpp"
 #include "BuildMenu.hpp"
-#include "Defense.hpp" 
+#include "Defense.hpp"
 
 // ---- helpers existants ----
 void GameScene::setPixelPerfectView(int worldW, int worldH, float tileSize){
@@ -126,6 +127,10 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     trees_.loadTextures("../assets/trees");
     const unsigned treeCount = static_cast<unsigned>((W * H) / 18);
     trees_.generate(map_, tileSize_, treeCount, rng_, /*roadPaddingTiles=*/1);
+
+    houses_.loadTextures("../assets/design_image");
+    const unsigned maxHouses = 10; // Increased max houses
+    houses_.generate(map_, tileSize_, maxHouses, rng_, /*roadPaddingTiles=*/1);
 
     // Initialize material counts based on difficulty
     // For now, keep default values; can be adjusted per difficulty later
@@ -722,6 +727,7 @@ void GameScene::update(float dt) {
 void GameScene::draw() {
     win_.draw(tilemap_);
     win_.draw(trees_);
+    win_.draw(houses_);
     creeps_.draw(win_);
     if (resourceShadow_) win_.draw(*resourceShadow_);
     if (resourceSprite_) win_.draw(*resourceSprite_);

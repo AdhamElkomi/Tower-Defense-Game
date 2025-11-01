@@ -195,10 +195,24 @@ CMakeFiles/TowerDefense.dir/src/GameScene.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TowerDefense.dir/src/GameScene.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/adhamking4/Tower-Defense-Game/src/GameScene.cpp -o CMakeFiles/TowerDefense.dir/src/GameScene.cpp.s
 
+CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
+CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o: /home/adhamking4/Tower-Defense-Game/src/HouseSystem.cpp
+CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o -MF CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/HouseSystem.cpp
+
+CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/adhamking4/Tower-Defense-Game/src/HouseSystem.cpp > CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.i
+
+CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/adhamking4/Tower-Defense-Game/src/HouseSystem.cpp -o CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.s
+
 CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o: /home/adhamking4/Tower-Defense-Game/src/MapGeneator.cpp
 CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o -MF CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/MapGeneator.cpp
 
 CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.i: cmake_force
@@ -212,7 +226,7 @@ CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/Menu.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/Menu.cpp.o: /home/adhamking4/Tower-Defense-Game/src/Menu.cpp
 CMakeFiles/TowerDefense.dir/src/Menu.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/TowerDefense.dir/src/Menu.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/TowerDefense.dir/src/Menu.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/Menu.cpp.o -MF CMakeFiles/TowerDefense.dir/src/Menu.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/Menu.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/Menu.cpp
 
 CMakeFiles/TowerDefense.dir/src/Menu.cpp.i: cmake_force
@@ -226,7 +240,7 @@ CMakeFiles/TowerDefense.dir/src/Menu.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o: /home/adhamking4/Tower-Defense-Game/src/Pathfinding.cpp
 CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o -MF CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/Pathfinding.cpp
 
 CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.i: cmake_force
@@ -240,7 +254,7 @@ CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/Slider.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/Slider.cpp.o: /home/adhamking4/Tower-Defense-Game/src/Slider.cpp
 CMakeFiles/TowerDefense.dir/src/Slider.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/TowerDefense.dir/src/Slider.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/TowerDefense.dir/src/Slider.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/Slider.cpp.o -MF CMakeFiles/TowerDefense.dir/src/Slider.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/Slider.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/Slider.cpp
 
 CMakeFiles/TowerDefense.dir/src/Slider.cpp.i: cmake_force
@@ -254,7 +268,7 @@ CMakeFiles/TowerDefense.dir/src/Slider.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o: /home/adhamking4/Tower-Defense-Game/src/TileMap.cpp
 CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o -MF CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/TileMap.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/TileMap.cpp
 
 CMakeFiles/TowerDefense.dir/src/TileMap.cpp.i: cmake_force
@@ -268,7 +282,7 @@ CMakeFiles/TowerDefense.dir/src/TileMap.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o: /home/adhamking4/Tower-Defense-Game/src/TreeSystem.cpp
 CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o -MF CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/TreeSystem.cpp
 
 CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.i: cmake_force
@@ -282,7 +296,7 @@ CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.s: cmake_force
 CMakeFiles/TowerDefense.dir/src/main.cpp.o: CMakeFiles/TowerDefense.dir/flags.make
 CMakeFiles/TowerDefense.dir/src/main.cpp.o: /home/adhamking4/Tower-Defense-Game/src/main.cpp
 CMakeFiles/TowerDefense.dir/src/main.cpp.o: CMakeFiles/TowerDefense.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/TowerDefense.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/TowerDefense.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TowerDefense.dir/src/main.cpp.o -MF CMakeFiles/TowerDefense.dir/src/main.cpp.o.d -o CMakeFiles/TowerDefense.dir/src/main.cpp.o -c /home/adhamking4/Tower-Defense-Game/src/main.cpp
 
 CMakeFiles/TowerDefense.dir/src/main.cpp.i: cmake_force
@@ -304,6 +318,7 @@ TowerDefense_OBJECTS = \
 "CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.o" \
 "CMakeFiles/TowerDefense.dir/src/Defense.cpp.o" \
 "CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o" \
+"CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o" \
 "CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o" \
 "CMakeFiles/TowerDefense.dir/src/Menu.cpp.o" \
 "CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o" \
@@ -324,6 +339,7 @@ TowerDefense: CMakeFiles/TowerDefense.dir/src/Creature.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/CreatureSystem.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/Defense.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o
+TowerDefense: CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/Menu.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/Pathfinding.cpp.o
@@ -333,7 +349,7 @@ TowerDefense: CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/src/main.cpp.o
 TowerDefense: CMakeFiles/TowerDefense.dir/build.make
 TowerDefense: CMakeFiles/TowerDefense.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable TowerDefense"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/adhamking4/Tower-Defense-Game/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking CXX executable TowerDefense"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/TowerDefense.dir/link.txt --verbose=$(VERBOSE)
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "Symlink assets -> build/assets"
 	/usr/bin/cmake -E create_symlink /home/adhamking4/Tower-Defense-Game/assets /home/adhamking4/Tower-Defense-Game/build/assets

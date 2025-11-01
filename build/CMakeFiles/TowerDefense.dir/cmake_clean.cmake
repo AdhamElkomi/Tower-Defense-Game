@@ -17,6 +17,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/TowerDefense.dir/src/Defense.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o.d"
+  "CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o"
+  "CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o"
   "CMakeFiles/TowerDefense.dir/src/MapGeneator.cpp.o.d"
   "CMakeFiles/TowerDefense.dir/src/Menu.cpp.o"

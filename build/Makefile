@@ -369,6 +369,30 @@ src/GameScene.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/GameScene.cpp.s
 .PHONY : src/GameScene.cpp.s
 
+src/HouseSystem.o: src/HouseSystem.cpp.o
+.PHONY : src/HouseSystem.o
+
+# target to build an object file
+src/HouseSystem.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.o
+.PHONY : src/HouseSystem.cpp.o
+
+src/HouseSystem.i: src/HouseSystem.cpp.i
+.PHONY : src/HouseSystem.i
+
+# target to preprocess a source file
+src/HouseSystem.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.i
+.PHONY : src/HouseSystem.cpp.i
+
+src/HouseSystem.s: src/HouseSystem.cpp.s
+.PHONY : src/HouseSystem.s
+
+# target to generate assembly for a file
+src/HouseSystem.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.s
+.PHONY : src/HouseSystem.cpp.s
+
 src/MapGeneator.o: src/MapGeneator.cpp.o
 .PHONY : src/MapGeneator.o
 
@@ -599,6 +623,9 @@ help:
 	@echo "... src/GameScene.o"
 	@echo "... src/GameScene.i"
 	@echo "... src/GameScene.s"
+	@echo "... src/HouseSystem.o"
+	@echo "... src/HouseSystem.i"
+	@echo "... src/HouseSystem.s"
 	@echo "... src/MapGeneator.o"
 	@echo "... src/MapGeneator.i"
 	@echo "... src/MapGeneator.s"

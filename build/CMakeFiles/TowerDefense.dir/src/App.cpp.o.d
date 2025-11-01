@@ -344,4 +344,5 @@ CMakeFiles/TowerDefense.dir/src/App.cpp.o: \
  /home/adhamking4/Tower-Defense-Game/include/TreeSystem.hpp \
  /home/adhamking4/Tower-Defense-Game/include/BuildMenu.hpp \
  /home/adhamking4/Tower-Defense-Game/include/Pathfinding.hpp \
+ /home/adhamking4/Tower-Defense-Game/include/HouseSystem.hpp \
  /usr/include/c++/13/variant /usr/include/c++/13/bits/parse_numbers.h

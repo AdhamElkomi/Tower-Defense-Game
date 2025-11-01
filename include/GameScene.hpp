@@ -10,6 +10,7 @@
 #include "TileMap.hpp"
 #include "CreatureSystem.hpp"
 #include "TreeSystem.hpp"
+#include "HouseSystem.hpp"
 #include "BuildMenu.hpp"
 #include "Button.hpp"
 #include "Defense.hpp"
@@ -48,6 +49,7 @@ private:
 
     // décor
     TreeSystem  trees_;
+    HouseSystem houses_;
     std::mt19937 rng_{ std::random_device{}() };
 
     // bâtiment ressource

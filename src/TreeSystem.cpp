@@ -75,7 +75,7 @@ void TreeSystem::generate(const Map& map, float tileSize, unsigned count, std::m
         sp.setPosition(pos);
 
         // ✅ réduire la taille (exemple : moitié)
-        std::uniform_real_distribution<float> scaleDist(0.1f, 0.2f);
+        std::uniform_real_distribution<float> scaleDist(0.13f, 0.215f);
 float s = scaleDist(rng);
 sp.setScale(sf::Vector2f(s, s));
 
