@@ -261,7 +261,7 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     // boutons unités (ronds) + luminance selon affordability
     for (int i=0;i<3;++i){
         unitBtns_[i] = sf::CircleShape(40.f);
-        unitBtns_[i].setFillColor(sf::Color(255,255,255, unitAffordable_[i] ? 255 : 120)); // “luminosité”
+        unitBtns_[i].setFillColor(sf::Color(255,255,255, unitAffordable_[i] ? 255 : 120)); // "luminosité"
         unitBtns_[i].setOutlineThickness(3.f);
         unitBtns_[i].setOutlineColor(sf::Color(30,30,30,220));
     }
@@ -330,6 +330,11 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
 
     // Stop any existing music and start game music
     // Note: We don't have direct access to AudioManager here, so we'll assume it's handled elsewhere
+}
+
+GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty, const std::string& username) : GameScene(win, difficulty) {
+    username_ = username;
+    difficulty_ = difficulty;
 }
 
 

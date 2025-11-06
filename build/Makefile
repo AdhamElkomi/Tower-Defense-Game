@@ -393,6 +393,54 @@ src/HouseSystem.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/HouseSystem.cpp.s
 .PHONY : src/HouseSystem.cpp.s
 
+src/LeaderboardController.o: src/LeaderboardController.cpp.o
+.PHONY : src/LeaderboardController.o
+
+# target to build an object file
+src/LeaderboardController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardController.cpp.o
+.PHONY : src/LeaderboardController.cpp.o
+
+src/LeaderboardController.i: src/LeaderboardController.cpp.i
+.PHONY : src/LeaderboardController.i
+
+# target to preprocess a source file
+src/LeaderboardController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardController.cpp.i
+.PHONY : src/LeaderboardController.cpp.i
+
+src/LeaderboardController.s: src/LeaderboardController.cpp.s
+.PHONY : src/LeaderboardController.s
+
+# target to generate assembly for a file
+src/LeaderboardController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardController.cpp.s
+.PHONY : src/LeaderboardController.cpp.s
+
+src/LeaderboardScene.o: src/LeaderboardScene.cpp.o
+.PHONY : src/LeaderboardScene.o
+
+# target to build an object file
+src/LeaderboardScene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardScene.cpp.o
+.PHONY : src/LeaderboardScene.cpp.o
+
+src/LeaderboardScene.i: src/LeaderboardScene.cpp.i
+.PHONY : src/LeaderboardScene.i
+
+# target to preprocess a source file
+src/LeaderboardScene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardScene.cpp.i
+.PHONY : src/LeaderboardScene.cpp.i
+
+src/LeaderboardScene.s: src/LeaderboardScene.cpp.s
+.PHONY : src/LeaderboardScene.s
+
+# target to generate assembly for a file
+src/LeaderboardScene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TowerDefense.dir/build.make CMakeFiles/TowerDefense.dir/src/LeaderboardScene.cpp.s
+.PHONY : src/LeaderboardScene.cpp.s
+
 src/MapGeneator.o: src/MapGeneator.cpp.o
 .PHONY : src/MapGeneator.o
 
@@ -626,6 +674,12 @@ help:
 	@echo "... src/HouseSystem.o"
 	@echo "... src/HouseSystem.i"
 	@echo "... src/HouseSystem.s"
+	@echo "... src/LeaderboardController.o"
+	@echo "... src/LeaderboardController.i"
+	@echo "... src/LeaderboardController.s"
+	@echo "... src/LeaderboardScene.o"
+	@echo "... src/LeaderboardScene.i"
+	@echo "... src/LeaderboardScene.s"
 	@echo "... src/MapGeneator.o"
 	@echo "... src/MapGeneator.i"
 	@echo "... src/MapGeneator.s"

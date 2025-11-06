@@ -19,6 +19,7 @@ class GameScene {
 public:
     explicit GameScene(sf::RenderWindow& win);
     GameScene(sf::RenderWindow& win, const std::string& difficulty);
+    GameScene(sf::RenderWindow& win, const std::string& difficulty, const std::string& username);
 
     void handleInput(bool mouseLeft, bool mouseLeftReleased, bool mouseMoved);
     void update(float dt);
@@ -198,6 +199,12 @@ private:
         float graceSec;
     };
     DifficultyParams difficultyParams_;
+
+    // Leaderboard data
+    std::string username_;
+    std::string difficulty_;
+    int score_ = 0;
+    int wavesPlayed_ = 0;
 
     void generateWaves();
     void spawnNextWave();

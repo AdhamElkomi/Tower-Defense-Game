@@ -1,29 +1,32 @@
 #include "App.hpp"
-#include "Menu.hpp"  
-#include "GameScene.hpp"  // ⬅️ OBLIGATOIRE pour make_unique<GameScene>
-#include <variant>  // ✅ important: type complet ici
+#include "Menu.hpp"
+#include "GameScene.hpp"
+#include "LeaderboardScene.hpp"
+#include <variant>
 #include <type_traits>
+
 App::~App() = default;
 
 App::App() {
-      sf::VideoMode mode({1920u, 1080u});
+    sf::VideoMode mode({1920u, 1080u});
     window_.create(mode, "Tower Defense");
 
     menu_ = std::make_unique<MenuScene>(window_);
 }
 
-// ✅ le type MenuScene est connu ici
-
-
-void App::goToGame(){
-    std::string difficulty = menu_->getDifficulty();
-    game_ = std::make_unique<GameScene>(window_, difficulty);
+void App::goToGame() {
+    game_ = std::make_unique<GameScene>(window_, currentDifficulty_, currentUsername_);
     state_ = State::Game;
-    // Stop menu music and start game music
-    // Note: AudioManager is in MenuScene, so we need to access it differently
-    // For now, we'll handle music in GameScene itself
 }
 
+void App::goToLeaderboard() {
+    leaderboard_ = std::make_unique<LeaderboardScene>(window_);
+    state_ = State::Leaderboard;
+}
+
+void App::goToUsernamePrompt() {
+    state_ = State::UsernamePrompt;
+}
 
 void App::run() {
     sf::Clock clk;
@@ -42,6 +45,8 @@ void App::run() {
             else if (event.type == sf::Event::TextEntered) {
                 if (state_ == State::Menu && menu_) {
                     menu_->handleTextInput(event.text.unicode);
+                } else if (state_ == State::UsernamePrompt && menu_) {
+                    menu_->handleUsernameInput(event.text.unicode);
                 }
             }
             // --- MOUSE MOVED
@@ -69,21 +74,42 @@ void App::run() {
             menu_->update(dt);
             menu_->draw();
 
-            // Si ton bouton Start met started_ à true :
-            if (menu_->started()) {
-                goToGame();
+            if (menu_->shouldGoToUsernamePrompt()) {
+                currentDifficulty_ = menu_->getDifficulty();
+                goToUsernamePrompt();
+            } else if (menu_->shouldGoToLeaderboard()) {
+                goToLeaderboard();
             }
-        } else { // State::Game
+        } else if (state_ == State::UsernamePrompt) {
+            menu_->handleUsernamePromptInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
+            menu_->update(dt);
+            menu_->drawUsernamePrompt();
+
+            if (menu_->usernamePromptDone()) {
+                currentUsername_ = menu_->getEnteredUsername();
+                goToGame();
+            } else if (menu_->usernamePromptCancelled()) {
+                state_ = State::Menu;
+            }
+        } else if (state_ == State::Game) {
             game_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
             game_->update(dt);
             game_->draw();
 
-            // Check if game over and return to menu requested
             if (game_->shouldReturnToMenu()) {
                 state_ = State::Menu;
-                game_.reset(); // Reset game scene
+                game_.reset();
                 menu_ = std::make_unique<MenuScene>(window_);
-                // Note: AudioManager is in MenuScene, so music will be handled there
+            }
+        } else if (state_ == State::Leaderboard) {
+            leaderboard_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
+            leaderboard_->update(dt);
+            leaderboard_->draw();
+
+            if (leaderboard_->shouldReturnToMenu()) {
+                state_ = State::Menu;
+                leaderboard_.reset();
+                menu_ = std::make_unique<MenuScene>(window_);
             }
         }
 

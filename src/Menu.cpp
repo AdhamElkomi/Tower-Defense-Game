@@ -14,7 +14,15 @@ static void centerSpriteToCover(sf::Sprite& sp, const sf::RenderWindow& win) {
 }
 
 void MenuScene::update(float /*dt*/) {
-    // Laisse vide pour l’instant, ou ajoute des animations UI si nécessaire.
+    // Update username validation
+    if (!enteredUsername_.empty()) {
+        usernameValid_ = LeaderboardController::isValidUsername(enteredUsername_);
+    } else {
+        usernameValid_ = false;
+    }
+    if (usernameError_) {
+        usernameError_->setString(usernameValid_ ? "" : "Invalid username (3-16 chars, A-Z a-z 0-9 _ -)");
+    }
 }
 
 MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
@@ -23,6 +31,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     bgTex_.loadFromFile("../assets/images/background.png");
     panelTex_.loadFromFile("../assets/images/first-bg.png");
     gearTex_.loadFromFile("../assets/images/gear.png");
+    leaderboardIconTex_.loadFromFile("../assets/ui/leaderboard_icon.png");
 
     // Construire éléments dépendants des assets
     bgSprite_.emplace(bgTex_);
@@ -118,11 +127,8 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
 
     // Callbacks
     btnStart_->setOnClick([this]() {
-        started_ = true;              // ✅ membre existant
+        goToUsernamePrompt_ = true;
         audio_.playClick();
-        audio_.playGameLoop(0.7f);    // musique du jeu
-           // 🚀 Basculer vers la GameScene
-        if (onStartGame_) onStartGame_();
     });
 
     btnDifficulty_->setOnClick([this]() {
@@ -147,6 +153,19 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
     });
     settingsBtn_.setDrawShadow(false);
 
+    // Leaderboard button
+    leaderboardBtn_.setPosition(sf::Vector2f(
+        panelGlobal.left + panelGlobal.width + 80.f,
+        panelGlobal.top + panelGlobal.height * 0.5f
+    ));
+    leaderboardBtn_.setIcon(&leaderboardIconTex_);
+    // leaderboardBtn_.setFillColor(sf::Color(110, 0, 26)); // Bordeaux - removed as CircleButton doesn't have setFillColor
+    leaderboardBtn_.setOnClick([this]() {
+        goToLeaderboard_ = true;
+        audio_.playClick();
+    });
+    leaderboardBtn_.setDrawShadow(false);
+
     // Difficulty submenu
     difficultyPanelBG_.setSize(sf::Vector2f(300.f, 400.f));
     difficultyPanelBG_.setFillColor(sf::Color(40, 43, 55, 220));
@@ -168,15 +187,64 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
             difficulty_ = diff;
             difficultyMenuOpen_ = false;
             audio_.playClick();
-            audio_.playGameLoop(0.7f); // Switch to game music
-            // Launch game immediately after selection
-            started_ = true;
-            if (onStartGame_) onStartGame_();
+            goToUsernamePrompt_ = true;
         });
     }
 
-    // --- BG plein écran (si tu utilises bg.png)
-   
+    // Username prompt
+    usernamePanelBG_.setSize(sf::Vector2f(400.f, 250.f));
+    usernamePanelBG_.setFillColor(sf::Color(40, 43, 55, 240));
+    usernamePanelBG_.setOutlineThickness(3.f);
+    usernamePanelBG_.setOutlineColor(sf::Color(100, 100, 100));
+    usernamePanelBG_.setPosition(sf::Vector2f(
+        (win_.getSize().x - 400.f) * 0.5f,
+        (win_.getSize().y - 250.f) * 0.5f
+    ));
+
+    usernameTitle_.emplace("Enter Username", font_, 24);
+    usernameTitle_->setFillColor(theme_.text);
+    usernameTitle_->setPosition(sf::Vector2f(
+        usernamePanelBG_.getPosition().x + 200.f - usernameTitle_->getLocalBounds().width / 2.f,
+        usernamePanelBG_.getPosition().y + 20.f
+    ));
+
+    usernameInput_.emplace("", font_, 20);
+    usernameInput_->setFillColor(sf::Color::Cyan);
+    usernameInput_->setPosition(sf::Vector2f(
+        usernamePanelBG_.getPosition().x + 50.f,
+        usernamePanelBG_.getPosition().y + 80.f
+    ));
+
+    usernameError_.emplace("", font_, 12);
+    usernameError_->setFillColor(sf::Color::Red);
+    usernameError_->setPosition(sf::Vector2f(
+        usernamePanelBG_.getPosition().x + 50.f,
+        usernamePanelBG_.getPosition().y + 120.f
+    ));
+
+    usernameOkBtn_.emplace(font_, sf::Vector2f(80.f, 40.f), "OK", sf::Color(76,175,80), sf::Color::White, 2.f);
+    usernameOkBtn_->setPosition(sf::Vector2f(
+        usernamePanelBG_.getPosition().x + 150.f,
+        usernamePanelBG_.getPosition().y + 180.f
+    ));
+
+    usernameBackBtn_.emplace(font_, sf::Vector2f(80.f, 40.f), "Back", sf::Color(244,67,54), sf::Color::White, 2.f);
+    usernameBackBtn_->setPosition(sf::Vector2f(
+        usernamePanelBG_.getPosition().x + 50.f,
+        usernamePanelBG_.getPosition().y + 180.f
+    ));
+
+    usernameOkBtn_->setOnClick([this]() {
+        if (usernameValid_) {
+            usernamePromptDone_ = true;
+            audio_.playClick();
+        }
+    });
+
+    usernameBackBtn_->setOnClick([this]() {
+        usernamePromptCancelled_ = true;
+        audio_.playClick();
+    });
 }
 
 
@@ -200,6 +268,33 @@ void MenuScene::handleTextInput(char32_t unicode) {
     }
 }
 
+void MenuScene::handleUsernameInput(char32_t unicode) {
+    if (unicode == '\b' && !enteredUsername_.empty()) {
+        enteredUsername_.pop_back();
+    } else if (unicode >= 32 && unicode < 127 && enteredUsername_.size() < 16) {
+        enteredUsername_ += static_cast<char>(unicode);
+    }
+    if (usernameInput_) {
+        usernameInput_->setString(enteredUsername_);
+    }
+}
+
+void MenuScene::handleUsernamePromptInput(bool mpLeft, bool /*mrLeft*/, bool /*mMoved*/) {
+    auto clickSfx = [this](){ audio_.playClick(); };
+
+    if (usernameOkBtn_) usernameOkBtn_->handleInput(win_, mpLeft, clickSfx);
+    if (usernameBackBtn_) usernameBackBtn_->handleInput(win_, mpLeft, clickSfx);
+}
+
+void MenuScene::drawUsernamePrompt() {
+    win_.draw(usernamePanelBG_);
+    if (usernameTitle_) win_.draw(*usernameTitle_);
+    if (usernameInput_) win_.draw(*usernameInput_);
+    if (usernameError_) win_.draw(*usernameError_);
+    if (usernameOkBtn_) usernameOkBtn_->draw(win_);
+    if (usernameBackBtn_) usernameBackBtn_->draw(win_);
+}
+
 void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
     auto clickSfx = [this](){ audio_.playClick(); };
 
@@ -207,6 +302,7 @@ void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
     if (btnDifficulty_) btnDifficulty_->handleInput(win_, mpLeft, clickSfx);
     if (btnExit_)       btnExit_->handleInput(win_, mpLeft, clickSfx);
     settingsBtn_.handleInput(win_, mpLeft, clickSfx);
+    leaderboardBtn_.handleInput(win_, mpLeft, clickSfx);
 
     // Handle difficulty submenu input
     if (difficultyMenuOpen_) {
@@ -303,6 +399,7 @@ void MenuScene::draw() {
     if (btnDifficulty_) btnDifficulty_->draw(win_);
     if (btnExit_)       btnExit_->draw(win_);
     settingsBtn_.draw(win_);
+    leaderboardBtn_.draw(win_);
 
     if (settingsOpen_) {
         win_.draw(settingsPanelBG_);

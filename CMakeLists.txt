@@ -30,6 +30,11 @@ message(STATUS "Using SFML via pkg-config")
 target_link_libraries(TowerDefense PRIVATE ${SFML_LIBRARIES})
 target_include_directories(TowerDefense PRIVATE ${SFML_INCLUDE_DIRS})
 
+# --- SQLite3 and nlohmann_json via vcpkg
+find_package(SQLite3 REQUIRED)
+find_package(nlohmann_json REQUIRED)
+target_link_libraries(TowerDefense PRIVATE SQLite::SQLite3 nlohmann_json::nlohmann_json)
+
 # --- Tests (Catch2 v3)
 enable_testing()
 add_executable(tests tests/test_sanity.cpp)

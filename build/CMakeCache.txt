@@ -198,6 +198,12 @@ PKG_CONFIG_ARGN:STRING=
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 
+//Path to a file.
+SQLite3_INCLUDE_DIR:PATH=/usr/include
+
+//Path to a library.
+SQLite3_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libsqlite3.so
+
 //Value Computed by CMake
 TowerDefense_BINARY_DIR:STATIC=/home/adhamking4/Tower-Defense-Game/build
 
@@ -206,6 +212,9 @@ TowerDefense_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 TowerDefense_SOURCE_DIR:STATIC=/home/adhamking4/Tower-Defense-Game
+
+//The directory containing a CMake configuration file for nlohmann_json.
+nlohmann_json_DIR:PATH=/usr/share/cmake/nlohmann_json
 
 //Path to a library.
 pkgcfg_lib_SFML_sfml-audio:FILEPATH=/usr/lib/x86_64-linux-gnu/libsfml-audio.so
@@ -358,6 +367,10 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding PkgConfig
 FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v1.8.1()]
+//Details about finding SQLite3
+FIND_PACKAGE_MESSAGE_DETAILS_SQLite3:INTERNAL=[/usr/include][/usr/lib/x86_64-linux-gnu/libsqlite3.so][v3.45.1()]
+//Details about finding nlohmann_json
+FIND_PACKAGE_MESSAGE_DETAILS_nlohmann_json:INTERNAL=[/usr/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake][v3.11.3()]
 //ADVANCED property for variable: PKG_CONFIG_ARGN
 PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
@@ -397,6 +410,10 @@ SFML_sfml-all_INCLUDEDIR:INTERNAL=
 SFML_sfml-all_LIBDIR:INTERNAL=
 SFML_sfml-all_PREFIX:INTERNAL=
 SFML_sfml-all_VERSION:INTERNAL=
+//ADVANCED property for variable: SQLite3_INCLUDE_DIR
+SQLite3_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: SQLite3_LIBRARY
+SQLite3_LIBRARY-ADVANCED:INTERNAL=1
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 __pkg_config_arguments_SFML:INTERNAL=REQUIRED;sfml-all
