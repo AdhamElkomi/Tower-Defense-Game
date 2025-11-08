@@ -82,6 +82,7 @@ private:
     sf::RectangleShape usernamePanelBG_;
     std::optional<sf::Text> usernameTitle_;
     std::optional<sf::Text> usernameInput_;
+    std::optional<sf::RectangleShape> usernameInputBG_;
     std::optional<sf::Text> usernameError_;
     std::optional<Button> usernameOkBtn_;
     std::optional<Button> usernameBackBtn_;

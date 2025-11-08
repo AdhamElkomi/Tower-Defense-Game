@@ -155,8 +155,8 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
 
     // Leaderboard button
     leaderboardBtn_.setPosition(sf::Vector2f(
-        panelGlobal.left + panelGlobal.width + 80.f,
-        panelGlobal.top + panelGlobal.height * 0.5f
+        panelGlobal.left + panelGlobal.width + 20.f,
+        panelGlobal.top + panelGlobal.height * 0.64f
     ));
     leaderboardBtn_.setIcon(&leaderboardIconTex_);
     // leaderboardBtn_.setFillColor(sf::Color(110, 0, 26)); // Bordeaux - removed as CircleButton doesn't have setFillColor

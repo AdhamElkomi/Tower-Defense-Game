@@ -11,10 +11,8 @@ LeaderboardScene::LeaderboardScene(sf::RenderWindow& win) : win_(win), leaderboa
 void LeaderboardScene::loadAssets() {
     font_.loadFromFile("../assets/fonts/PressStart2P-Regular.ttf");
     bgTex_.loadFromFile("../assets/images/background.png");
-    panelTex_.loadFromFile("../assets/images/first-bg.png");
 
     bgSprite_.emplace(bgTex_);
-    panelSprite_.emplace(panelTex_);
 
     // Scale background to cover
     const auto* tex = bgSprite_->getTexture();
@@ -25,83 +23,89 @@ void LeaderboardScene::loadAssets() {
     const float s = std::max(W / TW, H / TH);
     bgSprite_->setScale(sf::Vector2f(s, s));
 
-    // Scale panel
-    sf::Vector2f targetSize{800.f, 600.f};
-    sf::Vector2u texSize = panelTex_.getSize();
-    float scaleX = targetSize.x / static_cast<float>(texSize.x);
-    float scaleY = targetSize.y / static_cast<float>(texSize.y);
-    float scale = std::min(scaleX, scaleY);
-    panelSprite_->setScale(sf::Vector2f(scale, scale));
+    // Create a competitive leaderboard background panel using RectangleShape
+    sf::Vector2f targetSize{1100.f, 750.f};
+    panelShape_.emplace(targetSize);
+    panelShape_->setFillColor(sf::Color(20, 20, 40, 220)); // Dark blue-gray for competitive feel
+    panelShape_->setOutlineThickness(4.f);
+    panelShape_->setOutlineColor(sf::Color(255, 215, 0, 255)); // Gold outline for prestige
 
     // Center panel
     sf::Vector2f panelPos{
         (W - targetSize.x) * 0.5f,
         (H - targetSize.y) * 0.5f
     };
-    panelSprite_->setPosition(panelPos);
+    panelShape_->setPosition(panelPos);
 }
 
 void LeaderboardScene::setupUI() {
-    sf::Vector2f panelPos = panelSprite_->getPosition();
-    sf::Vector2f panelSize = panelSprite_->getGlobalBounds().getSize();
+    sf::Vector2f panelPos = panelShape_->getPosition();
+    sf::Vector2f panelSize = panelShape_->getGlobalBounds().getSize();
 
-    // Title
-    title_.emplace("LEADERBOARD", font_, 24);
-    title_->setFillColor(sf::Color::White);
+    // Title with competitive styling
+    title_.emplace("LEADERBOARD", font_, 32);
+    title_->setFillColor(sf::Color(255, 215, 0, 255)); // Gold color
+    title_->setStyle(sf::Text::Bold);
     sf::FloatRect titleBounds = title_->getLocalBounds();
     title_->setOrigin(titleBounds.left + titleBounds.width / 2.0f, titleBounds.top);
-    title_->setPosition(panelPos.x + panelSize.x / 2.0f, panelPos.y + 20.f);
+    title_->setPosition(panelPos.x + panelSize.x / 2.0f, panelPos.y + 30.f);
 
-    // Tabs
+    // Trophy icon or symbol (using text for simplicity)
+    trophyText_.emplace("🏆", font_, 24);
+    trophyText_->setFillColor(sf::Color(255, 215, 0, 255));
+    trophyText_->setPosition(panelPos.x + panelSize.x / 2.0f - 150.f, panelPos.y + 25.f);
+
+    // Tabs with better spacing and colors
     std::vector<std::string> tabNames = {"Global", "By Difficulty", "Today"};
     tabTexts_.resize(tabNames.size());
     for (size_t i = 0; i < tabNames.size(); ++i) {
-        tabTexts_[i].emplace(tabNames[i], font_, 16);
-        tabTexts_[i]->setFillColor(sf::Color::White);
-        tabTexts_[i]->setPosition(panelPos.x + 50.f + i * 200.f, panelPos.y + 70.f);
+        tabTexts_[i].emplace(tabNames[i], font_, 18);
+        tabTexts_[i]->setFillColor((currentTab_ == static_cast<Tab>(i)) ? sf::Color(255, 215, 0, 255) : sf::Color::White);
+        tabTexts_[i]->setPosition(panelPos.x + 80.f + i * 250.f, panelPos.y + 90.f);
     }
 
-    // Header
-    headerText_.emplace("Rank  Username  Score  Difficulty  Date", font_, 14);
-    headerText_->setFillColor(sf::Color::Yellow);
-    headerText_->setPosition(panelPos.x + 50.f, panelPos.y + 110.f);
+    // Header with better formatting
+    headerText_.emplace("Rank     Username         Score     Difficulty     Date", font_, 16);
+    headerText_->setFillColor(sf::Color(255, 255, 255, 255));
+    headerText_->setStyle(sf::Text::Underlined);
+    headerText_->setPosition(panelPos.x + 80.f, panelPos.y + 140.f);
 
-    // List (placeholder, will be updated)
+    // List with improved spacing
     listTexts_.resize(pageSize_);
     for (int i = 0; i < pageSize_; ++i) {
-        listTexts_[i].emplace("", font_, 12);
+        listTexts_[i].emplace("", font_, 14);
         listTexts_[i]->setFillColor(sf::Color::White);
-        listTexts_[i]->setPosition(panelPos.x + 50.f, panelPos.y + 140.f + i * 20.f);
+        listTexts_[i]->setPosition(panelPos.x + 80.f, panelPos.y + 170.f + i * 30.f);
     }
 
-    // Footer
-    footerText_.emplace("Press ESC to return", font_, 12);
-    footerText_->setFillColor(sf::Color::White);
-    footerText_->setPosition(panelPos.x + 50.f, panelPos.y + panelSize.y - 30.f);
+    // Footer with better positioning
+    footerText_.emplace("Press ESC to return to Menu", font_, 14);
+    footerText_->setFillColor(sf::Color(200, 200, 200, 255));
+    footerText_->setPosition(panelPos.x + 80.f, panelPos.y + panelSize.y - 40.f);
 
-    // Search
-    searchLabel_.emplace("Search:", font_, 14);
+    // Search with improved styling
+    searchLabel_.emplace("Search Player:", font_, 16);
     searchLabel_->setFillColor(sf::Color::White);
-    searchLabel_->setPosition(panelPos.x + 50.f, panelPos.y + panelSize.y - 80.f);
+    searchLabel_->setPosition(panelPos.x + 80.f, panelPos.y + panelSize.y - 100.f);
 
-    searchInput_.emplace("", font_, 14);
-    searchInput_->setFillColor(sf::Color::Cyan);
-    searchInput_->setPosition(panelPos.x + 150.f, panelPos.y + panelSize.y - 80.f);
+    searchInput_.emplace("", font_, 16);
+    searchInput_->setFillColor(isSearching_ ? sf::Color::Yellow : sf::Color(100, 100, 100, 255));
+    searchInput_->setPosition(panelPos.x + 280.f, panelPos.y + panelSize.y - 100.f);
 
-    // Page info
-    pageInfo_.emplace("Page 1 of 1", font_, 12);
-    pageInfo_->setFillColor(sf::Color::White);
-    pageInfo_->setPosition(panelPos.x + panelSize.x - 200.f, panelPos.y + panelSize.y - 80.f);
+    // Page info with better color
+    pageInfo_.emplace("Page 1 of 1", font_, 14);
+    pageInfo_->setFillColor(sf::Color(255, 215, 0, 255));
+    pageInfo_->setPosition(panelPos.x + panelSize.x - 250.f, panelPos.y + panelSize.y - 100.f);
 
-    // Nav buttons
+    // Nav buttons with better styling
     navButtons_.resize(2);
-    navButtons_[0].emplace("Prev", font_, 14);
+    navButtons_[0].emplace("< Prev", font_, 16);
     navButtons_[0]->setFillColor(sf::Color::White);
-    navButtons_[0]->setPosition(panelPos.x + panelSize.x - 150.f, panelPos.y + panelSize.y - 50.f);
+    navButtons_[0]->setPosition(panelPos.x + panelSize.x - 200.f, panelPos.y + panelSize.y - 60.f);
 
-    navButtons_[1].emplace("Next", font_, 14);
+    navButtons_[1].emplace("Next >", font_, 16);
     navButtons_[1]->setFillColor(sf::Color::White);
-    navButtons_[1]->setPosition(panelPos.x + panelSize.x - 80.f, panelPos.y + panelSize.y - 50.f);
+    navButtons_[1]->setPosition(panelPos.x + panelSize.x - 100.f, panelPos.y + panelSize.y - 60.f);
 }
 
 void LeaderboardScene::updateResults() {
@@ -137,16 +141,16 @@ void LeaderboardScene::updateResults() {
 }
 
 void LeaderboardScene::handleInput(bool /*mousePressedLeft*/, bool mouseReleasedLeft, bool /*mouseMoved*/) {
-    if (!mouseReleasedLeft) return;
-
-    sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
-    sf::Vector2f worldPos = win_.mapPixelToCoords(mousePos);
-
     // ESC to return
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape)) {
         returnToMenu_ = true;
         return;
     }
+
+    if (!mouseReleasedLeft) return;
+
+    sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+    sf::Vector2f worldPos = win_.mapPixelToCoords(mousePos);
 
     // Tab clicks
     for (size_t i = 0; i < tabTexts_.size(); ++i) {
@@ -197,8 +201,9 @@ void LeaderboardScene::update(float /*dt*/) {
 
 void LeaderboardScene::draw() {
     if (bgSprite_) win_.draw(*bgSprite_);
-    if (panelSprite_) win_.draw(*panelSprite_);
+    if (panelShape_) win_.draw(*panelShape_);
     if (title_) win_.draw(*title_);
+    if (trophyText_) win_.draw(*trophyText_);
 
     // Tabs
     for (auto& tab : tabTexts_) {

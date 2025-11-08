@@ -19,12 +19,12 @@ private:
     // Assets
     sf::Font font_;
     sf::Texture bgTex_;
-    sf::Texture panelTex_;
     std::optional<sf::Sprite> bgSprite_;
-    std::optional<sf::Sprite> panelSprite_;
+    std::optional<sf::RectangleShape> panelShape_;
 
     // UI Elements
     std::optional<sf::Text> title_;
+    std::optional<sf::Text> trophyText_;
     std::vector<std::optional<sf::Text>> tabTexts_;
     std::optional<sf::Text> headerText_;
     std::vector<std::optional<sf::Text>> listTexts_;
