@@ -1,7 +1,10 @@
-# TODO: Enlarge Leaderboard Background Frame and Fix Text Overlap
+# TODO: Update Score on Kills
 
 ## Tasks
-- [x] Enlarge the background panel size from 900x650 to 1100x750 in `loadAssets()` method
-- [x] Increase vertical spacing for list items from 25.f to 30.f in `setupUI()` method
-- [ ] Adjust positions of UI elements (title, tabs, header, footer, search, nav buttons) to fit the larger panel proportionally
-- [ ] Test the changes by running the application and verifying no text overlap in LeaderboardScene
+- [x] Add kill counters (golemKills_, gruntKills_, rogueKills_) and public getters to CreatureSystem.hpp
+- [x] Update CreatureSystem::applyDamagePoint signature to remove int& parameters and increment internal counters in CreatureSystem.cpp
+- [x] Update all applyDamagePoint calls in Defense.cpp to remove dummy arguments
+- [x] Update all applyDamagePoint calls in GameScene.cpp to remove dummy arguments
+- [x] In GameScene::update, after creeps_.update, update kill counters from CreatureSystem and recalculate score_
+- [ ] Test the game to ensure score updates correctly on kills
+- [ ] Verify leaderboard or score display works

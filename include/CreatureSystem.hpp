@@ -84,7 +84,9 @@ public:
     // Find closest creature in range
     sf::Vector2f findClosestInRange(sf::Vector2f center, float radius) const;
 
-
+    int getGolemKills() const { return golemKills_; }
+    int getGruntKills() const { return gruntKills_; }
+    int getRogueKills() const { return rogueKills_; }
 
 private:
     float tileSize_;
@@ -116,4 +118,8 @@ private:
 
     std::vector<CollectedResource> collectedResources_;
     std::vector<StolenResource> stolenResources_;
+
+    int golemKills_ = 0;
+    int gruntKills_ = 0;
+    int rogueKills_ = 0;
 };

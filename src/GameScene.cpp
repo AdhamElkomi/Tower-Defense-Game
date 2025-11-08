@@ -330,6 +330,41 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
 
     // Stop any existing music and start game music
     // Note: We don't have direct access to AudioManager here, so we'll assume it's handled elsewhere
+
+    // Load score UI
+    scoreTexture_ = std::make_unique<sf::Texture>();
+    if (!scoreTexture_->loadFromFile("../assets/ui/score.png")) {
+        // Fallback: create a simple rectangle
+        sf::RenderTexture tempRT;
+        tempRT.create(200, 50);
+        tempRT.clear(sf::Color(100, 100, 100, 200));
+        tempRT.display();
+        scoreTexture_ = std::make_unique<sf::Texture>(tempRT.getTexture());
+    }
+    scoreTexture_->setSmooth(false);
+
+    scoreSprite_ = std::make_unique<sf::Sprite>(*scoreTexture_);
+    // Position top-right, small size
+    sf::Vector2u texSize = scoreTexture_->getSize();
+    float scale = 0.5f; // small dimension
+    scoreSprite_->setScale(scale, scale);
+    scoreSprite_->setPosition(win_.getSize().x - texSize.x * scale - 10.f, 10.f);
+
+    scoreText_ = std::make_unique<sf::Text>();
+    if (uiFont_) {
+        scoreText_->setFont(*uiFont_);
+    } else {
+        sf::Font tempFont;
+        if (tempFont.loadFromFile("../assets/fonts/Roboto-Regular.ttf")) {
+            scoreText_->setFont(tempFont);
+        }
+    }
+    scoreText_->setCharacterSize(20);
+    scoreText_->setFillColor(sf::Color::White);
+    // Center on sprite
+    sf::FloatRect spriteBounds = scoreSprite_->getGlobalBounds();
+    scoreText_->setPosition(spriteBounds.left + spriteBounds.width / 2.f, spriteBounds.top + spriteBounds.height / 2.f - 10.f);
+    scoreText_->setOrigin(scoreText_->getLocalBounds().width / 2.f, scoreText_->getLocalBounds().height / 2.f);
 }
 
 GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty, const std::string& username) : GameScene(win, difficulty) {
@@ -604,6 +639,11 @@ void GameScene::update(float dt) {
         gameTime_ += dt;
         creeps_.update(dt, gameTime_);
 
+        // Update kill counters from CreatureSystem
+        golemKills_ = creeps_.getGolemKills();
+        gruntKills_ = creeps_.getGruntKills();
+        rogueKills_ = creeps_.getRogueKills();
+
         // ====== ★ NEW : animation du menu ======
         float target = menuOpen_ ? 1.f : 0.f;
         if (menuAnim_ < target) menuAnim_ = std::min(target, menuAnim_ + dt * menuAnimSpeed_);
@@ -624,6 +664,16 @@ void GameScene::update(float dt) {
 
         // Also collect any drops the CreatureSystem queued internally (safety)
         creeps_.extractPendingDrops(pendingDrops_);
+
+        // Update score
+        score_ = golemKills_ * 10 + gruntKills_ * 4 + rogueKills_ * 1;
+        if (scoreText_) {
+            scoreText_->setString(std::to_string(score_));
+            // Re-center text
+            sf::FloatRect spriteBounds = scoreSprite_->getGlobalBounds();
+            scoreText_->setPosition(spriteBounds.left + spriteBounds.width / 2.f, spriteBounds.top + spriteBounds.height / 2.f - 10.f);
+            scoreText_->setOrigin(scoreText_->getLocalBounds().width / 2.f, scoreText_->getLocalBounds().height / 2.f);
+        }
 
         // Collect collected resources from creatures (near resource)
         std::vector<CreatureSystem::CollectedResource> collected;
@@ -756,6 +806,10 @@ void GameScene::draw() {
     // bouton menu (toujours visible)
    // draw: bouton menu
     if (menuButton_) win_.draw(*menuButton_);
+
+    // Draw score
+    if (scoreSprite_) win_.draw(*scoreSprite_);
+    if (scoreText_) win_.draw(*scoreText_);
 
     // towers
     for (const auto& t : towers_) t->draw(win_, /*showRadius=*/true);

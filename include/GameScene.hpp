@@ -203,7 +203,6 @@ private:
     // Leaderboard data
     std::string username_;
     std::string difficulty_;
-    int score_ = 0;
     int wavesPlayed_ = 0;
 
     void generateWaves();
@@ -250,6 +249,17 @@ private:
     int totalKills_ = 0;
     float dropSpawnInterval_ = 20.f; // 3 per minute = every 20 seconds
     float lastDropSpawnTime_ = 0.f;
+
+    // Score tracking
+    int golemKills_ = 0;
+    int gruntKills_ = 0;
+    int rogueKills_ = 0;
+    int score_ = 0;
+
+    // Score UI
+    std::unique_ptr<sf::Texture> scoreTexture_;
+    std::unique_ptr<sf::Sprite> scoreSprite_;
+    std::unique_ptr<sf::Text> scoreText_;
 
     void loadDropTextures();
     void spawnDrop();
