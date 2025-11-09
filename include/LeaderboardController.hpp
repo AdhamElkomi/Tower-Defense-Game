@@ -67,6 +67,9 @@ public:
     nlohmann::json exportToJson();
     bool importFromJson(const nlohmann::json& j);
 
+    // Clear data
+    void clearData();
+
     // Anti-cheat
     void setScoreValidator(std::unique_ptr<IScoreValidator> validator);
 

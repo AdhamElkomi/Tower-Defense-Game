@@ -538,6 +538,15 @@ bool LeaderboardController::importFromJson(const nlohmann::json& j) {
     return true;
 }
 
+void LeaderboardController::clearData() {
+    if (use_sqlite_) {
+        executeSQL("DELETE FROM leaderboard");
+    } else {
+        json_data_ = nlohmann::json::array();
+        saveJSON();
+    }
+}
+
 void LeaderboardController::setScoreValidator(std::unique_ptr<IScoreValidator> validator) {
     validator_ = std::move(validator);
 }

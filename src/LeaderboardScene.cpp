@@ -1,10 +1,16 @@
 #include "LeaderboardScene.hpp"
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <iomanip>
 
 LeaderboardScene::LeaderboardScene(sf::RenderWindow& win) : win_(win), leaderboard_() {
     loadAssets();
     setupUI();
+    loadLeaderboardFromFile();
     updateResults();
 }
 
@@ -109,6 +115,9 @@ void LeaderboardScene::setupUI() {
 }
 
 void LeaderboardScene::updateResults() {
+    // Load from file each time to get latest data
+    loadLeaderboardFromFile();
+
     switch (currentTab_) {
         case Tab::Global:
             currentResults_ = leaderboard_.queryTopGlobal(pageSize_, currentPage_, currentSort_);
@@ -131,9 +140,13 @@ void LeaderboardScene::updateResults() {
         if (i < currentResults_.entries.size()) {
             const auto& entry = currentResults_.entries[i];
             int rank = (currentPage_ - 1) * pageSize_ + i + 1;
-            std::string text = std::to_string(rank) + ". " + entry.username + " " +
-                               std::to_string(entry.best_score) + " " + entry.difficulty + " " + entry.best_date;
-            listTexts_[i]->setString(text);
+            std::stringstream ss;
+            ss << std::left << std::setw(10) << rank << " "
+               << std::setw(18) << entry.username << " "
+               << std::setw(12) << entry.best_score << " "
+               << std::setw(9) << entry.difficulty << " "
+               << entry.best_date;
+            listTexts_[i]->setString(ss.str());
         } else {
             listTexts_[i]->setString("");
         }
@@ -225,4 +238,27 @@ void LeaderboardScene::draw() {
     for (auto& btn : navButtons_) {
         if (btn) win_.draw(*btn);
     }
+}
+
+void LeaderboardScene::loadLeaderboardFromFile() {
+    std::ifstream infile("../docs/leaderboard.txt");
+    if (!infile.is_open()) return;
+
+    // Clear existing data in controller
+    leaderboard_.clearData();
+
+    std::string line;
+    while (std::getline(infile, line)) {
+        if (line.empty()) continue;
+        std::stringstream ss(line);
+        std::string username, difficulty, date_str, score_str;
+        int score;
+        std::getline(ss, username, ',');
+        std::getline(ss, score_str, ',');
+        score = std::stoi(score_str);
+        std::getline(ss, difficulty, ',');
+        std::getline(ss, date_str); // rest is date
+        leaderboard_.upsertBest(username, difficulty, score, 0); // waves_played not used, set to 0
+    }
+    infile.close();
 }

@@ -208,6 +208,8 @@ private:
     void generateWaves();
     void spawnNextWave();
     void applyDifficulty(const std::string& difficulty);
+    void saveLeaderboardEntry();
+    std::string getCurrentDateTime();
 
     // Audio management
     void stopGameSceneSounds();

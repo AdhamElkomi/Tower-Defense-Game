@@ -53,6 +53,7 @@ private:
     void loadAssets();
     void setupUI();
     void updateResults();
+    void loadLeaderboardFromFile();
     void drawTabs();
     void drawList();
     void drawPagination();

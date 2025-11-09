@@ -7,6 +7,10 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <fstream>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 #include "MapGenerator.hpp"
 #include "TileMap.hpp"
 #include "CreatureSystem.hpp"
@@ -348,7 +352,7 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     sf::Vector2u texSize = scoreTexture_->getSize();
     float scale = 0.5f; // small dimension
     scoreSprite_->setScale(scale, scale);
-    scoreSprite_->setPosition(win_.getSize().x - texSize.x * scale - 10.f, 10.f);
+    scoreSprite_->setPosition(win_.getSize().x - texSize.x * scale + 1800.f, 5.f); // Moved more to the left
 
     scoreText_ = std::make_unique<sf::Text>();
     if (uiFont_) {
@@ -359,8 +363,9 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
             scoreText_->setFont(tempFont);
         }
     }
-    scoreText_->setCharacterSize(20);
+    scoreText_->setCharacterSize(30);
     scoreText_->setFillColor(sf::Color::White);
+    scoreText_->setStyle(sf::Text::Bold); // Added bold style
     // Center on sprite
     sf::FloatRect spriteBounds = scoreSprite_->getGlobalBounds();
     scoreText_->setPosition(spriteBounds.left + spriteBounds.width / 2.f, spriteBounds.top + spriteBounds.height / 2.f - 10.f);
@@ -709,6 +714,8 @@ void GameScene::update(float dt) {
             if (collapseSound_) {
                 collapseSound_->play();
             }
+            // Save leaderboard data
+            saveLeaderboardEntry();
         }
 
         // Check if it's time to spawn the next wave
@@ -1237,5 +1244,66 @@ void GameScene::applyDifficulty(const std::string& difficulty) {
         difficultyParams_.lives = 20;
         difficultyParams_.startResources = 20;
     }
+}
+
+void GameScene::saveLeaderboardEntry() {
+    if (username_.empty()) return; // No username, skip saving
+
+    std::string date = getCurrentDateTime();
+    std::string entry = username_ + "," + std::to_string(score_) + "," + difficulty_ + "," + date + "\n";
+
+    // Load existing entries
+    std::vector<std::string> lines;
+    std::ifstream infile("../docs/leaderboard.txt");
+    if (infile.is_open()) {
+        std::string line;
+        while (std::getline(infile, line)) {
+            if (!line.empty()) {
+                lines.push_back(line);
+            }
+        }
+        infile.close();
+    }
+
+    // Update or add entry
+    bool updated = false;
+    for (auto& line : lines) {
+        std::stringstream ss(line);
+        std::string uname, diff, dt, sc_str;
+        int sc;
+        std::getline(ss, uname, ',');
+        std::getline(ss, sc_str, ',');
+        sc = std::stoi(sc_str);
+        std::getline(ss, diff, ',');
+        std::getline(ss, dt);
+        if (uname == username_ && diff == difficulty_) {
+            if (score_ > sc) {
+                line = username_ + "," + std::to_string(score_) + "," + difficulty_ + "," + date;
+            }
+            updated = true;
+            break;
+        }
+    }
+    if (!updated) {
+        lines.push_back(username_ + "," + std::to_string(score_) + "," + difficulty_ + "," + date);
+    }
+
+    // Save back to file
+    std::ofstream outfile("../docs/leaderboard.txt");
+    if (outfile.is_open()) {
+        for (const auto& line : lines) {
+            outfile << line << "\n";
+        }
+        outfile.close();
+    }
+}
+
+std::string GameScene::getCurrentDateTime() {
+    auto now = std::chrono::system_clock::now();
+    auto time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::localtime(&time_t);
+    std::stringstream ss;
+    ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    return ss.str();
 }
 

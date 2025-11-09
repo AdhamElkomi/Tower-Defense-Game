@@ -1,10 +1,9 @@
-# TODO: Update Score on Kills
+# TODO: Implement Leaderboard System
 
 ## Tasks
-- [x] Add kill counters (golemKills_, gruntKills_, rogueKills_) and public getters to CreatureSystem.hpp
-- [x] Update CreatureSystem::applyDamagePoint signature to remove int& parameters and increment internal counters in CreatureSystem.cpp
-- [x] Update all applyDamagePoint calls in Defense.cpp to remove dummy arguments
-- [x] Update all applyDamagePoint calls in GameScene.cpp to remove dummy arguments
-- [x] In GameScene::update, after creeps_.update, update kill counters from CreatureSystem and recalculate score_
-- [ ] Test the game to ensure score updates correctly on kills
-- [ ] Verify leaderboard or score display works
+- [x] Modify src/GameScene.cpp: Add code to save/update leaderboard data in docs/leaderboard.txt when game over occurs. Format: username,score,difficulty,date (YYYY-MM-DD HH:MM:SS). Update if same username exists with higher score.
+- [x] Modify src/LeaderboardScene.cpp: Load entries from docs/leaderboard.txt, sort by score descending, compute ranks, and display in the list.
+
+## Followup
+- [ ] Test saving at game over and loading in leaderboard scene.
+- [ ] Ensure date format is consistent.
