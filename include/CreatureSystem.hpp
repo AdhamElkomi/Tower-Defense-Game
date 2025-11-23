@@ -94,7 +94,7 @@ private:
     WaypointPath path_;
     std::vector<sf::Vector2i> exits_;  // Store exit tiles
     sf::Vector2f resourcePos_;  // The resource position
-    float resourceRadius_ = 100.f;  // Radius for stealing resources
+    float resourceRadius_ = 150.f;  // Radius for stealing resources
 
     std::unordered_map<CreatureType, CreatureDef> defs_;
     std::unordered_map<CreatureType, std::unique_ptr<sf::Texture>> textures_;

@@ -27,6 +27,7 @@ public:
     // ===== NEW (declared so GameScene.cpp can define/use them) =====
     void placeTower(BuildMenu::Unit unit, sf::Vector2f center);
     Tower* getActiveAimingTower();
+    void handleRightClick(sf::Vector2f mousePosition);
 
    // std::unique_ptr<BuildMenu> menu_;
    

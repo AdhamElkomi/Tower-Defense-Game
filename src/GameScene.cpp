@@ -378,9 +378,19 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty, const
 }
 
 
+void GameScene::handleRightClick(sf::Vector2f mousePosition) {
+    // Parcourir les tours pour trouver celle qui est cliquée
+    auto it = std::find_if(towers_.begin(), towers_.end(), [&](const std::unique_ptr<Tower>& tower) {
+        sf::Vector2f d = mousePosition - tower->pos(); // Position de la souris par rapport à la tour
+        float radius = tower->radius(); // Rayon de la tour
+        return (d.x * d.x + d.y * d.y <= radius * radius); // Vérifie si la souris est dans le rayon de la tour
+    });
 
-
-
+    // Si une tour est trouvée, la supprimer
+    if (it != towers_.end()) {
+        towers_.erase(it);
+    }
+}
 
 // ---- input ----
 void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
@@ -390,6 +400,10 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
         if (returnButton_->bounds().contains(static_cast<sf::Vector2f>(mousePos))) {
             returnToMenu_ = true;
         }
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+        sf::Vector2f mousePosition = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
+        handleRightClick(mousePosition);
     }
 
     if (gameOver_ && gameOverState_ == GameOverState::ShowingImage) {
