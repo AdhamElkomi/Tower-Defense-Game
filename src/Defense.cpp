@@ -7,9 +7,8 @@
 #include <memory>
 #include <random>
 
-CannonTower::CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& cannonBallTex)
-: pos_(center), base_(baseTex)
-{
+CannonTower::CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& cannonBallTex, sf::Sound& cannonSound)
+: pos_(center), base_(baseTex), cannonSound_(cannonSound) {
     base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
     base_.setPosition(pos_);
     base_.setScale(sf::Vector2f(0.5f, 0.5f)); // smaller icon if needed
@@ -20,9 +19,8 @@ CannonTower::CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const 
 
 
 // ===================== ArcherTower =====================
-ArcherTower::ArcherTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& arrowTex)
-    : pos_(center), base_(baseTex)
-{
+ArcherTower::ArcherTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& arrowTex, sf::Sound& archerSound)
+: pos_(center), base_(baseTex), archerSound_(archerSound) {
     base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
     base_.setPosition(pos_);
     base_.setScale(sf::Vector2f(0.5f, 0.5f));
@@ -84,6 +82,9 @@ void ArcherTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
     arrow.sprite->setScale(sf::Vector2f(0.1f, 0.1f)); // Much smaller arrow
     arrows_.push_back(std::move(arrow));
 
+
+     // Jouer le son de l'attaque
+    archerSound_.play();
     // ammo / cooldown
     shotsLeft_--;
     cd_ = cooldown_;
@@ -118,6 +119,9 @@ void MageTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) {
         proj.powerMultiplier = powerMultiplier; // set power multiplier
         projectiles_.push_back(std::move(proj));
     }
+
+    // Jouer le son de l'attaque
+    mageSound_.play();
 
     // Reset hold
     isHolding_ = false;
@@ -162,9 +166,8 @@ void ArcherTower::extractDrops(std::vector<MaterialDrop>& out) { /* TODO: drops 
 
 
 // ===================== MageTower =====================
-MageTower::MageTower(sf::Vector2f center, const sf::Texture& baseTex)
-    : pos_(center), base_(baseTex)
-{
+MageTower::MageTower(sf::Vector2f center, const sf::Texture& baseTex, sf::Sound& mageSound)
+: pos_(center), base_(baseTex), mageSound_(mageSound) {
     base_.setOrigin(sf::Vector2f(baseTex.getSize().x * 0.5f, baseTex.getSize().y * 0.5f));
     base_.setPosition(pos_);
     base_.setScale(sf::Vector2f(0.5f, 0.5f));
@@ -306,6 +309,9 @@ void CannonTower::tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps){
     // FX
     recoilT_ = 0.10f;
     muzzleT_ = 0.06f;
+
+    // Jouer le son de l'attaque
+    cannonSound_.play();
 
 
     // ammo / cooldown

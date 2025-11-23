@@ -298,21 +298,19 @@ int CreatureSystem::applyDamagePoint(sf::Vector2f center, float radius, int dmg,
                 switch (c->def_.type) {
                     case CreatureType::Rogue: {
                         outDrops.push_back({Material::Wood,   c->pos()});
-                        outDrops.push_back({Material::Stone,  c->pos()});
+                        outDrops.push_back({Material::Wood,  c->pos()});
                         rogueKills_++;
                     } break;
                     case CreatureType::Grunt: {
-                        outDrops.push_back({Material::Wood,   c->pos()});
                         outDrops.push_back({Material::Wood,   c->pos()});
                         outDrops.push_back({Material::Stone,  c->pos()});
                         outDrops.push_back({Material::Crystal,c->pos()});
                         gruntKills_++;
                     } break;
                     case CreatureType::Golem: {
+                        outDrops.push_back({Material::Wood,   c->pos()});
+                        outDrops.push_back({Material::Stone,   c->pos()});
                         outDrops.push_back({Material::Stone,  c->pos()});
-                        outDrops.push_back({Material::Stone,  c->pos()});
-                        outDrops.push_back({Material::Stone,  c->pos()});
-                        outDrops.push_back({Material::Crystal,c->pos()});
                         outDrops.push_back({Material::Crystal,c->pos()});
                         golemKills_++;
                     } break;

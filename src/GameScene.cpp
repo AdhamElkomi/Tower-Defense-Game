@@ -370,6 +370,33 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     sf::FloatRect spriteBounds = scoreSprite_->getGlobalBounds();
     scoreText_->setPosition(spriteBounds.left + spriteBounds.width / 2.f, spriteBounds.top + spriteBounds.height / 2.f - 10.f);
     scoreText_->setOrigin(scoreText_->getLocalBounds().width / 2.f, scoreText_->getLocalBounds().height / 2.f);
+
+
+     // Charger les fichiers audio pour les attaques des tours
+    if (!cannonSoundBuffer_.loadFromFile("../assets/sfx/cannonball_sfx.mp3")) {
+        throw std::runtime_error("Erreur : Impossible de charger cannonball_sfx.mp3");
+    }
+    if (!archerSoundBuffer_.loadFromFile("../assets/sfx/arrow_sfx.mp3")) {
+        throw std::runtime_error("Erreur : Impossible de charger arrow_sfx.mp3");
+    }
+    if (!mageSoundBuffer_.loadFromFile("../assets/sfx/mage_sfx.mp3")) {
+        throw std::runtime_error("Erreur : Impossible de charger mage_sfx.mp3");
+    }
+
+    // Associer les buffers aux sons
+    cannonSound_.setBuffer(cannonSoundBuffer_);
+    archerSound_.setBuffer(archerSoundBuffer_);
+    mageSound_.setBuffer(mageSoundBuffer_);
+
+
+    // Charger le fichier audio pour la destruction des tours
+    if (!collapseSoundBuffer_.loadFromFile("../assets/sfx/collapse_sfx.mp3")) {
+        throw std::runtime_error("Erreur : Impossible de charger collapse_sfx.mp3");
+    }
+    collapseSound2_.setBuffer(collapseSoundBuffer_);
+    
+
+
 }
 
 GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty, const std::string& username) : GameScene(win, difficulty) {
@@ -388,6 +415,7 @@ void GameScene::handleRightClick(sf::Vector2f mousePosition) {
 
     // Si une tour est trouvée, la supprimer
     if (it != towers_.end()) {
+        collapseSound2_.play(); // Jouer le son de destruction
         towers_.erase(it);
     }
 }
@@ -612,7 +640,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costCannon_.wood;
                     materialCount_[1] -= costCannon_.stone;
                     materialCount_[2] -= costCannon_.crystal;
-                    towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_, cannonBallTex_));
+                   towers_.push_back(std::make_unique<CannonTower>(center, cannonTex_, cannonBallTex_, cannonSound_));
                 }
                 break;
             case BuildMenu::Unit::Archer:
@@ -625,7 +653,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costArcher_.wood;
                     materialCount_[1] -= costArcher_.stone;
                     materialCount_[2] -= costArcher_.crystal;
-                    towers_.push_back(std::make_unique<ArcherTower>(center, archerTex_, arrowTex_));
+                   towers_.push_back(std::make_unique<ArcherTower>(center, archerTex_, arrowTex_, archerSound_));
                 }
                 break;
             case BuildMenu::Unit::Mage:
@@ -638,7 +666,7 @@ void GameScene::placeTower(BuildMenu::Unit unit, sf::Vector2f center) {
                     materialCount_[0] -= costMage_.wood;
                     materialCount_[1] -= costMage_.stone;
                     materialCount_[2] -= costMage_.crystal;
-                    auto mage = std::make_unique<MageTower>(center, mageTex_);
+                    auto mage = std::make_unique<MageTower>(center, mageTex_, mageSound_);
                     mage->startHolding(); // Start charging immediately
                     towers_.push_back(std::move(mage));
                 }

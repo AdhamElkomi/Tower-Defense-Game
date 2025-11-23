@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp> 
 #include <memory>
 #include <vector>
 #include <cmath>
@@ -88,9 +89,9 @@ struct TowerCost {
 
 inline TowerCost getTowerCost(TowerType type) {
     switch(type) {
-        case TowerType::Cannon: return {2, 1, 0};
-        case TowerType::Archer: return {3, 2, 0};
-        case TowerType::Mage:   return {0, 3, 2};
+        case TowerType::Cannon: return {3, 2, 1};
+        case TowerType::Archer: return {7, 4, 3};
+        case TowerType::Mage:   return {14, 10, 6};
         default: return {};
     }
 }
@@ -115,8 +116,9 @@ public:
     static constexpr int DefaultShots = 8; // canon = le moins
     static constexpr float DefaultPower = 30.f; // Less powerful than archer and mage
     static constexpr float DefaultRadius = 300.f; // Reduced range
+    sf::Sound& cannonSound_;
 public:
-    CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& cannonBallTex);
+    CannonTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& cannonBallTex, sf::Sound& cannonSound);
     void update(float dt, CreatureSystem& creeps) override;
     void draw(sf::RenderTarget& rt, bool showRadius) const override;
     TowerType type() const override { return TowerType::Cannon; }
@@ -126,6 +128,7 @@ public:
     void extractDrops(std::vector<MaterialDrop>& out) override;
     float radius() const override { return radius_; }
     void tryFireAt(sf::Vector2f mouseWorld, CreatureSystem& creeps) override;
+
 
 private:
     sf::Vector2f pos_;
@@ -146,8 +149,10 @@ public:
     static constexpr int DefaultShots = 14; // archer = intermédiaire
     static constexpr float DefaultPower = 60.f; // More powerful than cannon
     static constexpr float DefaultRadius = 400.f; // Reduced range
+    sf::Sound& archerSound_; // Référence au son de l'attaque
+
 public:
-    ArcherTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& arrowTex);
+    ArcherTower(sf::Vector2f center, const sf::Texture& baseTex, const sf::Texture& arrowTex, sf::Sound& archerSound);
     void update(float dt, CreatureSystem& creeps) override;
     void draw(sf::RenderTarget& rt, bool showRadius) const override;
     TowerType type() const override { return TowerType::Archer; }
@@ -176,8 +181,10 @@ public:
     static constexpr int DefaultShots = 5; // mage = le plus puissant mais moins d'attaques
     static constexpr float DefaultPower = 120.f;
     static constexpr float DefaultRadius = 550.f; // Reduced range
+    sf::Sound& mageSound_; // Référence au son de l'attaque
+
 public:
-    MageTower(sf::Vector2f center, const sf::Texture& baseTex);
+    MageTower(sf::Vector2f center, const sf::Texture& baseTex, sf::Sound& mageSound);
     void update(float dt, CreatureSystem& creeps) override;
     void draw(sf::RenderTarget& rt, bool showRadius) const override;
     TowerType type() const override { return TowerType::Mage; }

@@ -107,6 +107,21 @@ private:
     sf::Texture arrowTex_;
     sf::Texture cannonBallTex_;
 
+    sf::SoundBuffer collapseSoundBuffer_; // Buffer pour le son de destruction
+    sf::Sound collapseSound2_;             // Son pour la destruction des tours
+
+
+        // Buffers pour les effets sonores des tours
+    sf::SoundBuffer cannonSoundBuffer_;
+    sf::SoundBuffer archerSoundBuffer_;
+    sf::SoundBuffer mageSoundBuffer_;
+
+    // Sons pour les attaques des tours
+    sf::Sound cannonSound_;
+    sf::Sound archerSound_;
+    sf::Sound mageSound_;
+
+
     // helper
     bool isBuildableAtPixel(sf::Vector2f px) const {
         int tx = int(px.x / tileSize_);
@@ -131,9 +146,9 @@ private:
 
     // Costs
     struct Cost { int wood, stone, crystal; };
-    Cost costCannon_{ /*wood*/2, /*stone*/1, /*crystal*/0 };
-    Cost costArcher_{ /*wood*/3, /*stone*/2, /*crystal*/0 };
-    Cost costMage_  { /*wood*/0, /*stone*/5, /*crystal*/2 };
+    Cost costCannon_{ /*wood*/3, /*stone*/2, /*crystal*/1 };
+    Cost costArcher_{ /*wood*/7, /*stone*/4, /*crystal*/1 };
+    Cost costMage_  { /*wood*/14, /*stone*/10, /*crystal*/6 };
 
     bool canAfford(const Cost& c) const {
         return materialCount_[0] >= c.wood
