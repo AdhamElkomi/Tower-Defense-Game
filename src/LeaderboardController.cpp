@@ -331,6 +331,71 @@ void LeaderboardController::upsertBest(const std::string& username, const std::s
     }
 }
 
+// New: upsert while preserving an explicit date (for importing legacy leaderboard.txt entries)
+void LeaderboardController::upsertBestWithDate(const std::string& username, const std::string& difficulty, int score, const std::string& date, int waves_played) {
+    if (!validator_->validateScore(score, username, difficulty)) return;
+
+    std::string username_norm = normalizeUsername(username);
+    if (use_sqlite_) {
+        // Similar to upsertSQL but bind provided date instead of generating now
+        const char* upsertSQL = R"(
+        INSERT INTO leaderboard (username, username_norm, difficulty, best_score, best_date, waves_played)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON CONFLICT(username_norm, difficulty) DO UPDATE SET
+            username = excluded.username,
+            best_score = CASE WHEN excluded.best_score > best_score THEN excluded.best_score ELSE best_score END,
+            best_date = CASE WHEN excluded.best_score > best_score THEN excluded.best_date ELSE best_date END,
+            waves_played = CASE WHEN excluded.best_score > best_score THEN excluded.waves_played ELSE waves_played END;
+    )";
+
+        sqlite3_stmt* stmt;
+        if (sqlite3_prepare_v2(db_, upsertSQL, -1, &stmt, nullptr) != SQLITE_OK) {
+            return;
+        }
+
+        sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, username_norm.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 3, difficulty.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 4, score);
+        sqlite3_bind_text(stmt, 5, date.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 6, waves_played);
+
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        trimOldEntries();
+    } else {
+        // JSON fallback: update or insert with provided date
+        bool updated = false;
+        loadJSON();
+        for (auto& entry : json_data_) {
+            if (entry["username_norm"] == username_norm && entry["difficulty"] == difficulty) {
+                if (score > entry["best_score"]) {
+                    entry["username"] = username;
+                    entry["best_score"] = score;
+                    entry["best_date"] = date;
+                    entry["waves_played"] = waves_played;
+                }
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            nlohmann::json newEntry = {
+                {"username", username},
+                {"username_norm", username_norm},
+                {"difficulty", difficulty},
+                {"best_score", score},
+                {"best_date", date},
+                {"waves_played", waves_played}
+            };
+            json_data_.push_back(newEntry);
+        }
+        trimOldEntries();
+        saveJSON();
+    }
+}
+
 // Queries
 QueryResult LeaderboardController::queryTopGlobal(int limit, int page, SortBy sort) {
     int offset = (page - 1) * limit;

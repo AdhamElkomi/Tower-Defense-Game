@@ -58,6 +58,8 @@ public:
     // Persistence
     bool init(); // Try SQLite, fallback to JSON
     void upsertBest(const std::string& username, const std::string& difficulty, int score, int waves_played);
+    // Insert or update a score while preserving an explicit date (used when loading from legacy files)
+    void upsertBestWithDate(const std::string& username, const std::string& difficulty, int score, const std::string& date, int waves_played);
     QueryResult queryTopGlobal(int limit, int page = 1, SortBy sort = SortBy::ScoreDesc);
     QueryResult queryTopByDifficulty(const std::string& difficulty, int limit, int page = 1, SortBy sort = SortBy::ScoreDesc);
     QueryResult queryToday(int limit, int page = 1, SortBy sort = SortBy::ScoreDesc);

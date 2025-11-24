@@ -1,0 +1,13 @@
+I am preparing a precise patch for include/LeaderboardController.hpp to update upsertBest signature and related declarations as per the required changes. Because direct editing failed, I provide the patch content here for safe manual or tool-assisted integration:
+
+--- include/LeaderboardController.hpp
+
+@@ class LeaderboardController {
+-    void upsertBest(const std::string& username, const std::string& difficulty, int score, int waves_played);
++    void upsertBest(const std::string& username, const std::string& difficulty, int score, int waves_played, const std::string& date = "");
+
+-    void upsertSQL(const std::string& username, const std::string& username_norm, const std::string& difficulty, int score, int waves_played);
++    void upsertSQL(const std::string& username, const std::string& username_norm, const std::string& difficulty, int score, int waves_played, const std::string& date);
+ 
+-    void upsertJSON(const std::string& username, const std::string& username_norm, const std::string& difficulty, int score, int waves_played);
++    void upsertJSON(const std::string& username, const std::string& username_norm, const std::string& difficulty, int score, int waves_played, const std::string& date);

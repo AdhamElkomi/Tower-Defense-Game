@@ -253,12 +253,13 @@ void LeaderboardScene::loadLeaderboardFromFile() {
         std::stringstream ss(line);
         std::string username, difficulty, date_str, score_str;
         int score;
-        std::getline(ss, username, ',');
-        std::getline(ss, score_str, ',');
-        score = std::stoi(score_str);
-        std::getline(ss, difficulty, ',');
-        std::getline(ss, date_str); // rest is date
-        leaderboard_.upsertBest(username, difficulty, score, 0); // waves_played not used, set to 0
+    std::getline(ss, username, ',');
+    std::getline(ss, score_str, ',');
+    score = std::stoi(score_str);
+    std::getline(ss, difficulty, ',');
+    std::getline(ss, date_str); // rest is date (preserve as-is)
+    // Insert preserving the exact date read from file
+    leaderboard_.upsertBestWithDate(username, difficulty, score, date_str, 0); // waves_played not used, set to 0
     }
     infile.close();
 }

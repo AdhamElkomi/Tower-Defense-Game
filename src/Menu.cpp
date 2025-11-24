@@ -21,7 +21,7 @@ void MenuScene::update(float /*dt*/) {
         usernameValid_ = false;
     }
     if (usernameError_) {
-        usernameError_->setString(usernameValid_ ? "" : "Invalid username (3-16 chars, A-Z a-z 0-9 _ -)");
+        usernameError_->setString(usernameValid_ ? "" : "Invalid username \n \n(3-16 chars, A-Z a-z 0-9 _ -)");
     }
 }
 
@@ -215,7 +215,7 @@ MenuScene::MenuScene(sf::RenderWindow& win) : win_(win) {
         usernamePanelBG_.getPosition().y + 80.f
     ));
 
-    usernameError_.emplace("", font_, 12);
+    usernameError_.emplace("", font_, 10);
     usernameError_->setFillColor(sf::Color::Red);
     usernameError_->setPosition(sf::Vector2f(
         usernamePanelBG_.getPosition().x + 50.f,
