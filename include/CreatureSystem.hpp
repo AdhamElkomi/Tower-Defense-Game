@@ -39,6 +39,9 @@ public:
     // New function to set path via base to exit
     void setPathViaBase(const Map& map, sf::Vector2i start, const std::vector<sf::Vector2i>& baseTiles, const std::vector<sf::Vector2i>& exits, const WalkableFn& isWalkable, const OccupancyGrid* occ = nullptr);
 
+    // NEW: Set paths for multiple entries (one path per entry)
+    void setPathsForMultipleEntries(const Map& map, const std::vector<sf::Vector2i>& entries, const std::vector<sf::Vector2i>& baseTiles, const std::vector<sf::Vector2i>& exits, const WalkableFn& isWalkable, const OccupancyGrid* occ = nullptr);
+
     void setExits(const std::vector<sf::Vector2i>& exits);
 
     void setResourcePos(sf::Vector2f pos);
@@ -92,6 +95,9 @@ private:
     float tileSize_;
     float speedMultiplier_ = 1.0f;
     WaypointPath path_;
+    std::vector<WaypointPath> paths_;  // NEW: Multiple paths for multiple entries
+    std::vector<sf::Vector2i> entries_;  // NEW: Store entry points
+    int currentEntryIndex_ = 0;  // NEW: Round-robin index for distributing creatures
     std::vector<sf::Vector2i> exits_;  // Store exit tiles
     sf::Vector2f resourcePos_;  // The resource position
     float resourceRadius_ = 150.f;  // Radius for stealing resources
@@ -123,3 +129,5 @@ private:
     int gruntKills_ = 0;
     int rogueKills_ = 0;
 };
+
+

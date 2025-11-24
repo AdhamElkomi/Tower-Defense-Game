@@ -1,3 +1,6 @@
+
+
+
 #include "CreatureSystem.hpp"
 #include <algorithm>
 #include <SFML/Audio.hpp>
@@ -189,15 +192,59 @@ void CreatureSystem::setPathViaBase(const Map& map, sf::Vector2i start, const st
     setExits(exits);
 }
 
+// NEW: Set paths for multiple entries
+void CreatureSystem::setPathsForMultipleEntries(const Map& map, const std::vector<sf::Vector2i>& entries, const std::vector<sf::Vector2i>& baseTiles, const std::vector<sf::Vector2i>& exits, const WalkableFn& isWalkable, const OccupancyGrid* occ) {
+    paths_.clear();
+    entries_ = entries;
+    currentEntryIndex_ = 0;
+
+    // Build a path for each entry
+    for (const auto& entry : entries) {
+        TilePath tilePath = routeViaBaseToBestExit(map, entry, baseTiles, exits, isWalkable, occ);
+        WaypointPath waypointPath;
+        if (!tilePath.empty()) {
+            for (auto& tile : tilePath) {
+                waypointPath.pts.emplace_back((tile.x + 0.5f) * tileSize_, (tile.y + 0.5f) * tileSize_);
+            }
+        }
+        paths_.push_back(waypointPath);
+    }
+
+    // Also set the main path to the first entry for backwards compatibility
+    if (!paths_.empty()) {
+        path_ = paths_[0];
+    }
+
+    setExits(exits);
+}
+
 void CreatureSystem::spawn(CreatureType t, float atTime){
     timeline_.push_back({t, atTime});
 }
 
 void CreatureSystem::spawnWave(int nGrunt, int nRogue, int nGolem, float startTime, float period){
     float t = startTime;
-    for (int i=0;i<nGrunt;++i){ spawn(CreatureType::Grunt, t);  t += period; }
-    for (int i=0;i<nRogue;++i){ spawn(CreatureType::Rogue, t);  t += period; }
-    for (int i=0;i<nGolem;++i){ spawn(CreatureType::Golem, t);  t += period; }
+    
+    // If we have multiple entries, distribute creatures among them
+    if (!paths_.empty() && paths_.size() > 1) {
+        for (int i=0;i<nGrunt;++i){ 
+            spawn(CreatureType::Grunt, t);  
+            t += period; 
+        }
+        for (int i=0;i<nRogue;++i){ 
+            spawn(CreatureType::Rogue, t);  
+            t += period; 
+        }
+        for (int i=0;i<nGolem;++i){ 
+            spawn(CreatureType::Golem, t);  
+            t += period; 
+        }
+    } else {
+        // Fallback to original behavior if only one path
+        for (int i=0;i<nGrunt;++i){ spawn(CreatureType::Grunt, t);  t += period; }
+        for (int i=0;i<nRogue;++i){ spawn(CreatureType::Rogue, t);  t += period; }
+        for (int i=0;i<nGolem;++i){ spawn(CreatureType::Golem, t);  t += period; }
+    }
     std::sort(timeline_.begin(), timeline_.end(), [](auto&a,auto&b){return a.t<b.t;});
 }
 
@@ -222,7 +269,14 @@ void CreatureSystem::update(float dt, float timeNow){
         CreatureDef modifiedDef = def;
         modifiedDef.speed *= speedMultiplier_;
 
-        auto c = std::make_unique<Creature>(modifiedDef, tex, path_,loopBuf);
+        // Select the path based on round-robin distribution among available entries
+        WaypointPath selectedPath = path_;  // Default to main path
+        if (!paths_.empty()) {
+            selectedPath = paths_[currentEntryIndex_];
+            currentEntryIndex_ = (currentEntryIndex_ + 1) % paths_.size();
+        }
+
+        auto c = std::make_unique<Creature>(modifiedDef, tex, selectedPath, loopBuf);
 
         //alive_.push_back(std::make_unique<Creature>(def, tex, path_, loopBuf));
 

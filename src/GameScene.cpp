@@ -193,10 +193,10 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
             exits.emplace_back(p.x, p.y);
         }
 
-        // Use stored entries as start
-        sf::Vector2i start(-1, -1);
-        if (!map_.entries.empty()) {
-            start = sf::Vector2i(map_.entries[0].x, map_.entries[0].y);
+        // Use stored entries for all spawn points
+        std::vector<sf::Vector2i> entries;
+        for (auto& p : map_.entries) {
+            entries.emplace_back(p.x, p.y);
         }
 
         // Walkable function: Path tiles and Rock tiles that are not buildable (base only)
@@ -204,13 +204,22 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
             return cell.ground == Tile::Path || (cell.ground == Tile::Rock && !cell.buildable);
         };
 
-        if (!baseTiles.empty() && !exits.empty() && start.x != -1) {
-            creeps_.setPathViaBase(map_, start, baseTiles, exits, isWalkable, nullptr);
+        if (!baseTiles.empty() && !exits.empty() && !entries.empty()) {
+            // Use multiple entries if available
+            creeps_.setPathsForMultipleEntries(map_, entries, baseTiles, exits, isWalkable, nullptr);
         } else {
-            // Fallback to old path
-            WaypointPath p = buildMainPathPolyline(map_, tileSize_);
-            if (!p.pts.empty()){
-                creeps_.setPath(p);
+            // Fallback to old path (single entry)
+            sf::Vector2i start(-1, -1);
+            if (!map_.entries.empty()) {
+                start = sf::Vector2i(map_.entries[0].x, map_.entries[0].y);
+            }
+            if (start.x != -1) {
+                creeps_.setPathViaBase(map_, start, baseTiles, exits, isWalkable, nullptr);
+            } else {
+                WaypointPath p = buildMainPathPolyline(map_, tileSize_);
+                if (!p.pts.empty()){
+                    creeps_.setPath(p);
+                }
             }
         }
 
@@ -1348,4 +1357,3 @@ std::string GameScene::getCurrentDateTime() {
     ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
     return ss.str();
 }
-
