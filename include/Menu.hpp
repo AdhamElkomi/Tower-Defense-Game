@@ -37,6 +37,14 @@ public:
     std::string getEnteredUsername() const { return enteredUsername_; }
 
     bool shouldReturnToMenu() const { return returnToMenu_; }
+    void resetUsernamePrompt() {
+        usernamePromptOpen_ = false;
+        usernamePromptCancelled_ = false;
+        usernamePromptDone_ = false;
+        enteredUsername_.clear();
+    }
+    void clearUsernamePromptFlag() { goToUsernamePrompt_ = false; }
+    void clearLeaderboardFlag() { goToLeaderboard_ = false; }
      AudioManager audio_;
 private:
     sf::RenderWindow& win_;

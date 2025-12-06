@@ -6947,6 +6947,24 @@ CMakeFiles/TowerDefense.dir/src/TreeSystem.cpp.o: /home/adhamking4/Tower-Defense
 
 CMakeFiles/TowerDefense.dir/src/main.cpp.o: /home/adhamking4/Tower-Defense-Game/src/main.cpp \
   /home/adhamking4/Tower-Defense-Game/include/App.hpp \
+  /home/adhamking4/Tower-Defense-Game/include/AudioManager.hpp \
+  /usr/include/SFML/Audio.hpp \
+  /usr/include/SFML/Audio/AlResource.hpp \
+  /usr/include/SFML/Audio/Export.hpp \
+  /usr/include/SFML/Audio/InputSoundFile.hpp \
+  /usr/include/SFML/Audio/Listener.hpp \
+  /usr/include/SFML/Audio/Music.hpp \
+  /usr/include/SFML/Audio/OutputSoundFile.hpp \
+  /usr/include/SFML/Audio/Sound.hpp \
+  /usr/include/SFML/Audio/SoundBuffer.hpp \
+  /usr/include/SFML/Audio/SoundBufferRecorder.hpp \
+  /usr/include/SFML/Audio/SoundFileFactory.hpp \
+  /usr/include/SFML/Audio/SoundFileFactory.inl \
+  /usr/include/SFML/Audio/SoundFileReader.hpp \
+  /usr/include/SFML/Audio/SoundFileWriter.hpp \
+  /usr/include/SFML/Audio/SoundRecorder.hpp \
+  /usr/include/SFML/Audio/SoundSource.hpp \
+  /usr/include/SFML/Audio/SoundStream.hpp \
   /usr/include/SFML/Config.hpp \
   /usr/include/SFML/Graphics.hpp \
   /usr/include/SFML/Graphics/BlendMode.hpp \
@@ -7049,6 +7067,7 @@ CMakeFiles/TowerDefense.dir/src/main.cpp.o: /home/adhamking4/Tower-Defense-Game/
   /usr/include/c++/13/bits/cpp_type_traits.h \
   /usr/include/c++/13/bits/cxxabi_forced.h \
   /usr/include/c++/13/bits/cxxabi_init_exception.h \
+  /usr/include/c++/13/bits/enable_special_members.h \
   /usr/include/c++/13/bits/erase_if.h \
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
@@ -7104,8 +7123,10 @@ CMakeFiles/TowerDefense.dir/src/main.cpp.o: /home/adhamking4/Tower-Defense-Game/
   /usr/include/c++/13/bits/stl_iterator_base_types.h \
   /usr/include/c++/13/bits/stl_map.h \
   /usr/include/c++/13/bits/stl_multimap.h \
+  /usr/include/c++/13/bits/stl_multiset.h \
   /usr/include/c++/13/bits/stl_pair.h \
   /usr/include/c++/13/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/13/bits/stl_set.h \
   /usr/include/c++/13/bits/stl_tempbuf.h \
   /usr/include/c++/13/bits/stl_tree.h \
   /usr/include/c++/13/bits/stl_uninitialized.h \
@@ -7153,11 +7174,13 @@ CMakeFiles/TowerDefense.dir/src/main.cpp.o: /home/adhamking4/Tower-Defense-Game/
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
   /usr/include/c++/13/numbers \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/ostream \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_algorithm_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
+  /usr/include/c++/13/set \
   /usr/include/c++/13/stdexcept \
   /usr/include/c++/13/streambuf \
   /usr/include/c++/13/string \

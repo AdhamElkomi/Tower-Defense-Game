@@ -782,7 +782,7 @@ void GameScene::update(float dt) {
         if (gameOverState_ == GameOverState::Pausing) {
             collapseTimer_ += dt;
             if (collapseTimer_ >= 1.0f) { // Pause for 1 second
-                //gameOverState_ = GameOverState::Collapsing;
+                gameOverState_ = GameOverState::Collapsing;
                 collapseTimer_ = 0.f;
             }
         } else if (gameOverState_ == GameOverState::Collapsing) {

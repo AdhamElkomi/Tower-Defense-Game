@@ -78,8 +78,10 @@ void App::run() {
 
             if (menu_->shouldGoToUsernamePrompt()) {
                 currentDifficulty_ = menu_->getDifficulty();
+                menu_->clearUsernamePromptFlag();
                 goToUsernamePrompt();
             } else if (menu_->shouldGoToLeaderboard()) {
+                menu_->clearLeaderboardFlag();
                 goToLeaderboard();
             }
         } else if (state_ == State::UsernamePrompt) {
@@ -92,6 +94,7 @@ void App::run() {
                 goToGame();
             } else if (menu_->usernamePromptCancelled()) {
                 state_ = State::Menu;
+                menu_ = std::make_unique<MenuScene>(window_);
             }
         } else if (state_ == State::Game) {
             game_->handleInput(mouseLeft_, mouseLeftReleased_, mouseMoved_);
