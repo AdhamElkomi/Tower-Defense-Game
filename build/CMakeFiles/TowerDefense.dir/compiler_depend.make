@@ -3061,6 +3061,7 @@ CMakeFiles/TowerDefense.dir/src/Defense.cpp.o: /home/adhamking4/Tower-Defense-Ga
   /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h
 
 CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o: /home/adhamking4/Tower-Defense-Game/src/GameScene.cpp \
+  /home/adhamking4/Tower-Defense-Game/include/AudioManager.hpp \
   /home/adhamking4/Tower-Defense-Game/include/BuildMenu.hpp \
   /home/adhamking4/Tower-Defense-Game/include/Button.hpp \
   /home/adhamking4/Tower-Defense-Game/include/Creature.hpp \

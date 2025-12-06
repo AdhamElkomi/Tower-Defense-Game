@@ -1,6 +1,7 @@
 #include "Menu.hpp"
 #include <algorithm>
 
+
 // Couvre l'écran en conservant le ratio
 static void centerSpriteToCover(sf::Sprite& sp, const sf::RenderWindow& win) {
     const auto* tex = sp.getTexture(); // ✅ pointer

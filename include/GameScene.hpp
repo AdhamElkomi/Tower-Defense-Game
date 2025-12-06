@@ -14,6 +14,7 @@
 #include "BuildMenu.hpp"
 #include "Button.hpp"
 #include "Defense.hpp"
+#include "AudioManager.hpp"
 
 class GameScene {
 public:
@@ -40,7 +41,9 @@ private:
     // ★ Déclarations manquantes (pour corriger les “no declaration matches”)
     void updateMenuLayout();
     void drawMenu();
+    AudioManager audio_;
 
+    
     sf::RenderWindow& win_;
 
     // terrain

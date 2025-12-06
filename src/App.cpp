@@ -4,6 +4,7 @@
 #include "LeaderboardScene.hpp"
 #include <variant>
 #include <type_traits>
+#include "AudioManager.hpp"
 
 App::~App() = default;
 
@@ -15,6 +16,7 @@ App::App() {
 }
 
 void App::goToGame() {
+    menu_->audio_.stopAll();
     game_ = std::make_unique<GameScene>(window_, currentDifficulty_, currentUsername_);
     state_ = State::Game;
 }

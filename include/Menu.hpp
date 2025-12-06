@@ -10,6 +10,7 @@
 #include "AudioManager.hpp"
 #include "LeaderboardController.hpp"
 
+
 struct Theme {
     sf::Color text     {255,255,255};
     sf::Color btnHover {255,255,255,28};
@@ -35,6 +36,8 @@ public:
     bool usernamePromptCancelled() const { return usernamePromptCancelled_; }
     std::string getEnteredUsername() const { return enteredUsername_; }
 
+    bool shouldReturnToMenu() const { return returnToMenu_; }
+     AudioManager audio_;
 private:
     sf::RenderWindow& win_;
 
@@ -60,6 +63,7 @@ private:
     bool editingSfx_{false};
     std::string musicInput_;
     std::string sfxInput_;
+   
 
     // UI
     std::optional<Button> btnStart_;
@@ -90,7 +94,7 @@ private:
     bool usernameValid_{false};
 
     // État
-    AudioManager audio_;
+   
     Theme theme_;
 
     bool started_{false};
@@ -100,4 +104,5 @@ private:
     bool goToLeaderboard_{false};
     bool usernamePromptDone_{false};
     bool usernamePromptCancelled_{false};
+    bool returnToMenu_ {false};
 };

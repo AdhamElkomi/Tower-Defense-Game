@@ -19,6 +19,7 @@
 #include "BuildMenu.hpp"
 #include "Defense.hpp"
 
+
 // ---- helpers existants ----
 void GameScene::setPixelPerfectView(int worldW, int worldH, float tileSize){
     sf::View v;
@@ -114,6 +115,9 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     const int W = 60, H = 24;
     tileSize_  = 64.f;
      worldW_ = W; worldH_ = H;
+   
+    audio_.load();
+    audio_.playGameLoop(0.7f);
 
     terrain_ = std::make_unique<sf::Texture>();
     (void)terrain_->loadFromFile("../assets/tiles/terrain_atlas_z.png");
@@ -763,7 +767,7 @@ void GameScene::update(float dt) {
             collapseTimer_ = 0.f;
             creeps_.stopAllCreatureSounds(); // Stop all creature sounds on game over
             if (collapseSound_) {
-                collapseSound_->play();
+               collapseSound_->play();
             }
             // Save leaderboard data
             saveLeaderboardEntry();
@@ -778,7 +782,7 @@ void GameScene::update(float dt) {
         if (gameOverState_ == GameOverState::Pausing) {
             collapseTimer_ += dt;
             if (collapseTimer_ >= 1.0f) { // Pause for 1 second
-                gameOverState_ = GameOverState::Collapsing;
+                //gameOverState_ = GameOverState::Collapsing;
                 collapseTimer_ = 0.f;
             }
         } else if (gameOverState_ == GameOverState::Collapsing) {
@@ -863,7 +867,7 @@ void GameScene::draw() {
 
     // bouton menu (toujours visible)
    // draw: bouton menu
-    if (menuButton_) win_.draw(*menuButton_);
+    //if (menuButton_) win_.draw(*menuButton_);
 
     // Draw score
     if (scoreSprite_) win_.draw(*scoreSprite_);
@@ -1104,12 +1108,14 @@ void GameScene::generateWaves() {
     int grunt = 1;
     int rogue = 1;
     int golem = 1;
-    for (int i = 0; i < 10; ++i) { // Generate 10 waves for example
+    int i=0;
+    while(i<50) { // Generate 10 waves for example
         waves_.push_back({grunt, rogue, golem, time});
         grunt *= 2; // Double grunts each wave (+1 times more, i.e., double)
         rogue += 2; // Add 2 rogues each wave
         if ((i + 1) % 2 == 0) golem += 1; // Add 1 golem every 2 waves
         time += 15.f; // 15 seconds delay between waves
+        i++;
     }
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "AudioManager.hpp"
 
 class MenuScene;
 class GameScene;
@@ -14,6 +15,7 @@ public:
     void goToGame();
     void goToLeaderboard();
     void goToUsernamePrompt();
+
 
 private:
     enum class State { Menu, UsernamePrompt, Game, Leaderboard };
@@ -33,4 +35,5 @@ private:
     // Username prompt state
     std::string currentUsername_;
     std::string currentDifficulty_;
+   
 };
