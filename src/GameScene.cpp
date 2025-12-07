@@ -345,6 +345,17 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
         // We'll handle looping in update if needed
     }
 
+    // Load tetris texture for collapsing animation
+    if (!tetrisTexture_.loadFromFile("../assets/ui/tetris.png")) {
+        // Fallback: create a simple colored rectangle
+        sf::RenderTexture tempRT;
+        tempRT.create(64, 64);
+        tempRT.clear(sf::Color::Cyan);
+        tempRT.display();
+        tetrisTexture_ = tempRT.getTexture();
+    }
+    tetrisTexture_.setSmooth(false);
+
     // Stop any existing music and start game music
     // Note: We don't have direct access to AudioManager here, so we'll assume it's handled elsewhere
 
@@ -937,66 +948,36 @@ void GameScene::draw() {
         if (gameOverState_ == GameOverState::Pausing) {
             // Game is paused, no drawing changes yet
         } else if (gameOverState_ == GameOverState::Collapsing) {
-            // Apply pixelation shader to the entire screen
-            sf::RenderTexture renderTexture;
-            renderTexture.create(win_.getSize().x, win_.getSize().y);
-            renderTexture.clear(sf::Color::Transparent);
+            // Snake-like tile replacement animation
+            float progress = collapseTimer_ / collapseDuration_;
+            int totalTiles = worldW_ * worldH_;
+            int tilesToReplace = static_cast<int>(progress * totalTiles);
 
-            // Note: In SFML 3, capturing the screen requires different approach
-            // For now, we'll create a pixelation effect on a full-screen quad
+            // Draw normal tilemap first
+            win_.draw(tilemap_);
 
-            sf::RectangleShape screenQuad({win_.getSize().x, win_.getSize().y});
-            screenQuad.setPosition({0.f, 0.f});
-            screenQuad.setFillColor(sf::Color::White);
+            // Then overlay replaced tiles with tetris.png in snake order
+            sf::Sprite tetrisSprite(tetrisTexture_);
+            tetrisSprite.setScale(sf::Vector2f(tileSize_ / tetrisTexture_.getSize().x, tileSize_ / tetrisTexture_.getSize().y));
 
-            // Load pixelation shader if not loaded
-            if (!pixelShader_.isAvailable()) {
-                const std::string vertexShader = R"(
-                    void main() {
-                        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-                        gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+            int replaced = 0;
+            for (int y = 0; y < worldH_ && replaced < tilesToReplace; ++y) {
+                if (y % 2 == 0) {
+                    // Even rows: left to right
+                    for (int x = 0; x < worldW_ && replaced < tilesToReplace; ++x) {
+                        tetrisSprite.setPosition(sf::Vector2f(x * tileSize_, y * tileSize_));
+                        win_.draw(tetrisSprite);
+                        ++replaced;
                     }
-                )";
-                const std::string fragmentShader = R"(
-                    uniform sampler2D texture;
-                    uniform float pixelSize;
-                    uniform float time;
-                    uniform float screenWidth;
-                    uniform float screenHeight;
-
-                    void main() {
-                        vec2 texCoord = gl_TexCoord[0].xy;
-                        // Create a wave-like distortion effect
-                        float wave = sin(texCoord.y * 10.0 + time * 5.0) * 0.01;
-                        texCoord.x += wave;
-
-                        // Pixelation effect
-                        float pixel = pixelSize + (time * 30.0);
-                        vec2 pixelated = floor(texCoord * pixel) / pixel;
-
-                        // Add some color distortion
-                        vec4 color = texture2D(texture, pixelated);
-                        color.r += sin(time * 2.0) * 0.1;
-                        color.g += cos(time * 3.0) * 0.1;
-                        color.b += sin(time * 4.0) * 0.1;
-
-                        // Fade to black as time progresses
-                        float fade = 1.0 - (time / 3.0);
-                        color *= fade;
-
-                        gl_FragColor = color;
+                } else {
+                    // Odd rows: right to left
+                    for (int x = worldW_ - 1; x >= 0 && replaced < tilesToReplace; --x) {
+                        tetrisSprite.setPosition(sf::Vector2f(x * tileSize_, y * tileSize_));
+                        win_.draw(tetrisSprite);
+                        ++replaced;
                     }
-                )";
-                pixelShader_.loadFromMemory(vertexShader, fragmentShader);
+                }
             }
-
-            float pixelSize = 1.f + (collapseTimer_ / collapseDuration_) * 50.f;
-            pixelShader_.setUniform("pixelSize", pixelSize);
-            pixelShader_.setUniform("time", collapseTimer_);
-            pixelShader_.setUniform("screenWidth", static_cast<float>(win_.getSize().x));
-            pixelShader_.setUniform("screenHeight", static_cast<float>(win_.getSize().y));
-
-            win_.draw(screenQuad, &pixelShader_);
         } else if (gameOverState_ == GameOverState::ShowingImage) {
             // Set view to default to cover entire window
             win_.setView(win_.getDefaultView());
@@ -1363,3 +1344,4 @@ std::string GameScene::getCurrentDateTime() {
     ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
     return ss.str();
 }
+

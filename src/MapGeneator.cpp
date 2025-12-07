@@ -624,31 +624,12 @@ Map MapGenerator::generate(int w, int h, int eMin, int eMax, int xMin, int xMax)
     // Eau
     placeForbiddenPatches(m, /*count*/ 4, /*radius*/ 4);
 
-    // Entrées / sorties aléatoires
-    std::uniform_int_distribution<int> de(eMin, eMax), dx(xMin, xMax);
-    std::vector<Point> entries, exits;
-    const int minDist = 10;
-    bool tooClose = true;
-    while (tooClose) {
-        entries = randomEdgePoints(w,h,de(rng_));
-        exits   = randomEdgePoints(w,h,dx(rng_));
-        tooClose = false;
-        for (auto e : entries) {
-            for (auto x : exits) {
-                int dx = e.x - x.x;
-                int dy = e.y - x.y;
-                if (dx*dx + dy*dy < minDist*minDist) {
-                    tooClose = true;
-                    break;
-                }
-            }
-            if (tooClose) break;
-        }
-    }
+    // Entrées aléatoires
+    std::uniform_int_distribution<int> de(eMin, eMax);
+    auto entries = randomEdgePoints(w,h,de(rng_));
 
-    // Store entries and exits in map
+    // Store entries in map
     m.entries = entries;
-    m.exits = exits;
 
     // Centre et base
     Point R{ w/2, h/2 };
@@ -665,6 +646,36 @@ Map MapGenerator::generate(int w, int h, int eMin, int eMax, int xMin, int xMax)
         carvePathComplex(m, wp1, wp2, nf, 1.0f);
         carvePathComplex(m, wp2, gate, nf, 0.9f);
     }
+
+    // Sorties aléatoires (pas sur les chemins existants, et loin des entrées)
+    std::uniform_int_distribution<int> dx(xMin, xMax);
+    std::vector<Point> exits;
+    const int minDist = 10;
+    bool invalid = true;
+    while (invalid) {
+        exits = randomEdgePoints(w,h,dx(rng_));
+        invalid = false;
+        for (auto x : exits) {
+            // Check if on path
+            if (m.at(x.x, x.y).ground == Tile::Path) {
+                invalid = true;
+                break;
+            }
+            // Check distance from entries
+            for (auto e : entries) {
+                int dx = e.x - x.x;
+                int dy = e.y - x.y;
+                if (dx*dx + dy*dy < minDist*minDist) {
+                    invalid = true;
+                    break;
+                }
+            }
+            if (invalid) break;
+        }
+    }
+
+    // Store exits in map
+    m.exits = exits;
 
     // gate -> zigzags -> Sorties
     for (auto x : exits){

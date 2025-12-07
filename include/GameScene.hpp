@@ -255,6 +255,7 @@ private:
     sf::SoundBuffer gameOverBuffer_;
     std::optional<sf::Sound> collapseSound_;
     std::optional<sf::Sound> gameOverSound_;
+    sf::Texture tetrisTexture_;
 
     // Drop system
     enum class DropType { Wood, Stone, Crystal, Resource };
@@ -288,3 +289,5 @@ private:
     void handleDropClick(sf::Vector2f clickPos);
     void drawDrops();
 };
+
+
