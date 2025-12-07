@@ -626,8 +626,25 @@ Map MapGenerator::generate(int w, int h, int eMin, int eMax, int xMin, int xMax)
 
     // Entrées / sorties aléatoires
     std::uniform_int_distribution<int> de(eMin, eMax), dx(xMin, xMax);
-    auto entries = randomEdgePoints(w,h,de(rng_));
-    auto exits   = randomEdgePoints(w,h,dx(rng_));
+    std::vector<Point> entries, exits;
+    const int minDist = 10;
+    bool tooClose = true;
+    while (tooClose) {
+        entries = randomEdgePoints(w,h,de(rng_));
+        exits   = randomEdgePoints(w,h,dx(rng_));
+        tooClose = false;
+        for (auto e : entries) {
+            for (auto x : exits) {
+                int dx = e.x - x.x;
+                int dy = e.y - x.y;
+                if (dx*dx + dy*dy < minDist*minDist) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            if (tooClose) break;
+        }
+    }
 
     // Store entries and exits in map
     m.entries = entries;
@@ -773,4 +790,6 @@ Point MapGenerator::placeResourceBaseArea(Map& m, int cx, int cy, int wTiles, in
     }
     return gate;
 }
+
+
 

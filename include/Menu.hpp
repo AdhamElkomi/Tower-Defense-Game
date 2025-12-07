@@ -114,3 +114,4 @@ private:
     bool usernamePromptCancelled_{false};
     bool returnToMenu_ {false};
 };
+

@@ -285,6 +285,12 @@ void MenuScene::handleUsernamePromptInput(bool mpLeft, bool /*mrLeft*/, bool /*m
 
     if (usernameOkBtn_) usernameOkBtn_->handleInput(win_, mpLeft, clickSfx);
     if (usernameBackBtn_) usernameBackBtn_->handleInput(win_, mpLeft, clickSfx);
+
+    // Handle Enter key to validate username if valid
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && usernameValid_) {
+        usernamePromptDone_ = true;
+        audio_.playClick();
+    }
 }
 
 void MenuScene::drawUsernamePrompt() {
@@ -420,3 +426,5 @@ void MenuScene::draw() {
         }
     }
 }
+
+
