@@ -9,10 +9,9 @@ void playMenuLoop(float volume01);
 void playGameLoop(float volume01);
 void stopAll();
 
-
 void setMusicVolume(float volume01); // 0..1
 void setSfxVolume(float volume01); // 0..1
-
+void setGameLoopVolume(float volume01); // 0..1 - adjust current game loop volume
 
 void playClick();
 
@@ -27,3 +26,4 @@ sf::SoundBuffer clickBuf_;
 float musicVol_{0.7f};
 float sfxVol_{0.8f};
 };
+

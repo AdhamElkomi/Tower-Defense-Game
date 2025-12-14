@@ -419,9 +419,67 @@ GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty) : win
     }
     collapseSound2_.setBuffer(collapseSoundBuffer_);
     
+    // Initialize Exit and Sound buttons (bottom-right, in circles with small icons)
+    exitButtonTex_ = std::make_unique<sf::Texture>();
+    if (!exitButtonTex_->loadFromFile("../assets/ui/icon_exit_gamescene.png")) {
+        // Fallback: create a simple rectangle
+        sf::RenderTexture tempRT;
+        tempRT.create(64, 64);
+        tempRT.clear(sf::Color::Red);
+        tempRT.display();
+        exitButtonTex_ = std::make_unique<sf::Texture>(tempRT.getTexture());
+    }
+    exitButtonTex_->setSmooth(false);
+    exitButton_ = std::make_unique<sf::Sprite>(*exitButtonTex_);
+    // Scale: 512px * 0.14 = 71.68px ≈ fits well in 72px diameter circle
+    exitButton_->setScale(0.14f, 0.14f);
+    // Set origin to center for proper centering
+    exitButton_->setOrigin(256.f, 256.f); // Center of 512x512 image
+    
+    soundButtonTex_ = std::make_unique<sf::Texture>();
+    if (!soundButtonTex_->loadFromFile("../assets/ui/icon_son_gamescene.png")) {
+        // Fallback: create a simple rectangle
+        sf::RenderTexture tempRT;
+        tempRT.create(64, 64);
+        tempRT.clear(sf::Color::Green);
+        tempRT.display();
+        soundButtonTex_ = std::make_unique<sf::Texture>(tempRT.getTexture());
+    }
+    soundButtonTex_->setSmooth(false);
+    soundButton_ = std::make_unique<sf::Sprite>(*soundButtonTex_);
+    // Scale: 512px * 0.14 = 71.68px ≈ fits well in 72px diameter circle
+    soundButton_->setScale(0.14f, 0.14f);
+    // Set origin to center for proper centering
+    soundButton_->setOrigin(256.f, 256.f); // Center of 512x512 image
+    
+    // Initialize volume slider
+    volumeSlider_ = std::make_unique<Slider>(0.f, 1.f, 0.7f, 150.f);
+    
+    // Position buttons at bottom-right in circular arrangement
+    float screenW = win_.getSize().x;
+    float screenH = win_.getSize().y;
+    float circleRadius = 36.f; // radius for circular buttons
+    float padding = 15.f;
+    
+    // Compute centers for buttons and spacing
+    float exitCenterX = screenW - padding - circleRadius;
+    float exitCenterY = screenH - padding - circleRadius;
+    float gapBetween = 12.f; // small gap between circles
+    float soundCenterX = exitCenterX;
+    float soundCenterY = exitCenterY - (circleRadius * 2.f + gapBetween);
 
+    // Set sprite positions at centers
+    exitButton_->setPosition(exitCenterX, exitCenterY);
+    soundButton_->setPosition(soundCenterX, soundCenterY);
+
+    // Volume slider above sound button (centered horizontally)
+    float sliderWidth = 150.f;
+    float sliderX = soundCenterX - sliderWidth * 0.5f;
+    float sliderY = soundCenterY - circleRadius - 18.f; // slightly above the sound circle
+    volumeSlider_->setPosition({sliderX, sliderY});
 
 }
+
 
 GameScene::GameScene(sf::RenderWindow& win, const std::string& difficulty, const std::string& username) : GameScene(win, difficulty) {
     username_ = username;
@@ -453,6 +511,49 @@ void GameScene::handleInput(bool leftDown, bool leftUp, bool moved){
             returnToMenu_ = true;
         }
     }
+    
+    // Handle Exit button click
+    if (leftUp && exitButton_) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+        sf::Vector2f mousePosF = static_cast<sf::Vector2f>(mousePos);
+        if (exitButton_->getGlobalBounds().contains(mousePosF)) {
+            returnToMenu_ = true;
+            return;
+        }
+    }
+    
+    // Handle Sound button click to toggle volume slider
+    if (leftUp && soundButton_) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(win_);
+        sf::Vector2f mousePosF = static_cast<sf::Vector2f>(mousePos);
+        if (soundButton_->getGlobalBounds().contains(mousePosF)) {
+            volumeSliderVisible_ = !volumeSliderVisible_;
+            // Reposition slider to be just above the sound button
+            float screenW = win_.getSize().x;
+            float screenH = win_.getSize().y;
+            float circleRadius = 36.f;
+            float padding = 15.f;
+            float exitCenterX = screenW - padding - circleRadius;
+            float exitCenterY = screenH - padding - circleRadius;
+            float gapBetween = 12.f;
+            float soundCenterX = exitCenterX;
+            float soundCenterY = exitCenterY - (circleRadius * 2.f + gapBetween);
+            float sliderWidth = 150.f;
+            float sliderX = soundCenterX - sliderWidth * 0.5f;
+            float sliderY = soundCenterY - circleRadius - 18.f;
+            if (volumeSlider_) volumeSlider_->setPosition({sliderX, sliderY});
+            return;
+        }
+    }
+    
+    // Handle volume slider input if visible
+    if (volumeSliderVisible_ && volumeSlider_) {
+        volumeSlider_->handleInput(win_, leftDown, leftUp, moved);
+        // Apply slider value to audio
+        float volume = volumeSlider_->value();
+        audio_.setGameLoopVolume(volume);
+    }
+    
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         sf::Vector2f mousePosition = win_.mapPixelToCoords(sf::Mouse::getPosition(win_));
         handleRightClick(mousePosition);
@@ -1003,6 +1104,47 @@ void GameScene::draw() {
             }
         }
     }
+    
+    // Draw Exit and Sound buttons with circular backgrounds (always visible at bottom-right)
+    {
+        float circleRadius = 36.f;
+        float screenW = win_.getSize().x;
+        float screenH = win_.getSize().y;
+        float padding = 15.f;
+        float gapBetween = 12.f;
+
+        float exitCenterX = screenW - padding - circleRadius;
+        float exitCenterY = screenH - padding - circleRadius;
+        float soundCenterX = exitCenterX;
+        float soundCenterY = exitCenterY - (circleRadius * 2.f + gapBetween);
+
+        // Draw exit button circle (top-left is center - radius)
+        sf::CircleShape exitCircle(circleRadius);
+        exitCircle.setPosition(exitCenterX - circleRadius, exitCenterY - circleRadius);
+        exitCircle.setFillColor(sf::Color(100, 100, 100, 180));
+        exitCircle.setOutlineThickness(2.f);
+        exitCircle.setOutlineColor(sf::Color(200, 200, 200, 220));
+        win_.draw(exitCircle);
+
+        // Draw sound button circle
+        sf::CircleShape soundCircle(circleRadius);
+        soundCircle.setPosition(soundCenterX - circleRadius, soundCenterY - circleRadius);
+        soundCircle.setFillColor(sf::Color(100, 100, 100, 180));
+        soundCircle.setOutlineThickness(2.f);
+        soundCircle.setOutlineColor(sf::Color(200, 200, 200, 220));
+        win_.draw(soundCircle);
+
+        // Draw sprites at centers (they have origin set to center already)
+        if (exitButton_) exitButton_->setPosition(exitCenterX, exitCenterY);
+        if (soundButton_) soundButton_->setPosition(soundCenterX, soundCenterY);
+        if (exitButton_) win_.draw(*exitButton_);
+        if (soundButton_) win_.draw(*soundButton_);
+
+        // Draw volume slider if visible
+        if (volumeSliderVisible_ && volumeSlider_) {
+            volumeSlider_->draw(win_);
+        }
+    }
 
 }
 
@@ -1344,4 +1486,6 @@ std::string GameScene::getCurrentDateTime() {
     ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
     return ss.str();
 }
+
+
 

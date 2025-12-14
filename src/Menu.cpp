@@ -398,6 +398,8 @@ void MenuScene::handleInput(bool mpLeft, bool mrLeft, bool mMoved) {
 }
 
 void MenuScene::draw() {
+    // Ensure we use the default view so the menu covers the full window
+    win_.setView(win_.getDefaultView());
     if (bgSprite_)    win_.draw(*bgSprite_);
     if (panelSprite_) win_.draw(*panelSprite_);
     if (title_)       win_.draw(*title_);
@@ -426,5 +428,7 @@ void MenuScene::draw() {
         }
     }
 }
+
+
 
 

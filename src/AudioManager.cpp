@@ -31,6 +31,12 @@ void AudioManager::setMusicVolume(float v) {
     menuMusic_.setVolume(musicVol_ * 100.f);
     gameMusic_.setVolume(musicVol_ * 100.f);
 }
+
+void AudioManager::setGameLoopVolume(float v) {
+    musicVol_ = std::clamp(v, 0.f, 1.f);
+    gameMusic_.setVolume(musicVol_ * 100.f);
+}
+
 void AudioManager::setSfxVolume(float v) {
     sfxVol_ = std::clamp(v, 0.f, 1.f);
     if (click_) click_->setVolume(sfxVol_ * 100.f);
@@ -44,3 +50,5 @@ void AudioManager::playClick() {
         click_->play();
     }
 }
+
+

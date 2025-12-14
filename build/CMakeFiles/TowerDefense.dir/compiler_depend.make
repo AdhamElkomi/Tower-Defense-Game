@@ -3072,6 +3072,7 @@ CMakeFiles/TowerDefense.dir/src/GameScene.cpp.o: /home/adhamking4/Tower-Defense-
   /home/adhamking4/Tower-Defense-Game/include/Map.hpp \
   /home/adhamking4/Tower-Defense-Game/include/MapGenerator.hpp \
   /home/adhamking4/Tower-Defense-Game/include/Pathfinding.hpp \
+  /home/adhamking4/Tower-Defense-Game/include/Slider.hpp \
   /home/adhamking4/Tower-Defense-Game/include/TileMap.hpp \
   /home/adhamking4/Tower-Defense-Game/include/TreeSystem.hpp \
   /usr/include/SFML/Audio.hpp \
