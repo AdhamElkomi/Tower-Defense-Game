@@ -150,9 +150,9 @@ private:
 
     // Costs
     struct Cost { int wood, stone, crystal; };
-    Cost costCannon_{ /*wood*/3, /*stone*/2, /*crystal*/1 };
+    Cost costCannon_{ /*wood*/3, /*stone*/1, /*crystal*/0 };
     Cost costArcher_{ /*wood*/7, /*stone*/4, /*crystal*/1 };
-    Cost costMage_  { /*wood*/14, /*stone*/10, /*crystal*/6 };
+    Cost costMage_  { /*wood*/10, /*stone*/7, /*crystal*/3 };
 
     bool canAfford(const Cost& c) const {
         return materialCount_[0] >= c.wood
@@ -284,23 +284,14 @@ private:
     std::unique_ptr<sf::Sprite> scoreSprite_;
     std::unique_ptr<sf::Text> scoreText_;
 
-    // Exit and Sound buttons (bottom-right)
-    std::unique_ptr<sf::Texture> exitButtonTex_;
-    std::unique_ptr<sf::Sprite> exitButton_;
-    std::unique_ptr<sf::Texture> soundButtonTex_;
-    std::unique_ptr<sf::Sprite> soundButton_;
-    std::unique_ptr<Slider> volumeSlider_;
-    bool volumeSliderVisible_ = false;
-    // Slider animation (0.0 = hidden, 1.0 = shown)
-    float volumeSliderAnim_ = 0.f;
-    float volumeSliderAnimSpeed_ = 6.f; // controls how fast the slider slides
-
     void loadDropTextures();
     void spawnDrop();
     void updateDrops(float dt);
     void handleDropClick(sf::Vector2f clickPos);
     void drawDrops();
 };
+
+
 
 
 
